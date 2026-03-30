@@ -429,6 +429,28 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .ef-sprint-item.current{border-color:#16a34a;background:#f0fdf4}
 .ef-sprint-item input[type=checkbox]{accent-color:var(--blue);cursor:pointer}
 .ef-cur-badge{font-size:9px;font-weight:700;background:#16a34a;color:#fff;padding:1px 5px;border-radius:8px;margin-left:2px}
+.ef-sprint-select{display:block;width:100%;max-width:400px;font-size:13px;font-family:inherit;border:1.5px solid var(--border);border-radius:8px;padding:4px;background:#fff;color:#1e293b;outline:none;cursor:pointer;min-height:110px}
+.ef-sprint-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.08)}
+.ef-sprint-select option{padding:6px 10px;line-height:1.6;border-radius:4px;color:#374151}
+.ef-sprint-select option:checked{background:linear-gradient(0deg,#dbeafe,#dbeafe);color:#1d4ed8;font-weight:600}
+.ef-sprint-hint{font-size:11px;color:#94a3b8;margin-top:5px}
+/* ── Dashboard team custom dropdown ── */
+.db-team-dd{position:relative;flex-shrink:0}
+.db-team-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;font-size:13px;font-weight:500;padding:6px 12px;cursor:pointer;transition:background .15s;white-space:nowrap;max-width:230px;overflow:hidden}
+.db-team-btn:hover{background:rgba(255,255,255,.22)}
+.db-team-btn-avt{width:22px;height:22px;border-radius:6px;background:#3b82f6;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.db-team-btn-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.db-team-btn-arr{font-size:10px;opacity:.7;flex-shrink:0;margin-left:2px}
+.db-team-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:220px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15);z-index:300;display:none;overflow:hidden;padding:6px}
+.db-team-menu.open{display:block}
+.db-tmi{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;font-size:13px;color:#374151;border-radius:8px;transition:background .12s}
+.db-tmi:hover{background:#f1f5f9}
+.db-tmi.active{background:#eff6ff}
+.db-tmi-avt{width:30px;height:30px;border-radius:8px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.db-tmi-name{font-weight:600;font-size:13px;color:#1e293b;line-height:1.3}
+.db-tmi-meta{font-size:11px;color:#64748b}
+.db-tmi-check{margin-left:auto;color:#1d4ed8;font-size:14px;font-weight:700;flex-shrink:0}
+.db-team-empty{padding:12px 14px;font-size:12px;color:#94a3b8;text-align:center}
 /* KPI grid: scroll horizontal quando não couber */
 .ef-kpi-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:16px 24px 0;scrollbar-width:none}
 .ef-kpi-wrap::-webkit-scrollbar{display:none}
@@ -558,7 +580,15 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
     <section id="panel-dashboard" class="panel active">
       <div class="db-topbar" id="db-topbar-static">
         <div id="db-topbar-info" style="color:#94a3b8;font-size:13px">Nenhuma sprint carregada</div>
-        <div style="margin-left:auto;display:flex;gap:8px">
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <div class="db-team-dd" id="db-team-dd">
+            <button class="db-team-btn" id="db-team-btn" onclick="toggleDashTeamDd()">
+              <span class="db-team-btn-avt" id="db-team-btn-avt">—</span>
+              <span class="db-team-btn-name" id="db-team-btn-name">Selecione um time</span>
+              <span class="db-team-btn-arr">▾</span>
+            </button>
+            <div class="db-team-menu" id="db-team-menu"></div>
+          </div>
           <button class="btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25)" onclick="runSync()">🔄 Sincronizar</button>
           <button class="btn-sm" style="background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.2)" onclick="downloadDashboardHtml()">⬇ HTML</button>
         </div>
@@ -583,8 +613,14 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
       <div class="mod-panel" id="module-eficiencia">
         <div class="ef-filter-bar">
           <div style="flex:1;min-width:0">
-            <div class="ef-filter-label">Sprints para análise</div>
-            <div id="ef-filter-list" class="ef-filter-list">
+            <div class="ef-filter-label" style="margin-bottom:6px">Período rápido</div>
+            <div style="display:flex;gap:6px;margin-bottom:14px">
+              <button class="ef-qbtn" onclick="loadEficienciaFilter(3)">3 meses</button>
+              <button class="ef-qbtn" onclick="loadEficienciaFilter(6)">6 meses</button>
+              <button class="ef-qbtn" onclick="loadEficienciaFilter(12)">1 ano</button>
+            </div>
+            <div class="ef-filter-label" style="margin-bottom:6px">Sprints para análise</div>
+            <div id="ef-filter-list">
               <span style="font-size:12px;color:#94a3b8">Sincronize um time para carregar as sprints.</span>
             </div>
           </div>
@@ -2025,6 +2061,7 @@ function launchApp() {
   renderOrgList();
   renderLlmList();
   renderRagList();
+  renderDashTeamSel();
   const cache = Store.getSprintCache();
   if (cache) {
     APP.sprintData = cache;
@@ -2033,6 +2070,7 @@ function launchApp() {
   } else {
     document.getElementById('db-no-data').style.display = '';
   }
+  if (Store.getActiveTeamId()) runSync();
   // Update vault button label on overlay
   if (Vault.isSetup()) {
     document.getElementById('vbtn').textContent = 'Entrar';
@@ -2058,6 +2096,7 @@ function showPanel(name) {
   document.getElementById('mbn-'+name)?.classList.add('active');
   // Volta ao topo ao trocar de seção
   document.getElementById('main-content')?.scrollTo({top:0, behavior:'instant'});
+  if (name === 'dashboard') { renderDashTeamSel(); }
   if (name === 'teams')    { renderTeams(); renderOrgList(); }
   if (name === 'llm')      renderLlmList();
   if (name === 'rag')      renderRagList();
@@ -2068,12 +2107,71 @@ function showModule(name) {
   document.querySelectorAll('.mod-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('module-'+name)?.classList.add('active');
   document.getElementById('modtab-'+name)?.classList.add('active');
-  if (name === 'eficiencia') loadEficienciaFilter();
-  if (name === 'qualidade' && APP.qualidadeData) renderQualidadeCharts(APP.qualidadeData, APP.qualTipo);
+  if (name === 'eficiencia') {
+    loadEficienciaFilter();
+    if (APP.allIterations?.length && !APP.eficienciaData) runEficiencia();
+  }
+  if (name === 'qualidade') {
+    if (APP.qualidadeData) renderQualidadeCharts(APP.qualidadeData, APP.qualTipo);
+    else if (Store.getActiveTeamId()) runQualidade();
+  }
 }
 
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ── DASHBOARD TEAM SELECTOR ──────────────────────────────────────────
+function renderDashTeamSel() {
+  const menu   = document.getElementById('db-team-menu');
+  const btnAvt = document.getElementById('db-team-btn-avt');
+  const btnNm  = document.getElementById('db-team-btn-name');
+  if (!menu) return;
+  const teams    = Store.getTeams();
+  const activeId = Store.getActiveTeamId();
+  const active   = teams.find(t => t.id === activeId);
+  const avatarColors = ['#1d4ed8','#7c3aed','#059669','#d97706','#dc2626','#0891b2'];
+  // Update button label
+  if (active) {
+    btnNm.textContent  = active.name;
+    btnAvt.textContent = active.name.substring(0,2).toUpperCase();
+    btnAvt.style.background = avatarColors[active.name.charCodeAt(0) % avatarColors.length];
+  } else {
+    btnNm.textContent  = 'Selecione um time';
+    btnAvt.textContent = '—';
+    btnAvt.style.background = '#475569';
+  }
+  // Populate menu
+  if (!teams.length) {
+    menu.innerHTML = '<div class="db-team-empty">Nenhum time cadastrado.<br>Acesse <strong>Times</strong> para criar.</div>';
+    return;
+  }
+  menu.innerHTML = teams.map(t => {
+    const ini   = t.name.substring(0,2).toUpperCase();
+    const isAct = t.id === activeId;
+    const col   = avatarColors[t.name.charCodeAt(0) % avatarColors.length];
+    return `<div class="db-tmi${isAct?' active':''}" onclick="onDashTeamChange('${esc(t.id)}')">` +
+      `<div class="db-tmi-avt" style="background:${isAct?col:'#f1f5f9'};color:${isAct?'#fff':col}">${ini}</div>` +
+      `<div><div class="db-tmi-name">${esc(t.name)}</div><div class="db-tmi-meta">${esc(t.proj||t.org||'')}</div></div>` +
+      `${isAct?'<span class="db-tmi-check">✓</span>':''}` +
+      `</div>`;
+  }).join('');
+}
+
+function toggleDashTeamDd() {
+  document.getElementById('db-team-menu')?.classList.toggle('open');
+}
+
+function onDashTeamChange(id) {
+  if (!id) return;
+  Store.setActiveTeamId(id);
+  document.getElementById('db-team-menu')?.classList.remove('open');
+  renderDashTeamSel();
+  renderTeams();
+  toast('Time ativado! Sincronizando…', 'ok');
+  APP.eficienciaData = null;
+  APP.qualidadeData  = null;
+  runSync();
+}
 
 // ── TEAMS ─────────────────────────────────────────────────────────────
 function renderTeams() {
@@ -2301,6 +2399,7 @@ function deleteTeam(id) {
 function activateTeam(id) {
   Store.setActiveTeamId(id);
   renderTeams();
+  renderDashTeamSel();
   toast('Time ativado!','ok');
 }
 
@@ -2453,49 +2552,47 @@ function loadEficienciaFilter(months) {
     return;
   }
   const now = Date.now();
-  // Sort descending by finish date
   const sorted = [...iters].sort((a,b) => new Date(b.attributes?.finishDate||0) - new Date(a.attributes?.finishDate||0));
-  // Identify current sprint (+1 day buffer on finishDate for UTC offset on last day)
-  let curIdx = sorted.findIndex(it => {
+
+  // Current sprint
+  const currentSprint = sorted.find(it => {
     const s = it.attributes?.startDate ? new Date(it.attributes.startDate).getTime() : 0;
     const e = it.attributes?.finishDate ? new Date(it.attributes.finishDate).getTime() + 86400000 : 0;
     return s <= now && now <= e;
   });
-  if (curIdx < 0) curIdx = 0;
-  const currentPath = sorted[curIdx]?.path || '';
+  const currentPath = currentSprint?.path || '';
 
-  let visible, preChecked = new Set();
+  // Past sprints only (finished before now)
+  const pastSprints = sorted.filter(it => {
+    const e = it.attributes?.finishDate ? new Date(it.attributes.finishDate).getTime() + 86400000 : 0;
+    return it.path !== currentPath && e < now;
+  });
+
+  // All visible: current first, then past
+  const allVisible = [...(currentSprint ? [currentSprint] : []), ...pastSprints];
+
+  let preSelected = new Set();
   if (months) {
+    // Period filter: only past sprints within the window
     const cutoff = now - months * 30.44 * 86400000;
-    visible = sorted.filter(it => {
-      const e = it.attributes?.finishDate ? new Date(it.attributes.finishDate).getTime() : Infinity;
-      const s = it.attributes?.startDate  ? new Date(it.attributes.startDate).getTime()  : 0;
-      return e >= cutoff || it.path === currentPath;
-    });
-    visible.forEach(it => preChecked.add(it.path));
+    pastSprints
+      .filter(it => { const e = it.attributes?.finishDate ? new Date(it.attributes.finishDate).getTime() : 0; return e >= cutoff; })
+      .forEach(it => preSelected.add(it.path));
   } else {
-    visible = sorted.slice(curIdx, curIdx + 6); // current + 5 previous
+    // Default: up to 3 most recent past sprints
+    pastSprints.slice(0, 3).forEach(it => preSelected.add(it.path));
   }
 
-  const sprintsHtml = visible.map(it => {
-    const label  = it.path.split('\\').pop();
-    const isCur  = it.path === currentPath;
-    const chk    = preChecked.has(it.path) ? ' checked' : '';
-    return `<label class="ef-sprint-item${isCur?' current':''}">
-      <input type="checkbox" class="ef-iter-cb" value="${esc(it.path)}"${chk}>
-      <span>${esc(label)}</span>
-      ${isCur ? '<span class="ef-cur-badge">Atual</span>' : ''}
-    </label>`;
+  const options = allVisible.map(it => {
+    const label = it.path.split('\\').pop();
+    const isCur = it.path === currentPath;
+    const sel   = preSelected.has(it.path) ? ' selected' : '';
+    return `<option value="${esc(it.path)}"${sel}>${esc(label)}${isCur ? ' ← atual' : ''}</option>`;
   }).join('');
 
-  const quickHtml = `<div class="ef-quick-btns">
-    <span style="font-size:11px;color:#64748b">Selecionar por período:</span>
-    <button class="ef-qbtn" onclick="loadEficienciaFilter(3)">3 meses</button>
-    <button class="ef-qbtn" onclick="loadEficienciaFilter(6)">6 meses</button>
-    <button class="ef-qbtn" onclick="loadEficienciaFilter(12)">1 ano</button>
-  </div>`;
-
-  el.innerHTML = sprintsHtml + quickHtml;
+  const size = Math.min(Math.max(allVisible.length, 3), 10);
+  el.innerHTML = `<select multiple class="ef-sprint-select" id="ef-sprint-sel" size="${size}">${options}</select>
+    <div class="ef-sprint-hint">Ctrl+clique para selecionar múltiplas sprints</div>`;
 }
 
 async function runEficiencia() {
@@ -2503,7 +2600,8 @@ async function runEficiencia() {
   if (!team) { toast('Nenhum time ativo.','warn'); return; }
   const pat = await Store.getActivePat();
   if (!pat) { toast('PAT inválido.','warn'); return; }
-  const checked = [...document.querySelectorAll('#ef-filter-list input:checked')].map(c => c.value);
+  const sel = document.getElementById('ef-sprint-sel');
+  const checked = sel ? Array.from(sel.selectedOptions).map(o => o.value) : [];
   if (!checked.length) { toast('Selecione pelo menos uma sprint.','warn'); return; }
 
   const content = document.getElementById('ef-content');
@@ -3053,6 +3151,9 @@ function applyEfBacklogFilters() {
 
 // Close dropdowns when clicking outside
 document.addEventListener('click', e => {
+  if (!e.target.closest('#db-team-dd')) {
+    document.getElementById('db-team-menu')?.classList.remove('open');
+  }
   if (!e.target.closest('.ef-bl-dd-wrap')) {
     document.querySelectorAll('.ef-bl-dd.open').forEach(d => d.classList.remove('open'));
   }
