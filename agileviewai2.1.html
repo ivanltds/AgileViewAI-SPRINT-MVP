@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AgileViewAI</title>
+<title>AgileViewAI v2.1</title>
 <style>
 :root{--blue:#1d4ed8;--blue-l:#eff6ff;--slate:#1e293b;--gray:#6b7280;--border:#e2e8f0;--bg:#f8fafc;--red:#dc2626;--amber:#d97706;--green:#16a34a;}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:#1e293b;height:100vh;overflow:hidden}
@@ -532,6 +532,82 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .ef-bl-dd-sep{border:none;border-top:1px solid var(--border);margin:4px 0}
 .sp-history-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .sp-history-title{font-size:13px;font-weight:700;color:#1e293b}
+/* ── FLOATING CHAT ─────────────────────────────────────────── */
+.fc-fab{position:fixed;bottom:24px;right:24px;width:52px;height:52px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 18px rgba(29,78,216,.38);cursor:pointer;z-index:1000;transition:transform .15s,box-shadow .15s;user-select:none;border:none}
+.fc-fab:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(29,78,216,.48)}
+.fc-fab-badge{position:absolute;top:1px;right:1px;min-width:16px;height:16px;background:#dc2626;border-radius:8px;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid var(--blue);line-height:1}
+.fc-panel{position:fixed;bottom:84px;right:24px;width:380px;max-height:600px;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.18);display:none;flex-direction:column;z-index:999;overflow:hidden;animation:fcIn .18s ease}
+@keyframes fcIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+.fc-panel.open{display:flex}
+.fc-header{background:var(--slate);color:#fff;padding:11px 14px;display:flex;align-items:center;gap:8px;flex-shrink:0;border-radius:16px 16px 0 0}
+.fc-header-title{font-size:13px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fc-hbtn{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:6px;width:28px;height:28px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0}
+.fc-hbtn:hover{background:rgba(255,255,255,.26)}
+.fc-body{flex:1;display:flex;overflow:hidden;min-height:0;position:relative}
+.fc-sidebar{width:190px;border-right:1px solid var(--border);background:#f8fafc;overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0;transition:width .2s,opacity .2s}
+.fc-sidebar.collapsed{width:0;opacity:0;pointer-events:none}
+.fc-sidebar-hdr{padding:10px 12px 6px;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);flex-shrink:0}
+.fc-conv-new{margin:8px;padding:7px 10px;background:var(--blue);color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:background .15s;border:none;width:calc(100% - 16px)}
+.fc-conv-new:hover{background:#1e40af}
+.fc-conv-item{display:flex;align-items:flex-start;gap:0;padding:8px 10px;cursor:pointer;font-size:12px;color:#374151;border-bottom:1px solid #f1f5f9;transition:background .12s;position:relative}
+.fc-conv-item:hover{background:#eff6ff}
+.fc-conv-item.active{background:#eff6ff;border-left:2px solid var(--blue)}
+.fc-conv-item-body{flex:1;min-width:0}
+.fc-conv-item-title{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#1e293b;font-size:12px}
+.fc-conv-item.active .fc-conv-item-title{color:var(--blue)}
+.fc-conv-item-date{font-size:10px;color:#94a3b8;margin-top:2px}
+.fc-conv-del{background:none;border:none;color:#cbd5e1;font-size:13px;cursor:pointer;padding:0 2px;flex-shrink:0;line-height:1;opacity:0;transition:opacity .15s}
+.fc-conv-item:hover .fc-conv-del{opacity:1}
+.fc-conv-del:hover{color:#dc2626}
+.fc-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.fc-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:0}
+.fc-msg-user{align-self:flex-end;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px 12px 0 12px;padding:9px 13px;font-size:13px;max-width:84%;line-height:1.45;color:#1e293b;word-break:break-word}
+.fc-msg-ai{align-self:flex-start;background:#f8fafc;border:1px solid var(--border);border-radius:12px 12px 12px 0;padding:9px 13px;font-size:13px;max-width:88%;line-height:1.55;color:#1e293b;word-break:break-word}
+.fc-welcome{text-align:center;padding:28px 16px;color:#64748b;font-size:13px;margin:auto 0}
+.fc-welcome-icon{font-size:34px;margin-bottom:8px}
+.fc-input-area{border-top:1px solid var(--border);padding:10px;display:flex;gap:8px;flex-shrink:0;background:#fff;align-items:flex-end}
+.fc-textarea{flex:1;resize:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;line-height:1.4;max-height:90px;overflow-y:auto}
+.fc-textarea:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(29,78,216,.1)}
+.fc-send-btn{width:36px;height:36px;background:var(--blue);color:#fff;border-radius:8px;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;border:none}
+.fc-send-btn:hover{background:#1e40af}
+.fc-send-btn:disabled{background:#94a3b8;cursor:not-allowed}
+@media(max-width:520px){.fc-panel{width:calc(100vw - 16px);right:8px;bottom:68px;max-height:72vh}.fc-fab{bottom:14px;right:14px}.fc-sidebar{width:160px}}
+/* ── INSIGHT FEEDBACK ─ */
+.ins-fb-bar{display:flex;gap:4px;margin-top:8px;justify-content:flex-end;align-items:center}
+.ins-fb-btn{background:none;border:1px solid transparent;border-radius:6px;padding:2px 7px;font-size:14px;cursor:pointer;opacity:.45;transition:opacity .15s,background .15s,border-color .15s;line-height:1.4}
+.ins-fb-btn:hover{opacity:1;background:rgba(0,0,0,.07)}
+.ins-fb-btn.voted-good{opacity:1;background:#dcfce7;border-color:#86efac}
+.ins-fb-btn.voted-bad{opacity:1;background:#fee2e2;border-color:#fca5a5}
+.ins-fb-hint{font-size:10px;color:#94a3b8;flex:1}
+/* ── TRAINING PANEL TABS ─ */
+.train-tabs{display:flex;gap:2px;padding:14px 20px 0;background:#f8fafc;border-bottom:2px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.train-tab{padding:8px 14px;border-radius:8px 8px 0 0;border:1px solid transparent;font-size:13px;font-weight:600;color:#64748b;background:none;cursor:pointer;transition:all .15s;white-space:nowrap;margin-bottom:-2px}
+.train-tab:hover{background:#eff6ff;color:var(--blue)}
+.train-tab.active{background:#fff;border-color:var(--border);border-bottom-color:#fff;color:var(--blue)}
+.train-panel{display:none;padding:20px}
+.train-panel.active{display:block}
+.fb-stat-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.fb-stat{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 18px;flex:1;min-width:100px;text-align:center}
+.fb-stat-num{font-size:24px;font-weight:800;color:#1e293b}
+.fb-stat-lbl{font-size:11px;color:#64748b;margin-top:3px}
+.fb-entry{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:1px solid var(--border);border-radius:8px;background:#fff;margin-bottom:8px}
+.fb-entry-badge{font-size:18px;flex-shrink:0;margin-top:2px}
+.fb-entry-info{flex:1;min-width:0}
+.fb-entry-title{font-size:13px;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fb-entry-body{font-size:12px;color:#475569;margin-top:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical}
+.fb-entry-meta{font-size:10px;color:#94a3b8;margin-top:4px}
+.ul-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.ul-badge.technical{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.ul-badge.didactic{background:#fefce8;color:#92400e;border:1px solid #fde047}
+.ul-badge.neutral{background:#f1f5f9;color:#475569;border:1px solid #cbd5e1}
+.ul-profile-box{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:20px}
+.ul-signals{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.ul-signal{font-size:11px;padding:3px 9px;border-radius:10px;background:#f8fafc;border:1px solid var(--border);color:#475569}
+.ul-override-row{display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap}
+/* ── CONV HISTORY in RAG panel ─ */
+.conv-card{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:#fff;margin-bottom:8px}
+.conv-card-info{flex:1;min-width:0}.conv-card-title{font-weight:600;font-size:13px;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-card-meta{font-size:11px;color:#64748b;margin-top:3px}
 </style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
@@ -565,7 +641,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
   <nav id="sidebar">
     <div class="slogo">
       <div style="font-size:24px">📊</div>
-      <div><div style="font-size:15px;font-weight:700;color:#fff">AgileViewAI</div><div style="font-size:10px;color:#94a3b8">v2.0</div></div>
+      <div><div style="font-size:15px;font-weight:700;color:#fff">AgileViewAI</div><div style="font-size:10px;color:#94a3b8">v2.1</div></div>
     </div>
     <div style="flex:1;padding:8px 0">
       <div class="nav-item active" id="nav-dashboard" data-label="Dashboard" onclick="showPanel('dashboard')"><span class="nav-icon">📊</span>Dashboard</div>
@@ -729,12 +805,36 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
       </div>
       <div class="panel-content"><div id="llm-list"></div></div>
     </section>
-    <!-- RAG -->
-    <section id="panel-rag" class="panel">
-      <div class="panel-header"><h2>🎓 Treinamento do Assistente</h2><p>Ensine a IA sobre o contexto do time.</p>
-        <div class="panel-actions"><button class="btn btn-blue" onclick="openRagModal()">+ Novo treinamento</button></div>
+    <!-- RAG / TRAINING -->
+    <section id="panel-rag" class="panel" style="display:flex;flex-direction:column;overflow:hidden">
+      <div class="panel-header" style="flex-shrink:0">
+        <h2>🎓 Gestão de Treinamento</h2>
+        <p>Contextos, feedbacks e perfil de conhecimento do usuário.</p>
       </div>
-      <div class="panel-content"><div id="rag-list"></div></div>
+      <!-- Tab bar -->
+      <div class="train-tabs">
+        <button class="train-tab active" id="ttab-contextos" onclick="showTrainingTab('contextos')">📚 Contextos</button>
+        <button class="train-tab" id="ttab-feedback"  onclick="showTrainingTab('feedback')">👍 Feedback de Insights</button>
+        <button class="train-tab" id="ttab-conversas" onclick="showTrainingTab('conversas')">💬 Conversas</button>
+      </div>
+      <!-- Tab content wrapper (scrollable) -->
+      <div style="flex:1;overflow-y:auto">
+        <!-- TAB: Contextos -->
+        <div class="train-panel active" id="tt-contextos">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+            <button class="btn btn-blue" onclick="openRagModal()">+ Novo contexto</button>
+          </div>
+          <div id="rag-list"></div>
+        </div>
+        <!-- TAB: Feedback de Insights -->
+        <div class="train-panel" id="tt-feedback">
+          <div id="tt-feedback-content"></div>
+        </div>
+        <!-- TAB: Conversas -->
+        <div class="train-panel" id="tt-conversas">
+          <div id="tt-conversas-content"></div>
+        </div>
+      </div>
     </section>
     <!-- SETTINGS -->
     <section id="panel-settings" class="panel">
@@ -753,6 +853,33 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
       </div>
     </section>
   </main>
+</div>
+
+<!-- FLOATING CHAT -->
+<button class="fc-fab" id="fc-fab" onclick="fcTogglePanel()" title="Assistente IA">
+  <span id="fc-fab-icon">💬</span>
+</button>
+<div class="fc-panel" id="fc-panel">
+  <div class="fc-header">
+    <span style="font-size:14px">🤖</span>
+    <span class="fc-header-title" id="fc-title">AgileViewAI</span>
+    <button class="fc-hbtn" onclick="fcNewConv()" title="Nova conversa">✏️</button>
+    <button class="fc-hbtn" onclick="fcToggleSidebar()" title="Histórico">📋</button>
+    <button class="fc-hbtn" onclick="fcTogglePanel()" title="Fechar">✕</button>
+  </div>
+  <div class="fc-body">
+    <div class="fc-sidebar collapsed" id="fc-sidebar">
+      <div class="fc-sidebar-hdr">Conversas</div>
+      <div id="fc-conv-list"></div>
+    </div>
+    <div class="fc-main">
+      <div class="fc-messages" id="fc-messages"></div>
+      <div class="fc-input-area">
+        <textarea class="fc-textarea" id="fc-textarea" placeholder="Pergunte sobre o time, sprint, qualidade…" rows="2" onkeydown="fcKeyDown(event)"></textarea>
+        <button class="fc-send-btn" id="fc-send-btn" onclick="fcSend()">&#x2191;</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- MODALS -->
@@ -879,7 +1006,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
 <script>
 // ═══════════════════════════════════════════════════════════════════
-//  AgileViewAI v2  —  Standalone SPA
+//  AgileViewAI v2.1  —  Standalone SPA
 // ═══════════════════════════════════════════════════════════════════
 
 // ── APP STATE ───────────────────────────────────────────────────────
@@ -891,6 +1018,8 @@ const APP = {
   qualidadeData: null, qualTipo: 'ambos', qualEstado: 'aberto', qualSeverity: 'todas',
   // Session-mode: in-memory token store (never touches localStorage)
   sessionTokens: { teams:{}, llms:{}, orgs:{} },
+  // Floating chat
+  chatConvId: null, chatMessages: [],
 };
 
 // ── VAULT (AES-256-GCM + PBKDF2) ───────────────────────────────────
@@ -963,6 +1092,12 @@ const Store = {
   saveLlmList(v)     { this._s('avai_llm', v); },
   getRagList()       { return this._g('avai_rag'); },
   saveRagList(v)     { this._s('avai_rag', v); },
+  getChatConvs()          { return this._g('avai_chat_convs', []); },
+  saveChatConvs(v)         { this._s('avai_chat_convs', v); },
+  getInsightFeedback()     { return this._g('avai_insight_fb', []); },
+  saveInsightFeedback(v)   { this._s('avai_insight_fb', v); },
+  getUserProfile()          { return this._g('avai_user_profile', { level:'neutral', override:false, updatedAt:null }); },
+  saveUserProfile(v)        { this._s('avai_user_profile', v); },
   getSprintCache()   { return this._g('avai_sprint_cache', null); },
   saveSprintCache(v) { this._s('avai_sprint_cache', v); },
   getActiveTeamId()  { return localStorage.getItem('avai_active_team') || null; },
@@ -1614,23 +1749,14 @@ ${Object.keys(s.byActivity).length>0?`<div class="act-panel"><div class="act-tog
     <div class="ins-title">🤖 Insights de IA</div>
     <div style="display:flex;gap:8px">
       <button class="btn-sm bp" onclick="loadInsights(false)">↻ Mais insights</button>
-      <button class="btn-sm" onclick="toggleChat()">💬 Pergunta</button>
+      <button class="btn-sm" onclick="fcTogglePanel()">💬 Pergunta</button>
       <button class="btn-sm br" onclick="clearInsights()">✕ Limpar</button>
     </div>
   </div>
   <div class="ins-grid" id="insights-grid"><div class="spinner-wrap"><div class="spinner"></div>Analisando com IA…</div></div>
 </div>`;
 
-    // Chat
-    document.getElementById('db-chat').innerHTML = `
-<div class="chat-section" id="chat-section">
-  <div class="ins-header"><div class="ins-title">💬 Pergunta livre</div><button class="btn-sm" onclick="toggleChat()">✕ Fechar</button></div>
-  <div class="chat-history" id="chat-history"></div>
-  <div class="chat-form">
-    <input class="chat-input" id="chat-input" placeholder="Ex: Quem tem mais risco de não entregar?" onkeydown="if(event.key==='Enter')sendChat()">
-    <button class="btn-sm bp" id="chat-send" onclick="sendChat()">Perguntar</button>
-  </div>
-</div>`;
+    document.getElementById('db-chat').innerHTML = '';
 
     // Members table
     const allM = new Set([...Object.keys(s.byMember), ...Object.keys(capacity)]);
@@ -1675,6 +1801,7 @@ ${Object.keys(s.byActivity).length>0?`<div class="act-panel"><div class="act-tog
     return `<div class="ins-card" style="background:${s.bg};border-color:${s.bd}">
       <div class="ins-head"><span class="ins-icon">${ins.icon||'💡'}</span><span class="ins-title2" style="color:${s.tc}">${e(ins.title)}</span><button class="ins-rm" onclick="rmInsight(this)" title="Remover">✕</button></div>
       <p class="ins-body">${e(ins.body)}</p>
+      <div class="ins-fb-bar"><span class="ins-fb-hint">Feedback de treinamento</span><button class="ins-fb-btn" onclick="giveInsightFeedback(this,'good')" title="Insight útil">👍</button><button class="ins-fb-btn" onclick="giveInsightFeedback(this,'bad')" title="Insight ruim">👎</button></div>
     </div>`;
   },
 
@@ -2099,7 +2226,7 @@ function showPanel(name) {
   if (name === 'dashboard') { renderDashTeamSel(); }
   if (name === 'teams')    { renderTeams(); renderOrgList(); }
   if (name === 'llm')      renderLlmList();
-  if (name === 'rag')      renderRagList();
+  if (name === 'rag')      { showTrainingTab('contextos'); }
 }
 
 function showModule(name) {
@@ -3298,7 +3425,7 @@ async function loadInsights(fromCache) {
   grid.innerHTML = '<div class="spinner-wrap"><div class="spinner"></div>Analisando com IA…</div>';
   try {
     const token = await Store.getActiveLlmToken();
-    const sys   = LLM.buildSystemPrompt();
+    const sys   = LLM.buildSystemPrompt() + buildFeedbackContext() + buildUserLevelContext();
     const usr   = LLM.buildUserPrompt(stats, capacity, stats.byActivity, rag, tasks, backlog);
     const raw   = await LLM.call(llmConf.provider, token, sys, usr);
     const parsed= LLM.parseJson(raw);
@@ -3325,6 +3452,51 @@ function rmInsight(btn) {
   const title = card.querySelector('.ins-title2')?.textContent || '';
   APP.insightCards = APP.insightCards.filter(i => i.title !== title);
   card.remove();
+}
+
+function giveInsightFeedback(btn, rating) {
+  const card  = btn.closest('.ins-card');
+  const title = card.querySelector('.ins-title2')?.textContent || '';
+  const ins   = APP.insightCards.find(i => i.title === title);
+  if (!ins) return;
+  const team   = Store.getActiveTeam();
+  const sprint = APP.sprintData?.activeSprint?.path?.split('\\').pop() || '';
+  const entry  = {
+    id: 'fb_' + Date.now(),
+    rating,
+    insight: { severity: ins.severity, icon: ins.icon, title: ins.title, body: ins.body },
+    teamId:   team?.id   || null,
+    teamName: team?.name || null,
+    sprint,
+    timestamp: Date.now()
+  };
+  const all = Store.getInsightFeedback();
+  const kept = all.filter(f => !(f.insight.title === ins.title && f.teamId === entry.teamId));
+  kept.push(entry);
+  Store.saveInsightFeedback(kept);
+  card.querySelectorAll('.ins-fb-btn').forEach(b => b.classList.remove('voted-good','voted-bad'));
+  btn.classList.add(rating === 'good' ? 'voted-good' : 'voted-bad');
+  toast(rating === 'good' ? '👍 Feedback positivo registrado!' : '👎 Feedback negativo registrado!', 'ok', 2000);
+}
+
+function buildFeedbackContext() {
+  const team = Store.getActiveTeam();
+  const all  = Store.getInsightFeedback()
+    .filter(f => !team || !f.teamId || f.teamId === team.id)
+    .slice(-40);
+  if (!all.length) return '';
+  const good = all.filter(f => f.rating === 'good');
+  const bad  = all.filter(f => f.rating === 'bad');
+  let ctx = '\n\nFEEDBACK DE TREINAMENTO DO USUÁRIO (calibre os próximos insights com base nisto):\n';
+  if (good.length) {
+    ctx += '✅ EXEMPLOS APROVADOS — gere insights semelhantes a estes:\n' +
+      good.map(f => `  [${f.insight.severity}] ${f.insight.title} — ${f.insight.body.substring(0,120)}`).join('\n') + '\n';
+  }
+  if (bad.length) {
+    ctx += '❌ EXEMPLOS REPROVADOS — evite este tipo de insight:\n' +
+      bad.map(f => `  [${f.insight.severity}] ${f.insight.title} — ${f.insight.body.substring(0,120)}`).join('\n') + '\n';
+  }
+  return ctx;
 }
 
 function toggleCh(id) {
@@ -3369,43 +3541,481 @@ function toggleAct(btn) {
   btn.querySelector('span').textContent = content.classList.contains('open') ? '▴' : '▾';
 }
 
-function toggleChat() {
-  const section = document.getElementById('chat-section');
-  if (section) section.classList.toggle('open');
+// ── FLOATING CHAT ───────────────────────────────────────────────
+function fcTogglePanel() {
+  const panel = document.getElementById('fc-panel');
+  const isOpen = panel.style.display === 'flex';
+  if (isOpen) {
+    panel.style.display = 'none';
+  } else {
+    panel.style.display = 'flex';
+    fcInitPanel();
+  }
 }
 
-async function sendChat() {
-  const input = document.getElementById('chat-input');
-  const question = input?.value.trim();
+function fcInitPanel() {
+  const convs = Store.getChatConvs();
+  if (APP.chatConvId && convs.find(c => c.id === APP.chatConvId)) {
+    fcRenderMessages();
+  } else if (convs.length) {
+    fcLoadConv(convs[convs.length - 1].id);
+  } else {
+    fcNewConv();
+  }
+  fcRenderSidebar();
+}
+
+function fcNewConv() {
+  const id   = 'conv_' + Date.now();
+  const conv = { id, title: 'Nova conversa', createdAt: Date.now(), updatedAt: Date.now(), messages: [] };
+  const convs = Store.getChatConvs();
+  convs.push(conv);
+  Store.saveChatConvs(convs);
+  APP.chatConvId  = id;
+  APP.chatMessages = [];
+  document.getElementById('fc-title').textContent = 'Nova conversa';
+  document.getElementById('fc-messages').innerHTML = fcWelcomeHtml();
+  document.getElementById('fc-sidebar')?.classList.add('collapsed');
+  fcRenderSidebar();
+}
+
+function fcLoadConv(id) {
+  const conv = Store.getChatConvs().find(c => c.id === id);
+  if (!conv) return;
+  APP.chatConvId   = id;
+  APP.chatMessages = [...conv.messages];
+  document.getElementById('fc-title').textContent = conv.title;
+  fcRenderMessages();
+  document.getElementById('fc-sidebar')?.classList.add('collapsed');
+  fcRenderSidebar();
+}
+
+function fcRenderMessages() {
+  const msgsEl = document.getElementById('fc-messages');
+  if (!APP.chatMessages.length) { msgsEl.innerHTML = fcWelcomeHtml(); return; }
+  msgsEl.innerHTML = APP.chatMessages.map(m => fcBubbleHtml(m.role, m.content)).join('');
+  requestAnimationFrame(() => { msgsEl.scrollTop = msgsEl.scrollHeight; });
+}
+
+function fcWelcomeHtml() {
+  const team = Store.getActiveTeam();
+  const teamName = team ? esc(team.name) : 'nenhum time ativo';
+  return `<div class="fc-welcome"><div class="fc-welcome-icon">🤖</div><strong>AgileViewAI</strong><p style="margin-top:6px">Time ativo: <strong>${teamName}</strong></p><p style="margin-top:6px;font-size:12px">Pergunte sobre sprint, qualidade, eficiência ou qualquer aspecto do time.</p></div>`;
+}
+
+function fcBubbleHtml(role, content) {
+  const text = esc(content).replace(/\n/g, '<br>');
+  return role === 'user'
+    ? `<div class="fc-msg-user">${text}</div>`
+    : `<div class="fc-msg-ai">${text}</div>`;
+}
+
+function fcRenderSidebar() {
+  const el = document.getElementById('fc-conv-list');
+  if (!el) return;
+  const convs = [...Store.getChatConvs()].reverse();
+  const activeId = APP.chatConvId;
+  const newBtn = `<button class="fc-conv-new" onclick="fcNewConv()">✏️ Nova conversa</button>`;
+  if (!convs.length) {
+    el.innerHTML = newBtn + '<div style="padding:12px;font-size:12px;color:#94a3b8;text-align:center">Nenhuma conversa</div>';
+    return;
+  }
+  el.innerHTML = newBtn + convs.map(c => {
+    const isAct = c.id === activeId;
+    const dt = new Date(c.updatedAt).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+    return `<div class="fc-conv-item${isAct?' active':''}" onclick="fcLoadConv('${c.id}')">`+
+      `<div class="fc-conv-item-body"><div class="fc-conv-item-title">${esc(c.title)}</div><div class="fc-conv-item-date">${dt} · ${Math.floor(c.messages.length/2)} msgs</div></div>`+
+      `<button class="fc-conv-del" onclick="fcDeleteConv('${c.id}',event)" title="Excluir">×</button></div>`;
+  }).join('');
+}
+
+function fcToggleSidebar() {
+  document.getElementById('fc-sidebar')?.classList.toggle('collapsed');
+}
+
+function fcKeyDown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fcSend(); }
+}
+
+function fcDeleteConv(id, event) {
+  event?.stopPropagation();
+  const convs = Store.getChatConvs().filter(c => c.id !== id);
+  Store.saveChatConvs(convs);
+  if (APP.chatConvId === id) {
+    APP.chatConvId   = null;
+    APP.chatMessages = [];
+    if (convs.length) fcLoadConv(convs[convs.length - 1].id);
+    else fcNewConv();
+  }
+  fcRenderSidebar();
+  renderRagConvList();
+}
+
+function fcBuildContext() {
+  const parts = [];
+  const team  = Store.getActiveTeam();
+  // 1. Team context (highest priority)
+  if (team) {
+    parts.push(`[CONTEXTO DO TIME]\nTime: ${team.name}\nProjeto: ${team.proj}\nOrganização: ${team.org}\nAzure Team: ${team.azTeam}`);
+  }
+  // 2. General RAG
+  const ragList = Store.getRagList().filter(r => r.active !== false);
+  const generalRag = ragList.filter(r => r.scope === 'geral');
+  if (generalRag.length) parts.push('[CONTEXTO GERAL]\n' + generalRag.map(r => `## ${r.type}\n${r.spec}`).join('\n\n'));
+  // 3. Data: sprint, efficiency, quality
+  if (APP.sprintData) {
+    const d=APP.sprintData, sp=d.activeSprint, s=d.stats;
+    const label=sp.path.split('\\').pop();
+    const blocked=d.backlog.filter(i=>(i.state||'').toLowerCase().includes('block')||(i.state||'').toLowerCase().includes('bloq')).length;
+    const fixing=d.backlog.filter(i=>(i.state||'').toLowerCase().includes('fix')).length;
+    const memberLines=Object.keys(d.capacity).map(m=>{
+      const c=d.capacity[m],bm=s.byMember?.[m]||{remaining:0};
+      const alloc=c.capRest>0?Math.round((bm.remaining/c.capRest)*100):0;
+      return `  ${m} | ${c.activity} | cap=${c.capRest}h | rem=${bm.remaining}h | alocação=${alloc}%`;
+    }).join('\n');
+    parts.push(`[SPRINT ATIVA: ${label}]\nInício: ${sp.attributes?.startDate?.slice(0,10)||'?'} | Fim: ${sp.attributes?.finishDate?.slice(0,10)||'?'}\nDias úteis restantes: ${s.bizDays} | Dias passados: ${s.daysLeft}\nBacklog: ${d.backlog.length} itens | Concluídos: ${s.donePct}% | Bloqueados: ${blocked} | Fixing: ${fixing}\nCapacidade: ${s.capacityTotal}h | Restante: ${s.totalRem}h | Alocação: ${s.allocPct}%\nPor membro:\n${memberLines}`);
+  }
+  if (APP.eficienciaData) {
+    const ef=APP.eficienciaData;
+    parts.push(`[EFICIÊNCIA]\nSprints analisadas: ${ef.sprints?.length||0}\nVelocity média: ${ef.kpis?.avgVelocity||ef.avgVelocity||0}`);
+  }
+  if (APP.qualidadeData) {
+    const qd=APP.qualidadeData;
+    const total=Array.isArray(qd)?qd.length:0;
+    parts.push(`[QUALIDADE]\nTotal bugs/defeitos: ${total}`);
+  }
+  // 4. Team-specific RAG (agent training)
+  if (team) {
+    const teamRag = ragList.filter(r => r.scope === 'team' && r.teamId === team.id);
+    if (teamRag.length) parts.push('[TREINAMENTO DO TIME]\n' + teamRag.map(r => `## ${r.type}\n${r.spec}`).join('\n\n'));
+  }
+  // 5. Insight feedback examples
+  const fbCtx = buildFeedbackContext();
+  if (fbCtx) parts.push(fbCtx);
+  return parts.join('\n\n');
+}
+
+async function fcSend() {
+  const textarea = document.getElementById('fc-textarea');
+  const question = textarea?.value.trim();
   if (!question) return;
-  const data = APP.sprintData;
-  if (!data) { toast('Sem dados de sprint. Sincronize primeiro.','warn'); return; }
   const llmConf = Store.getActiveLlm();
   if (!llmConf) { toast('Nenhum token LLM configurado.','warn'); return; }
-  input.value = '';
-  const history = document.getElementById('chat-history');
-  const qBubble = `<div style="align-self:flex-end;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px 10px 0 10px;padding:8px 12px;font-size:13px;max-width:80%"><strong>Você:</strong> ${esc(question)}</div>`;
-  history.insertAdjacentHTML('beforeend', qBubble);
-  const waiting = document.createElement('div');
-  waiting.style.cssText='align-self:flex-start;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px 10px 10px 0;padding:8px 12px;font-size:13px';
-  waiting.innerHTML='<div class="spinner-wrap" style="padding:0"><div class="spinner" style="width:14px;height:14px;border-width:2px"></div> Pensando…</div>';
-  history.appendChild(waiting);
-  history.scrollTop=history.scrollHeight;
-  const sendBtn = document.getElementById('chat-send');
-  if (sendBtn) sendBtn.disabled=true;
+  textarea.value = ''; textarea.style.height = 'auto';
+  if (!APP.chatConvId) fcNewConv();
+  const msgsEl = document.getElementById('fc-messages');
+  msgsEl.querySelector('.fc-welcome')?.remove();
+  msgsEl.insertAdjacentHTML('beforeend', fcBubbleHtml('user', question));
+  const thinkEl = document.createElement('div');
+  thinkEl.className = 'fc-msg-ai';
+  thinkEl.innerHTML = '<div class="spinner-wrap" style="padding:0"><div class="spinner" style="width:14px;height:14px;border-width:2px"></div> Pensando…</div>';
+  msgsEl.appendChild(thinkEl);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+  const sendBtn = document.getElementById('fc-send-btn');
+  if (sendBtn) sendBtn.disabled = true;
+  const systemPrompt = `Você é AgileViewAI, um assistente ágil sênior especializado em Scrum e Azure DevOps.\n\nPRIORIDADE DE CONTEXTO (obedecer esta ordem):\n1. Contexto do time ativo\n2. Contexto geral configurado\n3. Dados atuais (sprint / eficiência / qualidade)\n4. Treinamento do agente\n5. Criatividade baseada nos dados\n\n${fcBuildContext()}\n\nResposta em português. Seja objetivo e cite dados reais. Temperatura 0.2 — prefira respostas baseadas nos dados.${buildUserLevelContext()}`;
+  const apiMessages = APP.chatMessages.map(m => ({ role: m.role, content: m.content }));
   try {
     const token = await Store.getActiveLlmToken();
-    const rag   = Store.getActiveRag();
-    const { stats, capacity, tasks, backlog } = data;
-    const sprintCtx = LLM.buildUserPrompt(stats, capacity, stats.byActivity, rag, tasks, backlog);
-    const prompt = `CONTEXTO DA SPRINT:\n${sprintCtx}\n\nPERGUNTA DO USUÁRIO: ${question}\n\nResponda em 3-5 frases, com dados específicos da sprint. Use português. Responda em texto corrido (não JSON).`;
-    const resp = await LLM.callQA(llmConf.provider, token, prompt);
-    waiting.innerHTML = `<strong>IA:</strong> ${esc(resp.replace(/^```[\w]*\n?/,'').replace(/```$/,'').trim()).replace(/\n/g,'<br>')}`;
+    const provider = llmConf.provider;
+    let resp = '';
+    if (provider === 'claude') {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json','x-api-key':token,'anthropic-version':'2023-06-01'},
+        body: JSON.stringify({ model:'claude-sonnet-4-5', max_tokens:1200, temperature:0.2, system:systemPrompt,
+          messages:[...apiMessages,{role:'user',content:question}] })
+      });
+      if (!r.ok) throw new Error(`Claude ${r.status}: ${(await r.text()).substring(0,200)}`);
+      resp = (await r.json()).content?.[0]?.text || '';
+    } else if (provider === 'openai') {
+      const r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body: JSON.stringify({ model:'gpt-4o', max_tokens:1200, temperature:0.2,
+          messages:[{role:'system',content:systemPrompt},...apiMessages,{role:'user',content:question}] })
+      });
+      if (!r.ok) throw new Error(`OpenAI ${r.status}: ${(await r.text()).substring(0,200)}`);
+      resp = (await r.json()).choices?.[0]?.message?.content || '';
+    } else if (provider === 'gemini') {
+      const contents = [...apiMessages.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]})),{role:'user',parts:[{text:question}]}];
+      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${token}`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ systemInstruction:{parts:[{text:systemPrompt}]}, contents, generationConfig:{maxOutputTokens:1200,temperature:0.2} })
+      });
+      if (!r.ok) throw new Error(`Gemini ${r.status}: ${(await r.text()).substring(0,200)}`);
+      resp = (await r.json()).candidates?.[0]?.content?.parts?.[0]?.text || '';
+    } else throw new Error('Provider desconhecido: '+provider);
+    thinkEl.innerHTML = esc(resp.replace(/^```[\w]*\n?/,'').replace(/```$/,'').trim()).replace(/\n/g,'<br>');
+    const userMsg = {role:'user',    content:question, timestamp:Date.now()};
+    const aiMsg   = {role:'assistant',content:resp,     timestamp:Date.now()};
+    APP.chatMessages.push(userMsg, aiMsg);
+    const convs = Store.getChatConvs();
+    const idx   = convs.findIndex(c => c.id === APP.chatConvId);
+    if (idx >= 0) {
+      convs[idx].messages  = APP.chatMessages;
+      convs[idx].updatedAt = Date.now();
+      if (convs[idx].title === 'Nova conversa') {
+        convs[idx].title = question.length > 52 ? question.substring(0,52)+'…' : question;
+        document.getElementById('fc-title').textContent = convs[idx].title;
+      }
+      Store.saveChatConvs(convs);
+    }
+    fcRenderSidebar();
   } catch(e) {
-    waiting.innerHTML = `<em style="color:#dc2626">Erro: ${esc(e.message)}</em>`;
+    thinkEl.innerHTML = `<em style="color:#dc2626">Erro: ${esc(e.message)}</em>`;
   }
-  if (sendBtn) sendBtn.disabled=false;
-  history.scrollTop=history.scrollHeight;
+  if (sendBtn) sendBtn.disabled = false;
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+function renderRagConvList() { renderConversasTab(); }
+
+// \u2500\u2500 TRAINING MANAGEMENT TABS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function showTrainingTab(name) {
+  document.querySelectorAll('.train-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.train-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('ttab-'+name)?.classList.add('active');
+  document.getElementById('tt-'+name)?.classList.add('active');
+  if (name === 'contextos')  renderRagList();
+  if (name === 'feedback')   renderFeedbackTab();
+  if (name === 'conversas')  renderConversasTab();
+}
+
+// \u2500 FEEDBACK TAB \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function renderFeedbackTab() {
+  const el = document.getElementById('tt-feedback-content');
+  if (!el) return;
+  const all  = Store.getInsightFeedback();
+  const good = all.filter(f => f.rating === 'good');
+  const bad  = all.filter(f => f.rating === 'bad');
+  if (!all.length) {
+    el.innerHTML = `<div style="text-align:center;padding:40px 0;color:#94a3b8;font-size:13px">
+      <div style="font-size:36px;margin-bottom:10px">\ud83d\udcca</div>
+      Nenhum feedback ainda.<br>Avalie os insights no dashboard com \ud83d\udc4d / \ud83d\udc4e.</div>`;
+    return;
+  }
+  const team = Store.getActiveTeam();
+  const sprint = APP.sprintData?.activeSprint?.path?.split('\\').pop() || '\u2014';
+  el.innerHTML = `
+  <div class="fb-stat-row">
+    <div class="fb-stat"><div class="fb-stat-num" style="color:#16a34a">${good.length}</div><div class="fb-stat-lbl">\ud83d\udc4d Aprovados</div></div>
+    <div class="fb-stat"><div class="fb-stat-num" style="color:#dc2626">${bad.length}</div><div class="fb-stat-lbl">\ud83d\udc4e Reprovados</div></div>
+    <div class="fb-stat"><div class="fb-stat-num">${all.length}</div><div class="fb-stat-lbl">Total feedbacks</div></div>
+  </div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px">
+    <button class="btn" style="font-size:12px" onclick="exportFeedback()">\u2b07 Exportar</button>
+    <button class="btn-red" style="font-size:12px;padding:4px 12px;border-radius:6px" onclick="clearFeedback()">Limpar tudo</button>
+  </div>
+  <div>` + [...all].reverse().map(f => {
+    const dt  = new Date(f.timestamp).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const isG = f.rating === 'good';
+    const sevColor = {critical:'#dc2626',warning:'#d97706',info:'#1d4ed8',ok:'#16a34a'}[f.insight.severity] || '#475569';
+    return `<div class="fb-entry">
+      <div class="fb-entry-badge">${isG ? '\ud83d\udc4d' : '\ud83d\udc4e'}</div>
+      <div class="fb-entry-info">
+        <div class="fb-entry-title">${esc(f.insight.title)}</div>
+        <div class="fb-entry-body">${esc(f.insight.body)}</div>
+        <div class="fb-entry-meta">
+          <span style="color:${sevColor};font-weight:600">${f.insight.severity}</span>
+          &nbsp;\u00b7&nbsp;${f.teamName||'\u2014'}&nbsp;\u00b7&nbsp;Sprint: ${esc(f.sprint||'\u2014')}&nbsp;\u00b7&nbsp;${dt}
+        </div>
+      </div>
+      <button class="ins-rm" style="margin-top:2px" onclick="deleteFeedback('${f.id}')" title="Remover">\u2715</button>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+function deleteFeedback(id) {
+  Store.saveInsightFeedback(Store.getInsightFeedback().filter(f => f.id !== id));
+  renderFeedbackTab();
+}
+
+function clearFeedback() {
+  if (!confirm('Apagar todos os feedbacks de treinamento?')) return;
+  Store.saveInsightFeedback([]);
+  renderFeedbackTab();
+  toast('Feedbacks apagados.','warn');
+}
+
+function exportFeedback() {
+  const all = Store.getInsightFeedback();
+  if (!all.length) { toast('Nenhum feedback para exportar.','warn'); return; }
+  const blob = new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),feedback:all},null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'agileviewai_feedback_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('Feedback exportado!','ok');
+}
+
+// \u2500 CONVERSAS TAB \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+const TECH_TERMS = [
+  'velocity','throughput','lead time','cycle time','burndown','burnup','wip','story point',
+  'story points','capacidade','eficiência','throughput','sprint backlog','definition of done',
+  'dod','retrospectiva','refinamento','épico','critérios de aceitação','acceptance criteria',
+  'azure devops','pipeline','deployment','devops','kanban','scrum','impediment','impedimento',
+  'fibonacci','planning poker','sprint review','daily','standup','release','roadmap',
+  'throughput','monte carlo','percentil','p85','p95','lead time','cycle time'
+];
+const DIDACTIC_SIGNALS = [
+  'o que é','o que são','o que significa','o que quer dizer','como funciona','como se calcula',
+  'pode explicar','me explica','não entendo','o que é isso','o que isso significa',
+  'para que serve','o que representa','como interpretar','o que quer dizer','por que',
+  'o que acontece','me diz','o que preciso','como faço','como posso'
+];
+
+function analyzeUserLevel() {
+  const profile = Store.getUserProfile();
+  if (profile.override) return profile;
+  const convs = Store.getChatConvs();
+  const allUserMsgs = convs.flatMap(c => c.messages.filter(m => m.role === 'user').map(m => m.content.toLowerCase()));
+  if (allUserMsgs.length < 3) return { level:'neutral', override:false, techScore:0, didScore:0, msgCount:allUserMsgs.length };
+  let techScore = 0, didScore = 0;
+  for (const msg of allUserMsgs) {
+    for (const t of TECH_TERMS)       if (msg.includes(t)) techScore++;
+    for (const d of DIDACTIC_SIGNALS) if (msg.includes(d)) didScore++;
+  }
+  const total = techScore + didScore || 1;
+  const techPct = techScore / total;
+  let level = 'neutral';
+  if (techPct >= 0.55 && techScore >= 3)  level = 'technical';
+  else if (techPct <= 0.35 && didScore >= 2) level = 'didactic';
+  return { level, override:false, techScore, didScore, msgCount:allUserMsgs.length, updatedAt:Date.now() };
+}
+
+function setUserLevelOverride(level) {
+  Store.saveUserProfile({ level, override:true, updatedAt:Date.now() });
+  renderConversasTab();
+  toast(`Perfil definido como "${levelLabel(level)}" manualmente.`,'ok');
+}
+
+function resetUserLevelOverride() {
+  const inferred = analyzeUserLevel();
+  Store.saveUserProfile({ level:inferred.level, override:false, updatedAt:Date.now() });
+  renderConversasTab();
+  toast('Perfil redefinido com base nas conversas.','ok');
+}
+
+function levelLabel(l) {
+  return l === 'technical' ? 'T\u00e9cnico' : l === 'didactic' ? 'Did\u00e1tico' : 'Neutro';
+}
+function levelIcon(l) {
+  return l === 'technical' ? '\ud83d\udd2c' : l === 'didactic' ? '\ud83d\udcda' : '\u2696\ufe0f';
+}
+
+function renderConversasTab() {
+  const el = document.getElementById('tt-conversas-content');
+  if (!el) return;
+  const inferred = analyzeUserLevel();
+  const stored   = Store.getUserProfile();
+  const active   = stored.override ? stored : inferred;
+  const convs    = [...Store.getChatConvs()].reverse();
+  const levelBadgeClass = active.level;
+  const LABELS = { technical:'T\u00e9cnico', didactic:'Did\u00e1tico', neutral:'Neutro' };
+  const DESCS  = {
+    technical:'O assistente usar\u00e1 linguagem t\u00e9cnica com termos \u00e1geis e m\u00e9tricas precisas.',
+    didactic: 'O assistente explicar\u00e1 conceitos de forma did\u00e1tica, com exemplos e analogias.',
+    neutral:  'Ainda sem massa suficiente para inferir um perfil. O assistente usar\u00e1 linguagem equilibrada.'
+  };
+  const tagLine = inferred.msgCount < 3
+    ? `<span class="ul-signal">\u26a0\ufe0f Menos de 3 perguntas analisadas</span>`
+    : `<span class="ul-signal">\ud83d\udcac ${inferred.msgCount} mensagens analisadas</span>`+
+      `<span class="ul-signal">\ud83d\udd2c Termos t\u00e9cnicos: ${inferred.techScore||0}</span>`+
+      `<span class="ul-signal">\ud83d\udcda Sinais did\u00e1ticos: ${inferred.didScore||0}</span>`;
+  el.innerHTML = `
+  <div class="ul-profile-box">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">PERFIL INFERIDO</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="ul-badge ${levelBadgeClass}">${levelIcon(active.level)} ${LABELS[active.level]}</span>
+          ${stored.override ? '<span style="font-size:11px;color:#94a3b8;font-style:italic">definido manualmente</span>' : '<span style="font-size:11px;color:#94a3b8;font-style:italic">inferido automaticamente</span>'}
+        </div>
+        <p style="font-size:12px;color:#475569;margin-top:8px">${DESCS[active.level]}</p>
+      </div>
+    </div>
+    <div class="ul-signals">${tagLine}</div>
+    <div class="ul-override-row">
+      <span style="font-size:11px;color:#64748b;font-weight:600">Definir manualmente:</span>
+      <button class="btn-sm${active.level==='technical'?' bp':''}" onclick="setUserLevelOverride('technical')">\ud83d\udd2c T\u00e9cnico</button>
+      <button class="btn-sm${active.level==='neutral'?' bp':''}" onclick="setUserLevelOverride('neutral')">\u2696\ufe0f Neutro</button>
+      <button class="btn-sm${active.level==='didactic'?' bp':''}" onclick="setUserLevelOverride('didactic')">\ud83d\udcda Did\u00e1tico</button>
+      ${stored.override ? '<button class="btn-sm" onclick="resetUserLevelOverride()" style="margin-left:auto">\ud83d\udd04 Reinfrir</button>' : ''}
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:13px;font-weight:700;color:#1e293b">\ud83d\udcac Conversas (${convs.length})</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" style="font-size:12px" onclick="exportConversations()">\u2b07 Exportar</button>
+    </div>
+  </div>` +
+  (convs.length ? convs.map(c => {
+    const dt  = new Date(c.createdAt).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const cnt = Math.floor(c.messages.length/2);
+    const userMsgs = c.messages.filter(m => m.role === 'user');
+    const techHits = userMsgs.reduce((n,m)=>n+TECH_TERMS.filter(t=>m.content.toLowerCase().includes(t)).length,0);
+    const didHits  = userMsgs.reduce((n,m)=>n+DIDACTIC_SIGNALS.filter(d=>m.content.toLowerCase().includes(d)).length,0);
+    const tag = techHits > didHits ? '<span class="ul-signal" style="background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8">\ud83d\udd2c t\u00e9cnico</span>'
+              : didHits > techHits ? '<span class="ul-signal" style="background:#fefce8;border-color:#fde047;color:#92400e">\ud83d\udcda did\u00e1tico</span>'
+              : '';
+    return `<div class="conv-card">
+      <div style="font-size:22px;margin-top:2px">\ud83d\udcac</div>
+      <div class="conv-card-info">
+        <div class="conv-card-title">${esc(c.title)}</div>
+        <div class="conv-card-meta">${dt} \u00b7 ${cnt} pergunta${cnt!==1?'s':''} ${tag}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;margin-top:2px">
+        <button class="btn-sm" style="font-size:11px" onclick="fcOpenConvFromRag('${c.id}')">Abrir</button>
+        <button class="btn-sm br" style="font-size:11px" onclick="fcDeleteConvFromRag('${c.id}',event)">Excluir</button>
+      </div>
+    </div>`;
+  }).join('') : '<div style="text-align:center;padding:32px 0;color:#94a3b8;font-size:13px">Nenhuma conversa ainda.<br>Use o bot\u00e3o \ud83d\udcac para come\u00e7ar.</div>');
+}
+
+function fcDeleteConvFromRag(id, event) {
+  event?.stopPropagation();
+  const convs = Store.getChatConvs().filter(c => c.id !== id);
+  Store.saveChatConvs(convs);
+  if (APP.chatConvId === id) {
+    APP.chatConvId = null; APP.chatMessages = [];
+    if (convs.length) fcLoadConv(convs[convs.length-1].id);
+  }
+  fcRenderSidebar();
+  renderConversasTab();
+  const inferred = analyzeUserLevel();
+  if (!Store.getUserProfile().override) Store.saveUserProfile({ level:inferred.level, override:false, updatedAt:Date.now() });
+}
+
+// \u2500 USER LEVEL CONTEXT for AI prompts \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function buildUserLevelContext() {
+  const inferred = analyzeUserLevel();
+  const stored   = Store.getUserProfile();
+  const profile  = stored.override ? stored : inferred;
+  if (profile.level === 'technical') {
+    return '\n\nPERFIL DO USUÁRIO: Técnico. Use terminologia ágil precisa (velocity, throughput, lead time, cycle time, etc.), cite números e métricas sem simplificar. Pode usar jargão de Scrum/Kanban/DevOps livremente.';
+  }
+  if (profile.level === 'didactic') {
+    return '\n\nPERFIL DO USUÁRIO: Iniciante/Didático. Explique cada conceito ao mencioná-lo, use analogias e exemplos simples, evite jargão sem explicação. Seja encorajador e passo a passo.';
+  }
+  return '\n\nPERFIL DO USUÁRIO: Neutro. Use linguagem equilibrada: mencione termos técnicos com breve explicação quando necessário.';
+}
+
+function fcOpenConvFromRag(id) {
+  showPanel('dashboard');
+  const panel = document.getElementById('fc-panel');
+  panel.style.display = 'flex';
+  fcLoadConv(id);
+}
+
+function exportConversations() {
+  const convs = Store.getChatConvs();
+  if (!convs.length) { toast('Nenhuma conversa para exportar.','warn'); return; }
+  const payload = { version:1, exportedAt:new Date().toISOString(), conversations:convs };
+  const blob = new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'agileviewai_conversas_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('Conversas exportadas!','ok');
 }
 
 // ── SETTINGS ──────────────────────────────────────────────────────────
@@ -3473,11 +4083,14 @@ function clearAll() {
 
 function exportConfig() {
   const payload = {
-    version: 2,
+    version: 3,
     exportedAt: new Date().toISOString(),
-    teams:  Store.getTeams().map(t=>({...t, patEnc:'(removido por segurança)'})),
-    llm:    Store.getLlmList().map(l=>({...l, tokenEnc:'(removido por segurança)'})),
-    rag:    Store.getRagList()
+    teams:         Store.getTeams().map(t=>({...t, patEnc:'(removido por segurança)'})),
+    llm:           Store.getLlmList().map(l=>({...l, tokenEnc:'(removido por segurança)'})),
+    rag:           Store.getRagList(),
+    conversations: Store.getChatConvs(),
+    insightFeedback: Store.getInsightFeedback(),
+    userProfile:   Store.getUserProfile()
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
   const a    = document.createElement('a');
@@ -3495,8 +4108,12 @@ function handleImport(e) {
   reader.onload = ev => {
     try {
       const d = JSON.parse(ev.target.result);
-      if (d.teams) { Store.saveTeams(d.teams.map(t=>({...t,patEnc:''}))); renderTeams(); }
-      if (d.rag)   { Store.saveRagList(d.rag); renderRagList(); }
+      if (d.teams)          { Store.saveTeams(d.teams.map(t=>({...t,patEnc:''}))); renderTeams(); }
+      if (d.llm)            { Store.saveLlmList(d.llm.map(l=>({...l,tokenEnc:''}))); renderLlmList(); }
+      if (d.rag)            { Store.saveRagList(d.rag); renderRagList(); }
+      if (d.conversations)  { Store.saveChatConvs(d.conversations); }
+      if (d.insightFeedback){ Store.saveInsightFeedback(d.insightFeedback); }
+      if (d.userProfile)    { Store.saveUserProfile(d.userProfile); }
       toast('Configurações importadas! Insira os tokens novamente.','ok');
     } catch { toast('Arquivo JSON inválido.','err'); }
   };
