@@ -22,7 +22,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .nav-item:hover{background:rgba(255,255,255,.08);color:#fff}.nav-item.active{background:rgba(29,78,216,.3);color:#fff}
 .nav-icon{font-size:16px;width:20px;text-align:center}
 #main-content{flex:1;overflow-y:auto;height:100vh}
-.panel{display:none;min-height:100vh}.panel.active{display:block}
+.panel{display:none;min-height:100vh}.panel.active{display:block}#panel-rag.active{display:flex;flex-direction:column;overflow:hidden;min-height:100vh}
 .db-topbar{background:var(--slate);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
 .sprint-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;display:inline-block;margin-right:4px}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
@@ -248,7 +248,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
   .slogo > div:first-child{font-size:22px}
   #sidebar > div[style*="flex:1"]{padding:6px 0}
   .nav-item{padding:11px 0;justify-content:center;gap:0;position:relative;overflow:visible}
-  .nav-item span:not(.nav-icon){display:none} /* esconde labels de texto */
+  .nav-label{display:none} /* esconde labels de texto */
   .nav-icon{font-size:18px;width:auto;margin:0}
   /* Tooltip ao hover */
   .nav-item::after{
@@ -305,8 +305,9 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 
   /* Filters */
   .ef-filter-bar{padding:12px 16px;gap:10px}
-  .qual-header{padding:10px 16px;gap:10px}
-  .qual-select{min-width:110px;font-size:12px}
+  .qual-header{padding:10px 16px;gap:10px;flex-wrap:wrap}
+  .qual-filter-group{flex:1;min-width:110px}
+  .qual-select{width:100%;min-width:0;font-size:12px}
   .sp-filter-bar{padding:8px 16px}
   .insights-section,.members-section,.chat-section{padding:16px}
 }
@@ -468,14 +469,17 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .ef-toggle{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden}
 .ef-toggle-btn{padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:#64748b;border:none}
 .ef-toggle-btn.active{background:var(--blue);color:#fff}
+.ef-pct-card{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 16px;margin-top:14px}
+.ef-pct-answer{font-size:14px;font-weight:600;color:#1e3a8a;line-height:1.4}
+.ef-pct-slider{flex:1;accent-color:#1d4ed8;cursor:pointer;min-width:120px}
 .ef-quick-btns{display:flex;align-items:center;gap:6px;padding-top:8px;border-top:1px solid var(--border);margin-top:8px;flex-basis:100%}
 .ef-qbtn{background:#f1f5f9;border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:600;color:#475569;padding:3px 10px;cursor:pointer}
 .ef-qbtn:hover{background:var(--blue-l);border-color:var(--blue);color:var(--blue)}
 /* ── QUALIDADE ──────────────────────────────────────────────── */
-.qual-header{background:#fff;border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
-.qual-filter-group{display:flex;flex-direction:column;gap:4px}
+.qual-header{background:#fff;border-bottom:1px solid var(--border);padding:12px 24px 16px;display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.qual-filter-group{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px}
 .qual-filter-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
-.qual-select{padding:7px 28px 7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:500;color:#1e293b;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 8px center;-webkit-appearance:none;appearance:none;cursor:pointer;outline:none;min-width:130px}
+.qual-select{padding:7px 28px 7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:500;color:#1e293b;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 8px center;-webkit-appearance:none;appearance:none;cursor:pointer;outline:none;width:100%;min-width:0}
 .qual-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.1)}
 /* KPI row: scroll horizontal — nunca vai quebrar layout */
 .qual-kpi-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:16px 24px 0;scrollbar-width:none}
@@ -571,7 +575,8 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .fc-send-btn{width:36px;height:36px;background:var(--blue);color:#fff;border-radius:8px;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;border:none}
 .fc-send-btn:hover{background:#1e40af}
 .fc-send-btn:disabled{background:#94a3b8;cursor:not-allowed}
-@media(max-width:520px){.fc-panel{width:calc(100vw - 16px);right:8px;bottom:68px;max-height:72vh}.fc-fab{bottom:14px;right:14px}.fc-sidebar{width:160px}}
+@media(max-width:768px){.fc-fab{bottom:calc(56px + 12px);right:16px}.fc-panel{bottom:calc(56px + 62px)}}
+@media(max-width:520px){.fc-panel{width:calc(100vw - 16px);right:8px;max-height:62vh}.fc-fab{right:14px}.fc-sidebar{width:160px}}
 /* ── INSIGHT FEEDBACK ─ */
 .ins-fb-bar{display:flex;gap:4px;margin-top:8px;justify-content:flex-end;align-items:center}
 .ins-fb-btn{background:none;border:1px solid transparent;border-radius:6px;padding:2px 7px;font-size:14px;cursor:pointer;opacity:.45;transition:opacity .15s,background .15s,border-color .15s;line-height:1.4}
@@ -644,11 +649,11 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
       <div><div style="font-size:15px;font-weight:700;color:#fff">AgileViewAI</div><div style="font-size:10px;color:#94a3b8">v2.1</div></div>
     </div>
     <div style="flex:1;padding:8px 0">
-      <div class="nav-item active" id="nav-dashboard" data-label="Dashboard" onclick="showPanel('dashboard')"><span class="nav-icon">📊</span>Dashboard</div>
-      <div class="nav-item" id="nav-teams" data-label="Times" onclick="showPanel('teams')"><span class="nav-icon">👥</span>Times</div>
-      <div class="nav-item" id="nav-llm" data-label="IA &amp; Tokens" onclick="showPanel('llm')"><span class="nav-icon">🤖</span>IA &amp; Tokens</div>
-      <div class="nav-item" id="nav-rag" data-label="Treinamento" onclick="showPanel('rag')"><span class="nav-icon">🎓</span>Treinamento</div>
-      <div class="nav-item" id="nav-settings" data-label="Configurações" onclick="showPanel('settings')"><span class="nav-icon">⚙️</span>Configurações</div>
+      <div class="nav-item active" id="nav-dashboard" data-label="Dashboard" onclick="showPanel('dashboard')"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></div>
+      <div class="nav-item" id="nav-teams" data-label="Times" onclick="showPanel('teams')"><span class="nav-icon">👥</span><span class="nav-label">Times</span></div>
+      <div class="nav-item" id="nav-llm" data-label="IA &amp; Tokens" onclick="showPanel('llm')"><span class="nav-icon">🤖</span><span class="nav-label">IA &amp; Tokens</span></div>
+      <div class="nav-item" id="nav-rag" data-label="Treinamento" onclick="showPanel('rag')"><span class="nav-icon">🎓</span><span class="nav-label">Treinamento</span></div>
+      <div class="nav-item" id="nav-settings" data-label="Configurações" onclick="showPanel('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">Configurações</span></div>
     </div>
   </nav>
   <main id="main-content">
@@ -750,9 +755,9 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
           <div class="qual-filter-group">
             <label class="qual-filter-label">Estado</label>
             <select class="qual-select" id="qs-estado" onchange="switchQualEstado(this.value)">
-              <option value="aberto" selected>Em aberto</option>
+              <option value="aberto">Em aberto</option>
               <option value="fechado">Fechados</option>
-              <option value="todos">Todos</option>
+              <option value="todos" selected>Todos</option>
             </select>
           </div>
           <div class="qual-filter-group">
@@ -806,7 +811,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
       <div class="panel-content"><div id="llm-list"></div></div>
     </section>
     <!-- RAG / TRAINING -->
-    <section id="panel-rag" class="panel" style="display:flex;flex-direction:column;overflow:hidden">
+    <section id="panel-rag" class="panel">
       <div class="panel-header" style="flex-shrink:0">
         <h2>🎓 Gestão de Treinamento</h2>
         <p>Contextos, feedbacks e perfil de conhecimento do usuário.</p>
@@ -1244,7 +1249,7 @@ const QualidadeAPI = {
   },
   async getItems(org, proj, ids, pat) {
     if (!ids.length) return [];
-    const fields = encodeURIComponent('System.Id,System.Title,System.WorkItemType,System.State,Microsoft.VSTS.Common.Severity,Microsoft.VSTS.Common.Priority,System.CreatedDate,Microsoft.VSTS.Common.ClosedDate,Microsoft.VSTS.Scheduling.RemainingWork,Microsoft.VSTS.Scheduling.CompletedWork');
+    const fields = encodeURIComponent('System.Id,System.Title,System.WorkItemType,System.State,Microsoft.VSTS.Common.Severity,Microsoft.VSTS.Common.Priority,System.CreatedDate,Microsoft.VSTS.Common.ClosedDate,Microsoft.VSTS.Scheduling.RemainingWork,Microsoft.VSTS.Scheduling.CompletedWork,Microsoft.VSTS.Scheduling.OriginalEstimate');
     const all = [];
     for (let i=0; i<ids.length; i+=200) {
       const chunk = ids.slice(i,i+200).join(',');
@@ -1306,7 +1311,7 @@ const EficienciaProcessor = {
     // Board column time via revisions (sample: up to 40 done items)
     const _isDoneCol = c => { const cl=(c||'').toLowerCase(); return cl==='done'||cl==='closed'||cl==='resolved'||cl==='concluído'||cl==='completed'||cl==='finalizado'||cl==='fechado'; };
     const colTimes = {};
-    for (const item of done.slice(0,40)) {
+    for (const item of done) {
       const revs = await EficienciaAPI.getRevisions(org,proj,item.id,pat);
       for (let i=0; i<revs.length-1; i++) {
         const col = revs[i].fields?.['System.BoardColumn'] || revs[i].fields?.['System.State'] || '';
@@ -2198,6 +2203,7 @@ function launchApp() {
     document.getElementById('db-no-data').style.display = '';
   }
   if (Store.getActiveTeamId()) runSync();
+  setTimeout(renderDashTeamSel, 0);
   // Update vault button label on overlay
   if (Vault.isSetup()) {
     document.getElementById('vbtn').textContent = 'Entrar';
@@ -2285,6 +2291,7 @@ function renderDashTeamSel() {
 }
 
 function toggleDashTeamDd() {
+  renderDashTeamSel();
   document.getElementById('db-team-menu')?.classList.toggle('open');
 }
 
@@ -2306,9 +2313,11 @@ function renderTeams() {
   const activeId = Store.getActiveTeamId();
   const el = document.getElementById('teams-list');
   if (!teams.length) {
-    el.innerHTML = '<div class="empty-st"><div style="font-size:36px;margin-bottom:10px">👥</div><h3>Nenhum time cadastrado</h3><p>Clique em "Novo time" para começar.</p></div>';
+    if (el) el.innerHTML = '<div class="empty-st"><div style="font-size:36px;margin-bottom:10px">👥</div><h3>Nenhum time cadastrado</h3><p>Clique em "Novo time" para começar.</p></div>';
+    renderDashTeamSel();
     return;
   }
+  if (!el) { renderDashTeamSel(); return; }
   el.innerHTML = teams.map(t => {
     const ini = t.name.substring(0,2).toUpperCase();
     const isAct = t.id === activeId;
@@ -2326,6 +2335,7 @@ function renderTeams() {
       </div>
     </div>`;
   }).join('');
+  renderDashTeamSel();
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -2797,11 +2807,10 @@ function renderEficienciaCharts(r) {
     <div class="ef-chart-card ef-chart-card-full">
       <div class="ef-chart-hdr">
         <span class="ef-chart-title">⏳ Tempo médio em cada coluna do board</span>
-        <span style="font-size:11px;color:#94a3b8">Revisões · amostra ≤ 40 itens</span>
       </div>
-      <div style="position:relative;height:180px"><canvas id="ef-chart-col"></canvas></div>
+      <div style="position:relative;height:200px"><canvas id="ef-chart-col"></canvas></div>
     </div>
-    <div class="ef-chart-card">
+    <div class="ef-chart-card ef-chart-card-full">
       <div class="ef-chart-hdr">
         <span class="ef-chart-title">📈 Vazão / Velocity por Sprint</span>
         <div class="ef-toggle">
@@ -2811,20 +2820,33 @@ function renderEficienciaCharts(r) {
       </div>
       <div style="position:relative;height:220px"><canvas id="ef-chart-flow"></canvas></div>
     </div>
-    <div class="ef-chart-card">
+    <div class="ef-chart-card ef-chart-card-full">
       <div class="ef-chart-hdr">
         <span class="ef-chart-title">📊 Tempo de entrega por Sprint</span>
-        <div class="ef-toggle">
-          <button class="ef-toggle-btn active" id="ef-t-lead"  onclick="switchEfChart('time','lead')">Lead Time</button>
-          <button class="ef-toggle-btn"        id="ef-t-cycle" onclick="switchEfChart('time','cycle')">Cycle Time</button>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <div class="ef-toggle">
+            <button class="ef-toggle-btn active" id="ef-t-lead"  onclick="switchEfChart('time','lead')">Lead Time</button>
+            <button class="ef-toggle-btn"        id="ef-t-cycle" onclick="switchEfChart('time','cycle')">Cycle Time</button>
+          </div>
+          <div class="ef-toggle">
+            <button class="ef-toggle-btn active" id="ef-t-avg"      onclick="switchEfTimeView('avg')">Tempo médio</button>
+            <button class="ef-toggle-btn"        id="ef-t-percentil" onclick="switchEfTimeView('percentil')">Percentis</button>
+          </div>
         </div>
       </div>
       <div style="position:relative;height:220px"><canvas id="ef-chart-time"></canvas></div>
+      <div class="ef-pct-card" id="ef-pct-card" style="display:none">
+        <div class="ef-pct-answer" id="ef-pct-answer">—</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+          <input type="range" class="ef-pct-slider" id="ef-pct-slider" min="50" max="99" value="85" oninput="efUpdatePctCard(this.value)">
+          <span id="ef-pct-label" style="font-size:13px;font-weight:700;color:#1d4ed8;min-width:36px">85%</span>
+        </div>
+      </div>
     </div>`;
 
-  APP.efChartMode = { flow:'throughput', time:'lead' };
+  APP.efChartMode = { flow:'throughput', time:'lead', timeView:'avg' };
 
-  // Board column time
+  // Board column time — vertical bars
   const colKeys = Object.keys(r.colTimes).sort((a,b) =>
     (r.colTimes[b].total/r.colTimes[b].count) - (r.colTimes[a].total/r.colTimes[a].count));
   _efDestroyChart('ef-chart-col');
@@ -2832,10 +2854,10 @@ function renderEficienciaCharts(r) {
     EF_CHARTS['ef-chart-col'] = new Chart(document.getElementById('ef-chart-col'), {
       type: 'bar',
       data: { labels: colKeys, datasets: [{ label:'Dias médios', data: colKeys.map(k=>+(r.colTimes[k].total/r.colTimes[k].count).toFixed(1)), backgroundColor:'#3b82f6', borderRadius:4 }] },
-      options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{ beginAtZero:true, title:{display:true,text:'dias'} } } }
+      options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true, title:{display:true,text:'dias'} }, x:{ ticks:{maxRotation:35,minRotation:0} } } }
     });
   } else {
-    document.getElementById('ef-chart-col').insertAdjacentHTML('afterend','<div style="color:#94a3b8;font-size:12px;text-align:center;padding:10px">Campo BoardColumn não disponível nas revisões — exibindo por State.</div>');
+    document.getElementById('ef-chart-col').insertAdjacentHTML('afterend','<div style="color:#94a3b8;font-size:12px;text-align:center;padding:10px">Campo BoardColumn não disponível nas revisões.</div>');
   }
 
   _efDrawFlowChart(r);
@@ -2861,12 +2883,32 @@ function _efDrawTimeChart(r) {
   const ctx = document.getElementById('ef-chart-time');
   if (!ctx) return;
   const mode = APP.efChartMode.time;
-  const avg  = arr => arr.length ? +(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1) : null;
+  const view = APP.efChartMode.timeView || 'avg';
+  const getTimes = k => mode === 'lead' ? r.byIter[k].leadTimes : r.byIter[k].cycleTimes;
+  const _avg = arr => arr.length ? +(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1) : null;
+  const _pct = (arr, p) => { const s=[...arr].sort((a,b)=>a-b); return s.length ? +(s[Math.min(Math.ceil(p/100*s.length)-1,s.length-1)]).toFixed(1) : null; };
+  let datasets;
+  if (view === 'avg') {
+    const col = mode==='lead' ? '#f59e0b' : '#10b981';
+    const bg  = mode==='lead' ? 'rgba(245,158,11,.1)' : 'rgba(16,185,129,.1)';
+    datasets = [{ label: mode==='lead'?'Lead Time (dias)':'Cycle Time (dias)', data: r.iterLabels.map(k => _avg(getTimes(k))), borderColor:col, backgroundColor:bg, tension:0.3, fill:true, pointRadius:4, spanGaps:true }];
+  } else {
+    datasets = [
+      { label:'P50', data: r.iterLabels.map(k => _pct(getTimes(k),50)), borderColor:'#10b981', backgroundColor:'transparent', tension:0.3, pointRadius:4, spanGaps:true, borderDash:[] },
+      { label:'P80', data: r.iterLabels.map(k => _pct(getTimes(k),80)), borderColor:'#f59e0b', backgroundColor:'transparent', tension:0.3, pointRadius:4, spanGaps:true, borderDash:[5,3] },
+      { label:'P95', data: r.iterLabels.map(k => _pct(getTimes(k),95)), borderColor:'#ef4444', backgroundColor:'transparent', tension:0.3, pointRadius:4, spanGaps:true, borderDash:[2,3] },
+    ];
+  }
   EF_CHARTS['ef-chart-time'] = new Chart(ctx, {
     type: 'line',
-    data: { labels: r.iterLabels, datasets: [{ label: mode==='lead'?'Lead Time (dias)':'Cycle Time (dias)', data: r.iterLabels.map(k => avg(mode==='lead'?r.byIter[k].leadTimes:r.byIter[k].cycleTimes)), borderColor: mode==='lead'?'#f59e0b':'#10b981', backgroundColor: mode==='lead'?'rgba(245,158,11,.1)':'rgba(16,185,129,.1)', tension:0.3, fill:true, pointRadius:4, spanGaps:true }] },
-    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true, title:{display:true,text:'dias'} } } }
+    data: { labels: r.iterLabels, datasets },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display: view==='percentil' } }, scales:{ y:{ beginAtZero:true, title:{display:true,text:'dias'} } } }
   });
+  const card = document.getElementById('ef-pct-card');
+  if (card) {
+    card.style.display = view === 'percentil' ? '' : 'none';
+    if (view === 'percentil') efUpdatePctCard(document.getElementById('ef-pct-slider')?.value || 85);
+  }
 }
 
 function switchEfChart(type, mode) {
@@ -2880,6 +2922,29 @@ function switchEfChart(type, mode) {
     document.getElementById('ef-t-cycle')?.classList.toggle('active', mode==='cycle');
     if (APP.eficienciaData) _efDrawTimeChart(APP.eficienciaData);
   }
+}
+
+function switchEfTimeView(view) {
+  APP.efChartMode.timeView = view;
+  document.getElementById('ef-t-avg')?.classList.toggle('active',      view==='avg');
+  document.getElementById('ef-t-percentil')?.classList.toggle('active', view==='percentil');
+  if (APP.eficienciaData) _efDrawTimeChart(APP.eficienciaData);
+}
+
+function efUpdatePctCard(pct) {
+  pct = parseInt(pct);
+  const lbl = document.getElementById('ef-pct-label');
+  if (lbl) lbl.textContent = pct + '%';
+  const r = APP.eficienciaData;
+  if (!r) return;
+  const mode = APP.efChartMode.time;
+  const all  = r.iterLabels.flatMap(k => mode === 'lead' ? r.byIter[k].leadTimes : r.byIter[k].cycleTimes);
+  const sorted = [...all].sort((a,b) => a-b);
+  const val  = sorted.length ? sorted[Math.min(Math.ceil(pct/100*sorted.length)-1, sorted.length-1)] : null;
+  const ans  = document.getElementById('ef-pct-answer');
+  if (ans) ans.textContent = val !== null
+    ? `${pct}% das demandas são entregues em até ${Math.round(val)} dias (${mode==='lead'?'Lead Time':'Cycle Time'})`
+    : 'Dados insuficientes para calcular.';
 }
 
 // ── QUALIDADE UI ──────────────────────────────────────────────────────
@@ -2953,7 +3018,7 @@ function switchQualSeverity(sev) {
 
 function renderQualidadeCharts(allItems) {
   const tipo   = APP.qualTipo   || 'ambos';
-  const estado = APP.qualEstado || 'todos';
+  const estado = APP.qualEstado !== undefined ? APP.qualEstado : 'todos';
 
   const _isDone = s => { const sl=(s||'').toLowerCase(); return sl==='done'||sl==='closed'||sl==='resolved'||sl==='concluído'||sl==='completed'; };
 
@@ -3017,12 +3082,16 @@ function renderQualidadeCharts(allItems) {
     const tipo2 = i.fields['System.WorkItemType'];
     const tc2   = tipo2==='Bug'?'badge-bug':'badge-pbi';
     const tg    = tgo[i.id] > 0 ? tgo[i.id]+'h' : '—';
+    const est   = i.fields['Microsoft.VSTS.Scheduling.OriginalEstimate'];
+    const rem   = i.fields['Microsoft.VSTS.Scheduling.RemainingWork'];
+    const estFmt = est > 0 ? est+'h' : '—';
+    const remFmt = rem > 0 ? rem+'h' : '—';
     const sev   = i.fields['Microsoft.VSTS.Common.Severity'] || '—';
     const pri   = i.fields['Microsoft.VSTS.Common.Priority'] || '—';
     const url2  = `https://dev.azure.com/${encodeURIComponent(Store.getActiveTeam()?.org||'')}/${encodeURIComponent(Store.getActiveTeam()?.proj||'')}/_workitems/edit/${i.id}`;
-    return `<tr><td><span class="badge ${tc2}">${esc2(tipo2)}</span></td><td><a href="${url2}" target="_blank" class="az-link">#${i.id}</a></td><td style="max-width:320px">${esc2(i.fields['System.Title']||'')}</td><td class="text-center mono">${tg}</td><td>${esc2(sev)}</td><td>${pri}</td></tr>`;
+    return `<tr><td><span class="badge ${tc2}">${esc2(tipo2)}</span></td><td><a href="${url2}" target="_blank" class="az-link">#${i.id}</a></td><td style="max-width:280px">${esc2(i.fields['System.Title']||'')}</td><td class="text-center mono">${estFmt}</td><td class="text-center mono">${remFmt}</td><td class="text-center mono">${tg}</td><td>${esc2(sev)}</td><td>${pri}</td></tr>`;
   }).join('');
-  const tblHtml = `<div class="qual-tbl-wrap"><table class="qual-tbl"><thead><tr><th>Tipo</th><th>ID</th><th>Nome</th><th style="text-align:center" title="Bug: max RemainingWork do próprio item. Defect: soma max rem. das tasks filhas">Tempo Gasto</th><th>Severidade</th><th>Prioridade</th></tr></thead><tbody>${tblRows}</tbody></table></div>`;
+  const tblHtml = `<div class="qual-tbl-wrap"><table class="qual-tbl"><thead><tr><th>Tipo</th><th>ID</th><th>Nome</th><th class="text-center" title="Microsoft.VSTS.Scheduling.OriginalEstimate">Estimativa</th><th class="text-center" title="Microsoft.VSTS.Scheduling.RemainingWork">Remaining Work</th><th class="text-center" title="Bug: max RemainingWork histórico. Defect: soma max rem. das tasks filhas">Tempo Gasto Previsto</th><th>Severidade</th><th>Prioridade</th></tr></thead><tbody>${tblRows}</tbody></table></div>`;
 
   content.innerHTML = kpiHtml + `<div class="qual-charts-3">
     <div class="qual-chart-wrap"><div class="qual-chart-title">🔴 Por Severity</div><div style="position:relative;height:220px"><canvas id="qc-sev"></canvas></div></div>
