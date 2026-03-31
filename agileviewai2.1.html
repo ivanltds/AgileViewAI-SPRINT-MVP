@@ -49,6 +49,11 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .ftab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 .bl-table{width:100%;border-collapse:collapse;font-size:13px}
 .bl-table th{text-align:left;padding:8px 6px;font-size:11px;color:var(--gray);font-weight:600;border-bottom:2px solid var(--border)}
+.sort-th{cursor:pointer;user-select:none;white-space:nowrap}
+.sort-th:hover{color:var(--blue)}
+.sort-th::after{content:' ⇅';font-size:9px;opacity:.35;font-style:normal}
+.sort-th.th-sort-asc::after{content:' ▲';opacity:1;color:var(--blue)}
+.sort-th.th-sort-desc::after{content:' ▼';opacity:1;color:var(--blue)}
 .bl-table td{padding:8px 6px;border-bottom:1px solid var(--border);vertical-align:middle}
 .bl-row:hover{background:#f8fafc}.bl-row.row-blocked{background:#fff5f5}.bl-row.row-fixing{background:#fffbeb}
 .children-cell{padding:8px 8px 12px 32px !important}
@@ -481,6 +486,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .qual-filter-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
 .qual-select{padding:7px 28px 7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-weight:500;color:#1e293b;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 8px center;-webkit-appearance:none;appearance:none;cursor:pointer;outline:none;width:100%;min-width:0}
 .qual-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.1)}
+.qual-inline-filter{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;padding:14px 24px;background:#f8fafc;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-top:-1px}
 /* KPI row: scroll horizontal — nunca vai quebrar layout */
 .qual-kpi-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:16px 24px 0;scrollbar-width:none}
 .qual-kpi-wrap::-webkit-scrollbar{display:none}
@@ -744,34 +750,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
       <!-- MODULE: QUALIDADE -->
       <div class="mod-panel" id="module-qualidade">
         <div class="qual-header">
-          <div class="qual-filter-group">
-            <label class="qual-filter-label">Tipo</label>
-            <select class="qual-select" id="qs-tipo" onchange="switchQualTipo(this.value)">
-              <option value="ambos">Bugs + Defeitos</option>
-              <option value="Bug">🐛 Bugs</option>
-              <option value="Defect">⚠️ Defeitos</option>
-            </select>
-          </div>
-          <div class="qual-filter-group">
-            <label class="qual-filter-label">Estado</label>
-            <select class="qual-select" id="qs-estado" onchange="switchQualEstado(this.value)">
-              <option value="aberto">Em aberto</option>
-              <option value="fechado">Fechados</option>
-              <option value="todos" selected>Todos</option>
-            </select>
-          </div>
-          <div class="qual-filter-group">
-            <label class="qual-filter-label">Severidade</label>
-            <select class="qual-select" id="qs-sev" onchange="switchQualSeverity(this.value)">
-              <option value="todas">Todas</option>
-              <option value="1">🔴 Critical</option>
-              <option value="2">🟠 High</option>
-              <option value="3">🟡 Medium</option>
-              <option value="4">🟢 Low</option>
-            </select>
-          </div>
           <button class="btn btn-blue" onclick="runQualidade()">🎯 Carregar</button>
-          <span id="qual-summary" style="font-size:12px;color:#64748b;margin-left:auto"></span>
         </div>
         <div id="qual-content">
           <div class="mod-empty">
@@ -1249,7 +1228,7 @@ const QualidadeAPI = {
   },
   async getItems(org, proj, ids, pat) {
     if (!ids.length) return [];
-    const fields = encodeURIComponent('System.Id,System.Title,System.WorkItemType,System.State,Microsoft.VSTS.Common.Severity,Microsoft.VSTS.Common.Priority,System.CreatedDate,Microsoft.VSTS.Common.ClosedDate,Microsoft.VSTS.Scheduling.RemainingWork,Microsoft.VSTS.Scheduling.CompletedWork,Microsoft.VSTS.Scheduling.OriginalEstimate');
+    const fields = encodeURIComponent('System.Id,System.Title,System.WorkItemType,System.State,System.AssignedTo,Microsoft.VSTS.Common.Severity,Microsoft.VSTS.Common.Priority,System.CreatedDate,Microsoft.VSTS.Common.ClosedDate,Microsoft.VSTS.Scheduling.RemainingWork,Microsoft.VSTS.Scheduling.CompletedWork,Microsoft.VSTS.Scheduling.OriginalEstimate');
     const all = [];
     for (let i=0; i<ids.length; i+=200) {
       const chunk = ids.slice(i,i+200).join(',');
@@ -1703,7 +1682,7 @@ const DB = {
       doing: s.inProgress, done: s.done, blocked: s.blocked, fixing: s.fixing
     };
     document.getElementById('db-backlog').innerHTML =
-      `<div class="bl-table-wrap"><table class="bl-table"><thead><tr><th></th><th>Tipo</th><th>ID</th><th>Título</th><th>Status</th><th>Executores</th><th style="text-align:center" title="Progresso baseado em Estimativa vs Remaining atual">Progresso</th><th style="text-align:center" title="Soma do maior Remaining Work de todas as tasks (incl. concluídas)">Estimativa</th><th style="text-align:center" title="Soma do Remaining Work atual das tasks em aberto">Rem. atual</th></tr></thead>
+      `<div class="bl-table-wrap"><table class="bl-table"><thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">Título</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executores</th><th class="sort-th" style="text-align:center" title="Progresso baseado em Estimativa vs Remaining atual" onclick="sortTbl(this)">Progresso</th><th class="sort-th" style="text-align:center" title="Soma do maior Remaining Work de todas as tasks (incl. concluídas)" onclick="sortTbl(this)">Estimativa</th><th class="sort-th" style="text-align:center" title="Soma do Remaining Work atual das tasks em aberto" onclick="sortTbl(this)">Rem. atual</th></tr></thead>
       <tbody id="bl-tbody">${rows}</tbody></table></div>`;
 
     // Progress panel
@@ -1788,7 +1767,7 @@ ${Object.keys(s.byActivity).length>0?`<div class="act-panel"><div class="act-tog
 <div class="members-section">
   <div class="ins-title" style="margin-bottom:12px">👤 Distribuição por Responsável</div>
   <table class="mem-table">
-    <thead><tr><th></th><th>Membro</th><th style="text-align:center">Cap. rest.</th><th style="text-align:center">Rem. work</th><th>% Alocado</th><th style="text-align:center">Tasks ✓</th></tr></thead>
+    <thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Membro</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Cap. rest.</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Rem. work</th><th class="sort-th" onclick="sortTbl(this)">% Alocado</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Tasks ✓</th></tr></thead>
     <tbody>${mRows}</tbody>
   </table>
 </div>`;
@@ -3057,52 +3036,82 @@ function renderQualidadeCharts(allItems) {
     <div class="qkpi"><div class="qkpi-lbl">✅ Estimativa Total ${_qtip('Soma do maior Remaining Work já registrado em revisões (esforço máximo histórico) de Bugs diretos e tasks filhas de Defects. Representa o volume total estimado.')}</div><div class="qkpi-val">${horasGastas!==null?horasGastas+'h':'—'}</div><div class="qkpi-sub">Σ max rem. histórico</div></div>
   </div></div>`;
 
-  // ── Filter items for charts ──
+  const sev = APP.qualSeverity || 'todas';
+
+  // ── Filter items for charts and table ──
   let items = tipo==='ambos' ? allItems : allItems.filter(i => i.fields['System.WorkItemType']===tipo);
   if (estado==='aberto')  items = items.filter(i => !_isDone(i.fields['System.State']));
   if (estado==='fechado') items = items.filter(i =>  _isDone(i.fields['System.State']));
-  const sev = APP.qualSeverity || 'todas';
   if (sev !== 'todas') items = items.filter(i => String(i.fields['Microsoft.VSTS.Common.Severity']||'').startsWith(sev+' '));
 
   const total = items.length;
-  const sumEl = document.getElementById('qual-summary');
-  if (sumEl) sumEl.textContent = `${total} item${total!==1?'s':''} encontrado${total!==1?'s':''}`;
+
+  // ── Inline filter bar (rendered between charts and table) ──
+  const filterBarHtml = `<div class="qual-inline-filter">
+    <div class="qual-filter-group"><label class="qual-filter-label">Tipo</label><select class="qual-select" onchange="switchQualTipo(this.value)"><option value="ambos" ${tipo==='ambos'?'selected':''}>Bugs + Defeitos</option><option value="Bug" ${tipo==='Bug'?'selected':''}>🐛 Bugs</option><option value="Defect" ${tipo==='Defect'?'selected':''}>⚠️ Defeitos</option></select></div>
+    <div class="qual-filter-group"><label class="qual-filter-label">Estado</label><select class="qual-select" onchange="switchQualEstado(this.value)"><option value="aberto" ${estado==='aberto'?'selected':''}>Em aberto</option><option value="fechado" ${estado==='fechado'?'selected':''}>Fechados</option><option value="todos" ${estado==='todos'?'selected':''}>Todos</option></select></div>
+    <div class="qual-filter-group"><label class="qual-filter-label">Severidade</label><select class="qual-select" onchange="switchQualSeverity(this.value)"><option value="todas" ${sev==='todas'?'selected':''}>Todas</option><option value="1" ${sev==='1'?'selected':''}>🔴 Critical</option><option value="2" ${sev==='2'?'selected':''}>🟠 High</option><option value="3" ${sev==='3'?'selected':''}>🟡 Medium</option><option value="4" ${sev==='4'?'selected':''}>🟢 Low</option></select></div>
+    <span style="margin-left:auto;align-self:center;font-size:12px;color:#64748b">${total} item${total!==1?'s':''} encontrado${total!==1?'s':''}</span>
+  </div>`;
 
   const content = document.getElementById('qual-content');
 
   if (!items.length) {
-    content.innerHTML = kpiHtml + '<div class="mod-empty" style="padding:24px"><div class="mod-empty-icon">🔍</div><h3>Nenhum item</h3><p>Nenhum Bug ou Defeito encontrado com o filtro atual.</p></div>';
+    content.innerHTML = kpiHtml + filterBarHtml + '<div class="mod-empty" style="padding:24px"><div class="mod-empty-icon">🔍</div><h3>Nenhum item</h3><p>Nenhum Bug ou Defeito encontrado com o filtro atual.</p></div>';
     return;
   }
+
+  // ── Azure color helpers (used for table rows and charts) ──
+  const sevColor   = s => { const sl=(s||'').toLowerCase(); if(sl.includes('critical')||sl.startsWith('1 '))return'#cc0000'; if(sl.includes('high')||sl.startsWith('2 '))return'#e05300'; if(sl.includes('medium')||sl.startsWith('3 '))return'#f0b400'; if(sl.includes('low')||sl.startsWith('4 '))return'#57a300'; return'#94a3b8'; };
+  const priColor   = s => { const v=String(s||''); if(v==='1')return'#cc0000'; if(v==='2')return'#e05300'; if(v==='3')return'#f0b400'; if(v==='4')return'#57a300'; return'#94a3b8'; };
+  const stateColor = s => { const sl=(s||'').toLowerCase(); if(sl==='done'||sl==='closed'||sl==='resolved'||sl==='concíuío'||sl==='completed')return'#16a34a'; if(sl.includes('progress')||sl==='active'||sl.includes('andamento')||sl.includes('progresso'))return'#3b82f6'; if(sl.includes('test')||sl.includes('qa')||sl.includes('verif')||sl.includes('homolog')||sl==='ready'||sl.includes('wait')||sl.includes('aguard')||sl.includes('valid'))return'#f59e0b'; if(sl==='removed'||sl==='abandonado'||sl==='cancelled'||sl==='canceled')return'#dc2626'; if(sl==='design'||sl.includes('analis'))return'#8b5cf6'; return'#94a3b8'; };
+  const _stateClass= s => { const sl=(s||'').toLowerCase(); if(sl==='done'||sl==='closed'||sl==='resolved'||sl==='concíuío'||sl==='completed') return 's-done'; if(sl.includes('progress')||sl==='active'||sl.includes('andamento')||sl.includes('progresso')) return 's-doing'; if(sl.includes('test')||sl.includes('qa')||sl.includes('verif')||sl.includes('homolog')||sl==='ready'||sl.includes('wait')||sl.includes('aguard')||sl.includes('valid')) return 's-testing'; return 's-todo'; };
 
   // ── Items table (uses filtered items) ──
   const tgo = APP.qualTempoGasto || {};
   const esc2 = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const tblRows = items.slice().sort((a,b) => (tgo[b.id]||0)-(tgo[a.id]||0)).map(i => {
-    const tipo2 = i.fields['System.WorkItemType'];
-    const tc2   = tipo2==='Bug'?'badge-bug':'badge-pbi';
-    const tg    = tgo[i.id] > 0 ? tgo[i.id]+'h' : '—';
-    const est   = i.fields['Microsoft.VSTS.Scheduling.OriginalEstimate'];
-    const rem   = i.fields['Microsoft.VSTS.Scheduling.RemainingWork'];
-    const estFmt = est > 0 ? est+'h' : '—';
-    const remFmt = rem > 0 ? rem+'h' : '—';
-    const sev   = i.fields['Microsoft.VSTS.Common.Severity'] || '—';
-    const pri   = i.fields['Microsoft.VSTS.Common.Priority'] || '—';
-    const url2  = `https://dev.azure.com/${encodeURIComponent(Store.getActiveTeam()?.org||'')}/${encodeURIComponent(Store.getActiveTeam()?.proj||'')}/_workitems/edit/${i.id}`;
-    return `<tr><td><span class="badge ${tc2}">${esc2(tipo2)}</span></td><td><a href="${url2}" target="_blank" class="az-link">#${i.id}</a></td><td style="max-width:280px">${esc2(i.fields['System.Title']||'')}</td><td class="text-center mono">${estFmt}</td><td class="text-center mono">${remFmt}</td><td class="text-center mono">${tg}</td><td>${esc2(sev)}</td><td>${pri}</td></tr>`;
+    const tipo2    = i.fields['System.WorkItemType'];
+    const tc2      = tipo2==='Bug'?'badge-bug':'badge-pbi';
+    const estFmt   = tgo[i.id] > 0 ? tgo[i.id]+'h' : '—';
+    const rem      = i.fields['Microsoft.VSTS.Scheduling.RemainingWork'];
+    const remFmt   = rem > 0 ? rem+'h' : '—';
+    const sev2     = i.fields['Microsoft.VSTS.Common.Severity'] || '—';
+    const pri      = String(i.fields['Microsoft.VSTS.Common.Priority'] || '—');
+    const stateStr = i.fields['System.State'] || '';
+    const sc       = _stateClass(stateStr);
+    const at       = i.fields['System.AssignedTo'];
+    const atName   = typeof at === 'object' ? (at?.displayName || '') : (at || '');
+    const execH    = atName ? `<span class="mav" title="${esc2(atName)}">${atName.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()}</span>` : '<span style="color:#94a3b8">—</span>';
+    const estVal   = tgo[i.id] || 0;
+    const progHtml = estVal === 0
+      ? `<span class="no-tasks-warn" title="Sem estimativa histórica">Não estimado</span>`
+      : (() => {
+          const pct = Math.round(Math.max(0, Math.min(100, (estVal - (rem||0)) / estVal * 100)));
+          const clr = pct >= 80 ? '#16a34a' : pct >= 40 ? '#3b82f6' : '#f59e0b';
+          return `<div class="bl-prog"><div class="bl-prog-bar"><div class="bl-prog-fill" style="width:${pct}%;background:${clr}"></div></div><div class="bl-prog-lbl">${pct}% · ${rem||0}h rem</div></div>`;
+        })();
+    const url2     = `https://dev.azure.com/${encodeURIComponent(Store.getActiveTeam()?.org||'')}/${encodeURIComponent(Store.getActiveTeam()?.proj||'')}/_workitems/edit/${i.id}`;
+    return `<tr>` +
+      `<td><span class="badge ${tc2}">${esc2(tipo2)}</span></td>` +
+      `<td><a href="${url2}" target="_blank" class="az-link">${i.id}</a></td>` +
+      `<td style="max-width:260px"><a href="${url2}" target="_blank" class="az-link">${esc2(i.fields['System.Title']||'')}</a></td>` +
+      `<td><span class="sb ${sc}">${esc2(stateStr)}</span></td>` +
+      `<td class="exec-cell">${execH}</td>` +
+      `<td class="text-center" style="padding:4px 8px">${progHtml}</td>` +
+      `<td class="text-center mono">${estFmt}</td>` +
+      `<td class="text-center mono">${remFmt}</td>` +
+      `<td><span style="display:inline-flex;align-items:center;gap:5px"><span style="color:${sevColor(sev2)};font-size:14px;line-height:1">●</span>${esc2(sev2)}</span></td>` +
+      `<td><span style="display:inline-flex;align-items:center;gap:5px"><span style="color:${priColor(pri)};font-size:14px;line-height:1">●</span>${pri}</span></td>` +
+      `</tr>`;
   }).join('');
-  const tblHtml = `<div class="qual-tbl-wrap"><table class="qual-tbl"><thead><tr><th>Tipo</th><th>ID</th><th>Nome</th><th class="text-center" title="Microsoft.VSTS.Scheduling.OriginalEstimate">Estimativa</th><th class="text-center" title="Microsoft.VSTS.Scheduling.RemainingWork">Remaining Work</th><th class="text-center" title="Bug: max RemainingWork histórico. Defect: soma max rem. das tasks filhas">Tempo Gasto Previsto</th><th>Severidade</th><th>Prioridade</th></tr></thead><tbody>${tblRows}</tbody></table></div>`;
+  const tblHtml = `<div class="qual-tbl-wrap"><table class="qual-tbl"><thead><tr><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">Nome</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executor</th><th class="sort-th" style="text-align:center" title="Progresso baseado em Estimativa vs Remaining atual" onclick="sortTbl(this)">Progresso</th><th class="sort-th text-center" title="Bug: max RemainingWork histórico via revisões. Defect: soma max rem. das tasks filhas — mesmo critério da tabela de Sprint." onclick="sortTbl(this)">Estimativa</th><th class="sort-th text-center" title="Microsoft.VSTS.Scheduling.RemainingWork" onclick="sortTbl(this)">Remaining Work</th><th class="sort-th" onclick="sortTbl(this)">Severidade</th><th class="sort-th" onclick="sortTbl(this)">Prioridade</th></tr></thead><tbody>${tblRows}</tbody></table></div>`;
 
   content.innerHTML = kpiHtml + `<div class="qual-charts-3">
     <div class="qual-chart-wrap"><div class="qual-chart-title">🔴 Por Severity</div><div style="position:relative;height:220px"><canvas id="qc-sev"></canvas></div></div>
     <div class="qual-chart-wrap"><div class="qual-chart-title">🎯 Por Priority</div><div style="position:relative;height:220px"><canvas id="qc-pri"></canvas></div></div>
     <div class="qual-chart-wrap"><div class="qual-chart-title">📋 Por State</div><div style="position:relative;height:220px"><canvas id="qc-state"></canvas></div></div>
-  </div>` + tblHtml;
-
-  // ── Azure color helpers ──
-  const sevColor  = s => { const sl=(s||'').toLowerCase(); if(sl.includes('critical')||sl.startsWith('1 '))return'#cc0000'; if(sl.includes('high')||sl.startsWith('2 '))return'#e05300'; if(sl.includes('medium')||sl.startsWith('3 '))return'#f0b400'; if(sl.includes('low')||sl.startsWith('4 '))return'#57a300'; return'#94a3b8'; };
-  const priColor  = s => { const v=String(s||''); if(v==='1')return'#cc0000'; if(v==='2')return'#e05300'; if(v==='3')return'#f0b400'; if(v==='4')return'#57a300'; return'#94a3b8'; };
-  const stateColor= s => { const sl=(s||'').toLowerCase(); if(sl==='done'||sl==='closed'||sl==='resolved'||sl==='concluído'||sl==='completed')return'#16a34a'; if(sl.includes('progress')||sl==='active'||sl.includes('andamento')||sl.includes('progresso'))return'#3b82f6'; if(sl.includes('test')||sl.includes('qa')||sl.includes('verif')||sl.includes('homolog')||sl==='ready'||sl.includes('wait')||sl.includes('aguard')||sl.includes('valid'))return'#f59e0b'; if(sl==='removed'||sl==='abandonado'||sl==='cancelled'||sl==='canceled')return'#dc2626'; if(sl==='design'||sl.includes('analis'))return'#8b5cf6'; return'#94a3b8'; };
+  </div>` + filterBarHtml + tblHtml;
 
   const count = (arr, key) => { const map={}; arr.forEach(i=>{const v=i.fields[key]||'Não definido'; map[v]=(map[v]||0)+1;}); return map; };
 
@@ -3209,7 +3218,7 @@ function _renderHistoryTable(backlog, tasks, team) {
     `</div>` : '';
 
   return warningBanner +
-    `<div class="bl-table-wrap"><table class="bl-table"><thead><tr><th></th><th>Tipo</th><th>ID</th><th>T\u00edtulo</th><th>Status</th><th>Executores</th><th style="text-align:center">Progresso</th><th style="text-align:center">Estimativa</th><th style="text-align:center">Rem. atual</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    `<div class="bl-table-wrap"><table class="bl-table"><thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">T\u00edtulo</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executores</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Progresso</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Estimativa</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Rem. atual</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 async function runEficienciaBacklogTable(team, pat, checked) {
@@ -3575,6 +3584,42 @@ function toggleCh(id) {
   const open = row.style.display !== 'none';
   row.style.display = open ? 'none' : '';
   if (ico) ico.classList.toggle('expanded', !open);
+}
+
+function sortTbl(th) {
+  const table = th.closest('table');
+  const tbody = table.querySelector('tbody');
+  const ths   = Array.from(th.closest('tr').querySelectorAll('th'));
+  const col   = ths.indexOf(th);
+  const isAsc = th.dataset.sort !== 'asc';
+  ths.forEach(t => { delete t.dataset.sort; t.classList.remove('th-sort-asc','th-sort-desc'); });
+  th.dataset.sort = isAsc ? 'asc' : 'desc';
+  th.classList.add(isAsc ? 'th-sort-asc' : 'th-sort-desc');
+  const val = td => {
+    if (!td) return '';
+    const txt = td.textContent.trim();
+    const num = parseFloat(txt);
+    return isNaN(num) ? txt.toLowerCase() : num;
+  };
+  const cmp = (a, b) => {
+    const va = val(a), vb = val(b);
+    if (typeof va === 'number' && typeof vb === 'number') return isAsc ? va - vb : vb - va;
+    return isAsc ? String(va).localeCompare(String(vb),'pt',{numeric:true}) : String(vb).localeCompare(String(va),'pt',{numeric:true});
+  };
+  if (table.classList.contains('bl-table')) {
+    const allRows = Array.from(tbody.querySelectorAll('tr'));
+    const groups = [];
+    allRows.forEach(r => {
+      if (r.classList.contains('bl-row')) groups.push({p:r, c:null});
+      else if (r.classList.contains('children-row') && groups.length) groups[groups.length-1].c = r;
+    });
+    groups.sort((a,b) => cmp(a.p.querySelectorAll('td')[col], b.p.querySelectorAll('td')[col]));
+    groups.forEach(g => { tbody.appendChild(g.p); if (g.c) tbody.appendChild(g.c); });
+  } else {
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    rows.sort((a,b) => cmp(a.querySelectorAll('td')[col], b.querySelectorAll('td')[col]));
+    rows.forEach(r => tbody.appendChild(r));
+  }
 }
 
 function filterBL(btn, type) {
