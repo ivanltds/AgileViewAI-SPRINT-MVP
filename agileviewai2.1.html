@@ -707,8 +707,13 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
               <button class="ef-qbtn" onclick="loadEficienciaFilter(12)">1 ano</button>
             </div>
             <div class="ef-filter-label" style="margin-bottom:6px">Sprints para análise</div>
-            <div id="ef-filter-list">
-              <span style="font-size:12px;color:#94a3b8">Sincronize um time para carregar as sprints.</span>
+            <div class="ef-bl-dd-wrap" id="ef-sprint-graph-wrap">
+              <button class="ef-bl-dd-btn" onclick="toggleEfSprintDd()">Sprints selecionadas&nbsp;<span id="ef-sprint-graph-count" style="color:#3b82f6;font-weight:700"></span>&nbsp;&#x25BE;</button>
+              <div class="ef-bl-dd" id="ef-sprint-graph-dd" style="min-width:240px;max-height:260px;overflow-y:auto">
+                <div id="ef-filter-list">
+                  <span style="font-size:12px;color:#94a3b8">Sincronize um time para carregar as sprints.</span>
+                </div>
+              </div>
             </div>
           </div>
           <button class="btn btn-blue" onclick="runEficiencia()" style="flex-shrink:0;align-self:flex-end">⚡ Calcular</button>
@@ -741,6 +746,14 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
                 <label class="ef-bl-dd-item"><input type="checkbox" id="efbl-exec-all" onchange="toggleEfDdAll('exec')"> <em>Todos</em></label>
                 <hr class="ef-bl-dd-sep">
                 <div id="efbl-exec-list"></div>
+              </div>
+            </div>
+            <div class="ef-bl-dd-wrap">
+              <button class="ef-bl-dd-btn" onclick="toggleEfDd('sprint')">Sprint&nbsp;<span id="efbl-sprint-count" style="color:#3b82f6;font-weight:700"></span>&nbsp;&#x25BE;</button>
+              <div class="ef-bl-dd" id="efbl-sprint-dd">
+                <label class="ef-bl-dd-item"><input type="checkbox" id="efbl-sprint-all" onchange="toggleEfDdAll('sprint')"> <em>Todos</em></label>
+                <hr class="ef-bl-dd-sep">
+                <div id="efbl-sprint-list"></div>
               </div>
             </div>
           </div>
@@ -1213,6 +1226,12 @@ const SprintAPI = {
     const url = `https://dev.azure.com/${encodeURIComponent(org)}/${encodeURIComponent(proj)}/_apis/wit/wiql?api-version=7.1`;
     const cond = iterPaths.map(p=>`[System.IterationPath] UNDER '${p.replace(/'/g,"''")}'`).join(' OR ');
     const q = `SELECT [System.Id] FROM WorkItems WHERE [System.TeamProject] = '${proj.replace(/'/g,"''")}' AND [System.WorkItemType] IN ('Product Backlog Item','Bug','Defect','Task') AND (${cond}) AND [System.State] <> 'Removed' ORDER BY [System.Id]`;
+    const d = await AzureAPI._fetch(url, { method:'POST', headers:AzureAPI._auth(pat), body:JSON.stringify({query:q}) });
+    return (d.workItems||[]).map(w=>w.id);
+  },
+  async getAllBacklogIds(org, proj, pat) {
+    const url = `https://dev.azure.com/${encodeURIComponent(org)}/${encodeURIComponent(proj)}/_apis/wit/wiql?api-version=7.1`;
+    const q = `SELECT [System.Id] FROM WorkItems WHERE [System.TeamProject] = '${proj.replace(/'/g,"''")}' AND [System.WorkItemType] IN ('Product Backlog Item','Bug','Defect','Task') AND [System.State] <> 'Removed' ORDER BY [System.Id]`;
     const d = await AzureAPI._fetch(url, { method:'POST', headers:AzureAPI._auth(pat), body:JSON.stringify({query:q}) });
     return (d.workItems||[]).map(w=>w.id);
   }
@@ -2659,6 +2678,24 @@ function deleteRag(id) {
 }
 
 // ── EFICIÊNCIA UI ─────────────────────────────────────────────────────
+function _shortSprintLabel(name) {
+  const m = name.match(/sprint\s*(\d+)/i);
+  return m ? 'Sprint ' + m[1] : name;
+}
+
+function _updateEfSprintGraphCount() {
+  const list = document.getElementById('ef-filter-list');
+  if (!list) return;
+  const total   = list.querySelectorAll('input[type=checkbox]').length;
+  const checked = list.querySelectorAll('input[type=checkbox]:checked').length;
+  const span    = document.getElementById('ef-sprint-graph-count');
+  if (span) span.textContent = checked === total ? `(${total})` : `(${checked}/${total})`;
+}
+
+function toggleEfSprintDd() {
+  document.getElementById('ef-sprint-graph-dd')?.classList.toggle('open');
+}
+
 function loadEficienciaFilter(months) {
   const el = document.getElementById('ef-filter-list');
   if (!el) return;
@@ -2699,16 +2736,18 @@ function loadEficienciaFilter(months) {
     pastSprints.slice(0, 3).forEach(it => preSelected.add(it.path));
   }
 
-  const options = allVisible.map(it => {
+  el.innerHTML = allVisible.map(it => {
     const label = it.path.split('\\').pop();
+    const short = _shortSprintLabel(label);
     const isCur = it.path === currentPath;
-    const sel   = preSelected.has(it.path) ? ' selected' : '';
-    return `<option value="${esc(it.path)}"${sel}>${esc(label)}${isCur ? ' ← atual' : ''}</option>`;
+    const chk   = preSelected.has(it.path) ? ' checked' : '';
+    return `<label class="ef-bl-dd-item"><input type="checkbox" value="${esc(it.path)}"${chk} onchange="_updateEfSprintGraphCount()"> ${esc(short)}${isCur ? ' <span style="color:#3b82f6;font-size:10px">← atual</span>' : ''}</label>`;
   }).join('');
 
-  const size = Math.min(Math.max(allVisible.length, 3), 10);
-  el.innerHTML = `<select multiple class="ef-sprint-select" id="ef-sprint-sel" size="${size}">${options}</select>
-    <div class="ef-sprint-hint">Ctrl+clique para selecionar múltiplas sprints</div>`;
+  _updateEfSprintGraphCount();
+  if (months) {
+    document.getElementById('ef-sprint-graph-dd')?.classList.remove('open');
+  }
 }
 
 async function runEficiencia() {
@@ -2716,8 +2755,7 @@ async function runEficiencia() {
   if (!team) { toast('Nenhum time ativo.','warn'); return; }
   const pat = await Store.getActivePat();
   if (!pat) { toast('PAT inválido.','warn'); return; }
-  const sel = document.getElementById('ef-sprint-sel');
-  const checked = sel ? Array.from(sel.selectedOptions).map(o => o.value) : [];
+  const checked = [...(document.getElementById('ef-filter-list')?.querySelectorAll('input[type=checkbox]:checked') || [])].map(c => c.value);
   if (!checked.length) { toast('Selecione pelo menos uma sprint.','warn'); return; }
 
   const content = document.getElementById('ef-content');
@@ -3226,10 +3264,10 @@ async function runEficienciaBacklogTable(team, pat, checked) {
   const el      = document.getElementById('ef-backlog-content');
   if (!section || !el) return;
   section.style.display = '';
-  el.innerHTML = '<div class="spinner-wrap" style="padding:24px"><div class="spinner"></div>Carregando backlog das sprints\u2026</div>';
+  el.innerHTML = '<div class="spinner-wrap" style="padding:24px"><div class="spinner"></div>Carregando todos os work items…</div>';
 
   try {
-    const ids   = await SprintAPI.getWorkItemIds(team.org, team.proj, checked, pat);
+    const ids   = await SprintAPI.getAllBacklogIds(team.org, team.proj, pat);
     const items = await AzureAPI.getWorkItemsBatch(team.org, team.proj, ids, pat);
 
     const backlog = [], tasks = [];
@@ -3241,6 +3279,7 @@ async function runEficienciaBacklogTable(team, pat, checked) {
         id: item.id, type, title: item.fields['System.Title'],
         state: item.fields['System.State'],
         assignedTo: DataProcessor._dispName(item.fields['System.AssignedTo']),
+        sprint: (item.fields['System.IterationPath']||'').split('\\').pop(),
         blockStatus: DataProcessor._blockStatus(item)
       };
       if (isTask) {
@@ -3282,42 +3321,57 @@ const _efIsDone = s => { const sl=(s||'').toLowerCase(); return sl==='done'||sl=
 function buildEfBacklogFilters(backlog) {
   const statuses = [...new Set(backlog.map(b => b.state).filter(Boolean))].sort();
   const execs    = [...new Set(backlog.map(b => b.assignedTo||'—'))].sort();
+  const sprints  = [...new Set(backlog.map(b => b.sprint).filter(Boolean))].sort();
 
   const sList = document.getElementById('efbl-status-list');
   if (sList) sList.innerHTML = statuses.map(s =>
-    `<label class="ef-bl-dd-item"><input type="checkbox" value="${esc(s)}"${_efIsDone(s)?'':' checked'} onchange="updateEfDdCount('status');applyEfBacklogFilters()"> ${esc(s)}</label>`
+    `<label class="ef-bl-dd-item"><input type="checkbox" value="${esc(s)}" onchange="updateEfDdCount('status');applyEfBacklogFilters()"> ${esc(s)}</label>`
   ).join('');
 
   const eList = document.getElementById('efbl-exec-list');
   if (eList) eList.innerHTML = execs.map(ex =>
-    `<label class="ef-bl-dd-item"><input type="checkbox" value="${esc(ex)}" checked onchange="updateEfDdCount('exec');applyEfBacklogFilters()"> ${esc(ex)}</label>`
+    `<label class="ef-bl-dd-item"><input type="checkbox" value="${esc(ex)}" onchange="updateEfDdCount('exec');applyEfBacklogFilters()"> ${esc(ex)}</label>`
+  ).join('');
+
+  const spList = document.getElementById('efbl-sprint-list');
+  if (spList) spList.innerHTML = sprints.map(s =>
+    `<label class="ef-bl-dd-item"><input type="checkbox" value="${esc(s)}" onchange="updateEfDdCount('sprint');applyEfBacklogFilters()"> ${_shortSprintLabel(s)}</label>`
   ).join('');
 
   const allSt = document.getElementById('efbl-status-all');
   if (allSt) allSt.checked = false;
   const allEx = document.getElementById('efbl-exec-all');
-  if (allEx) allEx.checked = true;
+  if (allEx) allEx.checked = false;
+  const allSp = document.getElementById('efbl-sprint-all');
+  if (allSp) allSp.checked = false;
 
   updateEfDdCount('status');
   updateEfDdCount('exec');
+  updateEfDdCount('sprint');
 }
 
 function updateEfDdCount(type) {
-  const listId = type === 'status' ? 'efbl-status-list' : 'efbl-exec-list';
-  const spanId = type === 'status' ? 'efbl-status-count' : 'efbl-exec-count';
-  const list   = document.getElementById(listId);
+  const map = {
+    status: ['efbl-status-list', 'efbl-status-count', 'efbl-status-all'],
+    exec:   ['efbl-exec-list',   'efbl-exec-count',   'efbl-exec-all'],
+    sprint: ['efbl-sprint-list', 'efbl-sprint-count', 'efbl-sprint-all']
+  };
+  const [listId, spanId, allId] = map[type] || [];
+  if (!listId) return;
+  const list = document.getElementById(listId);
   if (!list) return;
   const total   = list.querySelectorAll('input').length;
   const checked = list.querySelectorAll('input:checked').length;
   const span    = document.getElementById(spanId);
   if (span) span.textContent = checked === total ? `(${total})` : `(${checked}/${total})`;
-  const allCb = document.getElementById(type === 'status' ? 'efbl-status-all' : 'efbl-exec-all');
+  const allCb = document.getElementById(allId);
   if (allCb) allCb.checked = (checked === total && total > 0);
 }
 
 function toggleEfDd(type) {
-  const ids    = ['efbl-status-dd', 'efbl-exec-dd'];
-  const target = type === 'status' ? 'efbl-status-dd' : 'efbl-exec-dd';
+  const ids = ['efbl-status-dd', 'efbl-exec-dd', 'efbl-sprint-dd'];
+  const map = { status: 'efbl-status-dd', exec: 'efbl-exec-dd', sprint: 'efbl-sprint-dd' };
+  const target = map[type];
   ids.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -3326,8 +3380,13 @@ function toggleEfDd(type) {
 }
 
 function toggleEfDdAll(type) {
-  const listId = type === 'status' ? 'efbl-status-list' : 'efbl-exec-list';
-  const allId  = type === 'status' ? 'efbl-status-all'  : 'efbl-exec-all';
+  const map = {
+    status: ['efbl-status-list', 'efbl-status-all'],
+    exec:   ['efbl-exec-list',   'efbl-exec-all'],
+    sprint: ['efbl-sprint-list', 'efbl-sprint-all']
+  };
+  const [listId, allId] = map[type] || [];
+  if (!listId) return;
   const checked = document.getElementById(allId)?.checked ?? false;
   document.getElementById(listId)?.querySelectorAll('input').forEach(cb => { cb.checked = checked; });
   updateEfDdCount(type);
@@ -3341,12 +3400,14 @@ function applyEfBacklogFilters() {
   const idQ    = (document.getElementById('efbl-id')?.value    || '').toLowerCase().trim();
   const selSt  = [...(document.getElementById('efbl-status-list')?.querySelectorAll('input:checked') || [])].map(c => c.value);
   const selEx  = [...(document.getElementById('efbl-exec-list')?.querySelectorAll('input:checked')   || [])].map(c => c.value);
+  const selSp  = [...(document.getElementById('efbl-sprint-list')?.querySelectorAll('input:checked') || [])].map(c => c.value);
 
   const filtered = raw.backlog.filter(b => {
     if (titleQ && !b.title.toLowerCase().includes(titleQ))        return false;
     if (idQ    && !String(b.id).includes(idQ))                    return false;
     if (selSt.length && !selSt.includes(b.state))                 return false;
     if (selEx.length && !selEx.includes(b.assignedTo||'—'))       return false;
+    if (selSp.length && !selSp.includes(b.sprint||''))            return false;
     return true;
   });
 
@@ -3359,8 +3420,9 @@ document.addEventListener('click', e => {
   if (!e.target.closest('#db-team-dd')) {
     document.getElementById('db-team-menu')?.classList.remove('open');
   }
-  if (!e.target.closest('.ef-bl-dd-wrap')) {
+  if (!e.target.closest('.ef-bl-dd-wrap') && !e.target.closest('#ef-sprint-graph-wrap')) {
     document.querySelectorAll('.ef-bl-dd.open').forEach(d => d.classList.remove('open'));
+    document.getElementById('ef-sprint-graph-dd')?.classList.remove('open');
   }
 });
 
@@ -3790,13 +3852,66 @@ function fcBuildContext() {
     parts.push(`[SPRINT ATIVA: ${label}]\nInício: ${sp.attributes?.startDate?.slice(0,10)||'?'} | Fim: ${sp.attributes?.finishDate?.slice(0,10)||'?'}\nDias úteis restantes: ${s.bizDays} | Dias passados: ${s.daysLeft}\nBacklog: ${d.backlog.length} itens | Concluídos: ${s.donePct}% | Bloqueados: ${blocked} | Fixing: ${fixing}\nCapacidade: ${s.capacityTotal}h | Restante: ${s.totalRem}h | Alocação: ${s.allocPct}%\nPor membro:\n${memberLines}`);
   }
   if (APP.eficienciaData) {
-    const ef=APP.eficienciaData;
-    parts.push(`[EFICIÊNCIA]\nSprints analisadas: ${ef.sprints?.length||0}\nVelocity média: ${ef.kpis?.avgVelocity||ef.avgVelocity||0}`);
+    const ef = APP.eficienciaData;
+    const _pct = (arr, p) => {
+      if (!arr || !arr.length) return null;
+      const s = [...arr].sort((a,b)=>a-b);
+      return Math.round(s[Math.min(Math.ceil(p/100*s.length)-1, s.length-1)]*10)/10;
+    };
+    const _avg = arr => arr && arr.length ? +(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1) : null;
+    const allLT = ef.iterLabels.flatMap(k => ef.byIter[k]?.leadTimes  || []);
+    const allCT = ef.iterLabels.flatMap(k => ef.byIter[k]?.cycleTimes || []);
+    const fmtPct = (arr) => arr.length
+      ? `P50=${_pct(arr,50)}d | P80=${_pct(arr,80)}d | P95=${_pct(arr,95)}d`
+      : '(sem dados suficientes)';
+    const sprintLines = ef.iterLabels.map(k => {
+      const it = ef.byIter[k] || {};
+      const avgLT = _avg(it.leadTimes);  const p80LT = _pct(it.leadTimes,80);
+      const avgCT = _avg(it.cycleTimes); const p80CT = _pct(it.cycleTimes,80);
+      return `  ${k}: itens=${it.count||0} | velocity=${Math.round(it.velocity||0)}h`+
+        (avgLT!=null?` | lead_avg=${avgLT}d (P80=${p80LT}d)`:'') +
+        (avgCT!=null?` | cycle_avg=${avgCT}d (P80=${p80CT}d)`:'');
+    }).join('\n');
+    const colLines = Object.keys(ef.colTimes||{}).length
+      ? Object.keys(ef.colTimes)
+          .sort((a,b)=>(ef.colTimes[b].total/ef.colTimes[b].count)-(ef.colTimes[a].total/ef.colTimes[a].count))
+          .map(c=>`  ${c}: ${(ef.colTimes[c].total/ef.colTimes[c].count).toFixed(1)}d avg (${ef.colTimes[c].count} amostras)`)
+          .join('\n')
+      : '  (campo BoardColumn não disponível)';
+    parts.push(
+      `[EFICIÊNCIA — ${ef.iterLabels.length} sprint(s) analisada(s)]\n`+
+      `Velocity média: ${ef.avgThroughput} itens/sprint\n`+
+      `Lead Time médio: ${ef.avgLeadTime}d (criação→fechamento) | ${fmtPct(allLT)}\n`+
+      `Cycle Time médio: ${ef.avgCycleTime}d (ativação→fechamento) | ${fmtPct(allCT)}\n`+
+      `Bugs/defeitos abertos: ${ef.openBugs}\n`+
+      `\nPor sprint:\n${sprintLines||'  (sem dados)'}\n`+
+      `\nTempo médio por coluna do board:\n${colLines}`
+    );
   }
   if (APP.qualidadeData) {
-    const qd=APP.qualidadeData;
-    const total=Array.isArray(qd)?qd.length:0;
-    parts.push(`[QUALIDADE]\nTotal bugs/defeitos: ${total}`);
+    const items = Array.isArray(APP.qualidadeData) ? APP.qualidadeData : [];
+    const total  = items.length;
+    const _isDoneQ = s => { const sl=(s||'').toLowerCase(); return sl==='done'||sl==='closed'||sl==='resolved'||sl==='completed'||sl==='fechado'||sl==='finalizado'; };
+    const open   = items.filter(i => !_isDoneQ(i.fields?.['System.State']));
+    const closed = items.filter(i =>  _isDoneQ(i.fields?.['System.State']));
+    const _group = key => {
+      const m = {};
+      items.forEach(i => { const v = i.fields?.[key]||'Não definido'; m[v]=(m[v]||0)+1; });
+      return Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`  ${k}: ${v}`).join('\n');
+    };
+    const avgDays = (() => {
+      const resolved = items.filter(i => _isDoneQ(i.fields?.['System.State']) && i.fields?.['Microsoft.VSTS.Common.ClosedDate'] && i.fields?.['System.CreatedDate']);
+      if (!resolved.length) return null;
+      const sum = resolved.reduce((a,i) => a + (new Date(i.fields['Microsoft.VSTS.Common.ClosedDate']) - new Date(i.fields['System.CreatedDate']))/86400000, 0);
+      return (sum/resolved.length).toFixed(1);
+    })();
+    parts.push(
+      `[QUALIDADE]\nTotal: ${total} | Abertos: ${open.length} | Fechados: ${closed.length}`+
+      (avgDays!=null?` | Tempo médio resolução: ${avgDays}d`:'')+
+      `\nPor severidade:\n${_group('Microsoft.VSTS.Common.Severity')}`+
+      `\nPor prioridade:\n${_group('Microsoft.VSTS.Common.Priority')}`+
+      `\nPor estado:\n${_group('System.State')}`
+    );
   }
   // 4. Team-specific RAG (agent training)
   if (team) {
