@@ -508,6 +508,23 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .qual-tbl th{background:#f8fafc;padding:8px 10px;text-align:left;font-weight:700;font-size:10px;text-transform:uppercase;color:#64748b;border-bottom:2px solid var(--border);white-space:nowrap}
 .qual-tbl td{padding:7px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
 .qual-tbl tbody tr:hover td{background:#f8fafc}
+.qual-tbl tbody tr.qual-child-row:hover td{background:transparent}
+/* ── Timeline card ─────────────────────────────────────────────── */
+.tl-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;margin-bottom:10px}
+.tl-header{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;margin-bottom:0;padding-bottom:0}
+.tl-header:hover{color:#1e293b}
+.tl-chevron{font-size:9px;transition:transform .15s}
+.tl-track{display:flex;align-items:center;flex-wrap:wrap;gap:4px 0;padding:10px 0 4px}
+.tl-step{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:88px;max-width:108px;background:#fff;border:1px solid #e2e8f0;border-radius:7px;padding:7px 8px;font-size:11px;text-align:center;flex-shrink:0}
+.tl-step.tl-current{background:#eff6ff;border-color:#93c5fd}
+.tl-col-name{font-weight:600;color:#1e293b;font-size:11px;word-break:break-word;line-height:1.3;max-width:92px}
+.tl-days{font-size:14px;font-weight:700;color:#374151;margin:2px 0;line-height:1}
+.tl-days.tl-alert{color:#dc2626;background:#fef2f2;border-radius:4px;padding:1px 6px}
+.tl-who{font-size:10px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+.tl-date{font-size:10px;color:#94a3b8}
+.tl-arrow{font-size:20px;color:#cbd5e1;display:flex;align-items:center;padding:0 3px;flex-shrink:0;line-height:1}
+.tl-loading{font-size:11px;color:#94a3b8;padding:8px 0}
+.tl-block{font-size:10px;font-weight:700;color:#dc2626;background:#fef2f2;border-radius:4px;padding:1px 5px;margin-top:2px}
 .qual-llm-section{border-top:1px solid var(--border);padding:16px 24px}
 .qual-llm-hdr{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .qual-llm-title{font-size:13px;font-weight:700;color:#1e293b}
@@ -521,9 +538,8 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .bl-prog-lbl{font-size:10px;color:#64748b;font-weight:500}
 .kpi-tip{position:relative;display:inline-flex;align-items:center;gap:3px}
 .kpi-tip-icon{font-size:9px;font-style:normal;color:#94a3b8;border:1px solid #cbd5e1;border-radius:50%;width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;line-height:1}
-.kpi-tip-box{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1e293b;color:#f1f5f9;font-size:11px;font-weight:400;line-height:1.55;padding:9px 11px;border-radius:7px;white-space:normal;width:230px;z-index:200;box-shadow:0 6px 18px rgba(0,0,0,.35);pointer-events:none;text-align:left}
+.kpi-tip-box{display:none;position:fixed;background:#1e293b;color:#f1f5f9;font-size:11px;font-weight:400;line-height:1.55;padding:9px 11px;border-radius:7px;white-space:normal;width:230px;z-index:9999;box-shadow:0 6px 18px rgba(0,0,0,.35);pointer-events:none;text-align:left}
 .kpi-tip-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1e293b}
-.kpi-tip:hover .kpi-tip-box{display:block}
 .no-tasks-warn{background:#fee2e2;color:#dc2626;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;cursor:default}
 .no-est-warn{background:#ffedd5;color:#c2410c;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap;cursor:default}
 .sp-filter-bar{background:#f8fafc;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
@@ -573,6 +589,18 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .fc-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:0}
 .fc-msg-user{align-self:flex-end;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px 12px 0 12px;padding:9px 13px;font-size:13px;max-width:84%;line-height:1.45;color:#1e293b;word-break:break-word}
 .fc-msg-ai{align-self:flex-start;background:#f8fafc;border:1px solid var(--border);border-radius:12px 12px 12px 0;padding:9px 13px;font-size:13px;max-width:88%;line-height:1.55;color:#1e293b;word-break:break-word}
+.fc-msg-ai h3.md-h,.fc-msg-ai h4.md-h,.fc-msg-ai h5.md-h{font-size:13px;font-weight:700;color:#1e293b;margin:6px 0 2px;line-height:1.3}
+.fc-msg-ai .md-p{margin:0 0 5px;line-height:1.55}
+.fc-msg-ai .md-p:last-child{margin-bottom:0}
+.fc-msg-ai .md-ul,.fc-msg-ai .md-ol{margin:3px 0 5px;padding-left:18px}
+.fc-msg-ai .md-ul li,.fc-msg-ai .md-ol li{margin-bottom:2px;line-height:1.5}
+.fc-msg-ai .md-hr{border:none;border-top:1px solid #e2e8f0;margin:6px 0}
+.fc-msg-ai .md-pre{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:8px 10px;font-size:11.5px;overflow-x:auto;margin:4px 0;white-space:pre-wrap;word-break:break-word;font-family:monospace}
+.fc-msg-ai .md-ic{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:3px;padding:1px 5px;font-size:11.5px;font-family:monospace;color:#0f172a}
+.fc-msg-ai .md-a{color:var(--blue);text-decoration:none}
+.fc-msg-ai .md-a:hover{text-decoration:underline}
+.fc-msg-ai strong{font-weight:700}
+.fc-msg-ai em{font-style:italic;color:#475569}
 .fc-welcome{text-align:center;padding:28px 16px;color:#64748b;font-size:13px;margin:auto 0}
 .fc-welcome-icon{font-size:34px;margin-bottom:8px}
 .fc-input-area{border-top:1px solid var(--border);padding:10px;display:flex;gap:8px;flex-shrink:0;background:#fff;align-items:flex-end}
@@ -1159,7 +1187,7 @@ const AzureAPI = {
   },
   async getWorkItemsBatch(org, proj, ids, pat) {
     if (!ids.length) return [];
-    const fields = 'System.Id,System.WorkItemType,System.Title,System.State,System.Parent,System.AssignedTo,System.Tags,Microsoft.VSTS.CMMI.Blocked,Microsoft.VSTS.Common.Severity,Microsoft.VSTS.Scheduling.StoryPoints,Microsoft.VSTS.Scheduling.RemainingWork,Microsoft.VSTS.Scheduling.CompletedWork,Microsoft.VSTS.Common.Activity';
+    const fields = 'System.Id,System.WorkItemType,System.Title,System.State,System.Parent,System.AssignedTo,System.Tags,System.IterationPath,System.CreatedDate,Custom.Block,Microsoft.VSTS.Common.Severity,Microsoft.VSTS.Common.ClosedDate,Microsoft.VSTS.Scheduling.StoryPoints,Microsoft.VSTS.Scheduling.RemainingWork,Microsoft.VSTS.Scheduling.CompletedWork,Microsoft.VSTS.Common.Activity';
     const all = [];
     for (let i = 0; i < ids.length; i += 200) {
       const chunk = ids.slice(i, i+200).join(',');
@@ -1364,9 +1392,9 @@ const DataProcessor = {
   _blockStatus(item) {
     const f     = item.fields;
     const tags  = String(f['System.Tags']||'').toLowerCase();
-    const cmmi  = String(f['Microsoft.VSTS.CMMI.Blocked']||'').toLowerCase();
     const st    = String(f['System.State']||'').toLowerCase();
-    if (cmmi === 'yes' || tags.includes('blocked') || tags.includes('bloqueado') || st.includes('block')) return 'BLOCKED';
+    const block = f['Custom.Block'];
+    if (block === true || block === 'true' || block === 'True' || tags.includes('blocked') || tags.includes('bloqueado') || tags.includes('block') || st.includes('block')) return 'BLOCKED';
     if (tags.includes('fixing') || tags.includes('correção') || st.includes('fixing') || st.includes('fix ') || st === 'fix' || st.includes('corre') || st.includes('ajuste') || st.includes('reopen')) return 'FIXING';
     return 'CLEAR';
   },
@@ -1655,17 +1683,18 @@ const DB = {
         const ex = {}; ch.forEach(c=>{if(c.assignedTo?.trim()) ex[c.assignedTo.trim()]=true;});
         return Object.keys(ex).length>0 ? Object.keys(ex).map(n=>`<span class="mav" title="${e(n)}">${n.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()}</span>`).join('') : '<span style="color:#94a3b8">—</span>';
       })();
-      rows += `<tr class="bl-row${rc}"${ch.length?` onclick="toggleCh('${id}')" style="cursor:pointer"`:''}>`+
-        `<td><span class="xicon${ch.length?'':' noexp'}" id="ico-${id}">${ch.length?'&#9654;':''}</span></td>`+
+      rows += `<tr class="bl-row${rc}" onclick="toggleCh('${id}')" style="cursor:pointer">`+
+        `<td><span class="xicon" id="ico-${id}">&#9654;</span></td>`+
         `<td><span class="badge ${tc}">${e(tl)}</span></td>`+
         `<td class="id-cell"><a href="${url}" target="_blank" class="az-link">#${id}</a></td>`+
         `<td class="title-cell" style="max-width:280px"><a href="${url}" target="_blank" class="az-link title-link">${e(item.title)}</a></td>`+
         `<td><span class="sb ${sc}">${sl}</span></td>`+
         `<td class="exec-cell">${execH}</td>`+
+        `<td class="text-center mono" id="blk-${id}">—</td>`+
         `<td class="text-center" style="padding:4px 8px">${progHtml}</td>`+
         `<td class="text-center mono rem-col">${item.estimativa>0?item.estimativa+'h':'—'}</td>`+
         `<td class="text-center mono">${item.childRem>0?item.childRem+'h':'—'}</td></tr>`;
-      if (ch.length) {
+      {
         const isDoneS = s => { const sl=(s||'').toLowerCase(); return sl==='done'||sl==='closed'||sl==='resolved'; };
         const doing=ch.filter(c=>!isDoneS(c.state)), doneC=ch.filter(c=>isDoneS(c.state));
         const mk=(c,done)=>{
@@ -1686,7 +1715,8 @@ const DB = {
             `<div class="tc-foot"><span class="sb ${sc}" style="font-size:10px">${sl}</span>${!done&&c.remaining>0?`<span class="tc-hours">${c.remaining}h rem.</span>`:(c.estimated>0?`<span class="tc-hours" style="opacity:.6">${c.estimated}h est.</span>`:'')}</div>`+
             (c.assignedTo?`<div class="tc-assigned">${e(c.assignedTo)}</div>`:'')+`</div>`;
         };
-        rows += `<tr class="children-row" id="cr-${id}" style="display:none"><td colspan="9" class="children-cell">`+
+        rows += `<tr class="children-row" id="cr-${id}" data-item-id="${id}" style="display:none"><td colspan="10" class="children-cell">`+
+          `<div class="tl-card"><div class="tl-header" onclick="toggleTimeline(this,${id})">📋 Histórico do Board <span class="tl-chevron">▶</span></div><div class="tl-track" style="display:none"></div></div>`+
           `<div class="children-wrap">`+
           `<div class="children-col"><div class="col-header col-doing">Em andamento (${doing.length})</div><div class="cards-wrap">${doing.map(c=>mk(c,false)).join('')||'<div style="font-size:11px;color:#94a3b8;padding:4px 0;font-style:italic">Nenhuma em andamento</div>'}</div></div>`+
           `<div class="children-col"><div class="col-header col-done">Concluído (${doneC.length})</div><div class="cards-wrap">${doneC.map(c=>mk(c,true)).join('')||'<div style="font-size:11px;color:#94a3b8;padding:4px 0;font-style:italic">Nenhuma concluída</div>'}</div></div>`+
@@ -1701,8 +1731,9 @@ const DB = {
       doing: s.inProgress, done: s.done, blocked: s.blocked, fixing: s.fixing
     };
     document.getElementById('db-backlog').innerHTML =
-      `<div class="bl-table-wrap"><table class="bl-table"><thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">Título</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executores</th><th class="sort-th" style="text-align:center" title="Progresso baseado em Estimativa vs Remaining atual" onclick="sortTbl(this)">Progresso</th><th class="sort-th" style="text-align:center" title="Soma do maior Remaining Work de todas as tasks (incl. concluídas)" onclick="sortTbl(this)">Estimativa</th><th class="sort-th" style="text-align:center" title="Soma do Remaining Work atual das tasks em aberto" onclick="sortTbl(this)">Rem. atual</th></tr></thead>
+      `<div class="bl-table-wrap"><table class="bl-table"><thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">Título</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executores</th><th class="sort-th text-center" title="Dias que o item ficou bloqueado (tag block/bloqueio ou campo Blocked=Yes)" onclick="sortTbl(this)">Bloq.</th><th class="sort-th" style="text-align:center" title="Progresso baseado em Estimativa vs Remaining atual" onclick="sortTbl(this)">Progresso</th><th class="sort-th" style="text-align:center" title="Soma do maior Remaining Work de todas as tasks (incl. concluídas)" onclick="sortTbl(this)">Estimativa</th><th class="sort-th" style="text-align:center" title="Soma do Remaining Work atual das tasks em aberto" onclick="sortTbl(this)">Rem. atual</th></tr></thead>
       <tbody id="bl-tbody">${rows}</tbody></table></div>`;
+    _preloadBlockTimes(backlog.map(i => i.id));
 
     // Progress panel
     const cpct = s.capacityTotal>0?Math.min(Math.round((s.totalRem/s.capacityTotal)*100),100):0;
@@ -3129,27 +3160,47 @@ function renderQualidadeCharts(allItems) {
           const clr = pct >= 80 ? '#16a34a' : pct >= 40 ? '#3b82f6' : '#f59e0b';
           return `<div class="bl-prog"><div class="bl-prog-bar"><div class="bl-prog-fill" style="width:${pct}%;background:${clr}"></div></div><div class="bl-prog-lbl">${pct}% · ${rem||0}h rem</div></div>`;
         })();
+    const createdDate = i.fields['System.CreatedDate'];
+    const closedDate  = i.fields['Microsoft.VSTS.Common.ClosedDate'];
+    const isDoneItem  = _isDone(stateStr);
+    let tempoDias = null;
+    if (createdDate) {
+      const end = isDoneItem && closedDate ? new Date(closedDate) : new Date();
+      tempoDias = Math.round((end - new Date(createdDate)) / 86400000);
+    }
+    const tempoHtml = tempoDias === null
+      ? '<span style="color:#94a3b8">—</span>'
+      : isDoneItem
+        ? `${tempoDias} dias`
+        : `<span style="color:${tempoDias>30?'#dc2626':tempoDias>14?'#f59e0b':'#374151'}">${tempoDias} dias ↑</span>`;
     const url2     = `https://dev.azure.com/${encodeURIComponent(Store.getActiveTeam()?.org||'')}/${encodeURIComponent(Store.getActiveTeam()?.proj||'')}/_workitems/edit/${i.id}`;
-    return `<tr>` +
+    return (
+      `<tr class="qual-parent-row" onclick="toggleCh('q${i.id}')" style="cursor:pointer">` +
+      `<td><span class="xicon" id="ico-q${i.id}">&#9654;</span></td>` +
       `<td><span class="badge ${tc2}">${esc2(tipo2)}</span></td>` +
       `<td><a href="${url2}" target="_blank" class="az-link">${i.id}</a></td>` +
       `<td style="max-width:260px"><a href="${url2}" target="_blank" class="az-link">${esc2(i.fields['System.Title']||'')}</a></td>` +
       `<td><span class="sb ${sc}">${esc2(stateStr)}</span></td>` +
       `<td class="exec-cell">${execH}</td>` +
+      `<td class="text-center mono">${tempoHtml}</td>` +
+      `<td class="text-center mono" id="blk-${i.id}">—</td>` +
       `<td class="text-center" style="padding:4px 8px">${progHtml}</td>` +
       `<td class="text-center mono">${estFmt}</td>` +
       `<td class="text-center mono">${remFmt}</td>` +
       `<td><span style="display:inline-flex;align-items:center;gap:5px"><span style="color:${sevColor(sev2)};font-size:14px;line-height:1">●</span>${esc2(sev2)}</span></td>` +
       `<td><span style="display:inline-flex;align-items:center;gap:5px"><span style="color:${priColor(pri)};font-size:14px;line-height:1">●</span>${pri}</span></td>` +
-      `</tr>`;
+      `</tr>` +
+      `<tr class="qual-child-row" id="cr-q${i.id}" data-item-id="${i.id}" style="display:none"><td colspan="13" class="children-cell"><div class=\"tl-card\"><div class=\"tl-header\" onclick=\"toggleTimeline(this,${i.id})\">📋 Histórico do Board <span class=\"tl-chevron\">▶</span></div><div class=\"tl-track\" style=\"display:none\"></div></div></td></tr>`
+    );
   }).join('');
-  const tblHtml = `<div class="qual-tbl-wrap"><table class="qual-tbl"><thead><tr><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">Nome</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executor</th><th class="sort-th" style="text-align:center" title="Progresso baseado em Estimativa vs Remaining atual" onclick="sortTbl(this)">Progresso</th><th class="sort-th text-center" title="Bug: max RemainingWork histórico via revisões. Defect: soma max rem. das tasks filhas — mesmo critério da tabela de Sprint." onclick="sortTbl(this)">Estimativa</th><th class="sort-th text-center" title="Microsoft.VSTS.Scheduling.RemainingWork" onclick="sortTbl(this)">Remaining Work</th><th class="sort-th" onclick="sortTbl(this)">Severidade</th><th class="sort-th" onclick="sortTbl(this)">Prioridade</th></tr></thead><tbody>${tblRows}</tbody></table></div>`;
+  const tblHtml = `<div class="qual-tbl-wrap"><table class="qual-tbl"><thead><tr><th style="width:20px"></th><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">Nome</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executor</th><th class="sort-th text-center" title="Itens fechados: dias entre criação e fechamento. Itens abertos: dias desde a criação. ↑ = ainda em aberto." onclick="sortTbl(this)">Tempo Correção</th><th class="sort-th text-center" title="Dias que o item ficou bloqueado (tag block/bloqueio ou campo Blocked=Yes)" onclick="sortTbl(this)">Bloq.</th><th class="sort-th" style="text-align:center" title="Progresso baseado em Estimativa vs Remaining atual" onclick="sortTbl(this)">Progresso</th><th class="sort-th text-center" title="Bug: max RemainingWork histórico via revisões. Defect: soma max rem. das tasks filhas — mesmo critério da tabela de Sprint." onclick="sortTbl(this)">Estimativa</th><th class="sort-th text-center" title="Microsoft.VSTS.Scheduling.RemainingWork" onclick="sortTbl(this)">Remaining Work</th><th class="sort-th" onclick="sortTbl(this)">Severidade</th><th class="sort-th" onclick="sortTbl(this)">Prioridade</th></tr></thead><tbody>${tblRows}</tbody></table></div>`;
 
   content.innerHTML = kpiHtml + `<div class="qual-charts-3">
     <div class="qual-chart-wrap"><div class="qual-chart-title">🔴 Por Severity</div><div style="position:relative;height:220px"><canvas id="qc-sev"></canvas></div></div>
     <div class="qual-chart-wrap"><div class="qual-chart-title">🎯 Por Priority</div><div style="position:relative;height:220px"><canvas id="qc-pri"></canvas></div></div>
     <div class="qual-chart-wrap"><div class="qual-chart-title">📋 Por State</div><div style="position:relative;height:220px"><canvas id="qc-state"></canvas></div></div>
   </div>` + filterBarHtml + tblHtml;
+  _preloadBlockTimes(items.map(i => i.id));
 
   const count = (arr, key) => { const map={}; arr.forEach(i=>{const v=i.fields[key]||'Não definido'; map[v]=(map[v]||0)+1;}); return map; };
 
@@ -3215,18 +3266,33 @@ function _renderHistoryTable(backlog, tasks, team) {
       return Object.keys(ex).length ? Object.keys(ex).map(n=>`<span class="mav" title="${e2(n)}">${n.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()}</span>`).join('') : '<span style="color:#94a3b8">\u2014</span>';
     })();
 
-    rows += `<tr class="bl-row"${ch.length?` onclick="toggleCh('${hid}')" style="cursor:pointer"`:''}>`+
-      `<td><span class="xicon${ch.length?'':' noexp'}" id="ico-${hid}">${ch.length?'&#9654;':''}</span></td>`+
+    const _isDoneEf = s => { const sl2=(s||'').toLowerCase(); return sl2==='done'||sl2==='closed'||sl2==='resolved'||sl2==='concluído'||sl2==='completed'||sl2==='finalizado'||sl2==='fechado'; };
+    let tempoDias = null;
+    if (item.createdDate) {
+      const done2 = _isDoneEf(item.state);
+      const end2  = done2 && item.closedDate ? new Date(item.closedDate) : new Date();
+      tempoDias   = Math.round((end2 - new Date(item.createdDate)) / 86400000);
+    }
+    const tempoImplHtml = tempoDias === null
+      ? '<span style="color:#94a3b8">\u2014</span>'
+      : _isDoneEf(item.state)
+        ? `${tempoDias} dias`
+        : `<span style="color:${tempoDias>30?'#dc2626':tempoDias>14?'#f59e0b':'#374151'}">${tempoDias} dias \u2191</span>`;
+
+    rows += `<tr class="bl-row" onclick="toggleCh('${hid}')" style="cursor:pointer">`+
+      `<td><span class="xicon" id="ico-${hid}">&#9654;</span></td>`+
       `<td><span class="badge ${tc}">${e2(tl)}</span></td>`+
       `<td class="id-cell"><a href="${url}" target="_blank" class="az-link">#${item.id}</a></td>`+
       `<td class="title-cell" style="max-width:280px"><a href="${url}" target="_blank" class="az-link title-link">${e2(item.title)}</a></td>`+
       `<td><span class="sb ${sc}">${sl}</span></td>`+
       `<td class="exec-cell">${execH}</td>`+
+      `<td class="text-center mono">${tempoImplHtml}</td>`+
+      `<td class="text-center mono" id="blk-${item.id}">—</td>`+
       `<td class="text-center" style="padding:4px 8px">${progHtml}</td>`+
       `<td class="text-center mono rem-col">${item.estimativa>0?item.estimativa+'h':'\u2014'}</td>`+
       `<td class="text-center mono">${item.childRem>0?item.childRem+'h':'\u2014'}</td></tr>`;
 
-    if (ch.length) {
+    {
       const isDoneS = s => { const sl2=(s||'').toLowerCase(); return sl2==='done'||sl2==='closed'||sl2==='resolved'; };
       const doing=ch.filter(c=>!isDoneS(c.state)), doneC=ch.filter(c=>isDoneS(c.state));
       const mkCard=(c,done)=>{
@@ -3238,7 +3304,8 @@ function _renderHistoryTable(backlog, tasks, team) {
           `<div class="tc-foot"><span class="sb ${sc2}" style="font-size:10px">${sl2}</span>${!done&&c.remaining>0?`<span class="tc-hours">${c.remaining}h rem.</span>`:done&&c.estimated>0?`<span class="tc-hours" style="opacity:.6">${c.estimated}h est.</span>`:''}</div>`+
           (c.assignedTo?`<div class="tc-assigned">${e2(c.assignedTo)}</div>`:'')+`</div>`;
       };
-      rows += `<tr class="children-row" id="cr-${hid}" style="display:none"><td colspan="9" class="children-cell">`+
+      rows += `<tr class="children-row" id="cr-${hid}" data-item-id="${item.id}" style="display:none"><td colspan="11" class="children-cell">`+
+        `<div class="tl-card"><div class="tl-header" onclick="toggleTimeline(this,${item.id})">📋 Histórico do Board <span class="tl-chevron">▶</span></div><div class="tl-track" style="display:none"></div></div>`+
         `<div class="children-wrap">`+
         `<div class="children-col"><div class="col-header col-doing">Em andamento (${doing.length})</div><div class="cards-wrap">${doing.map(c=>mkCard(c,false)).join('')||'<div style="font-size:11px;color:#94a3b8;padding:4px 0;font-style:italic">Nenhuma em andamento</div>'}</div></div>`+
         `<div class="children-col"><div class="col-header col-done">Conclu\u00eddo (${doneC.length})</div><div class="cards-wrap">${doneC.map(c=>mkCard(c,true)).join('')||'<div style="font-size:11px;color:#94a3b8;padding:4px 0;font-style:italic">Nenhuma conclu\u00edda</div>'}</div></div>`+
@@ -3256,7 +3323,7 @@ function _renderHistoryTable(backlog, tasks, team) {
     `</div>` : '';
 
   return warningBanner +
-    `<div class="bl-table-wrap"><table class="bl-table"><thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">T\u00edtulo</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executores</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Progresso</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Estimativa</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Rem. atual</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    `<div class="bl-table-wrap"><table class="bl-table"><thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">T\u00edtulo</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executores</th><th class="sort-th text-center" title="Itens fechados: dias entre cria\u00e7\u00e3o e fechamento. Itens abertos: dias desde a cria\u00e7\u00e3o. \u2191 = ainda em aberto." onclick="sortTbl(this)">Tempo Impl.</th><th class="sort-th text-center" title="Dias que o item ficou bloqueado (tag block/bloqueio ou campo Blocked=Yes)" onclick="sortTbl(this)">Bloq.</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Progresso</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Estimativa</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Rem. atual</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 async function runEficienciaBacklogTable(team, pat, checked) {
@@ -3280,7 +3347,9 @@ async function runEficienciaBacklogTable(team, pat, checked) {
         state: item.fields['System.State'],
         assignedTo: DataProcessor._dispName(item.fields['System.AssignedTo']),
         sprint: (item.fields['System.IterationPath']||'').split('\\').pop(),
-        blockStatus: DataProcessor._blockStatus(item)
+        blockStatus: DataProcessor._blockStatus(item),
+        createdDate: item.fields['System.CreatedDate'] || null,
+        closedDate:  item.fields['Microsoft.VSTS.Common.ClosedDate'] || null
       };
       if (isTask) {
         tasks.push({ ...obj, parentId: parentId||null,
@@ -3413,7 +3482,31 @@ function applyEfBacklogFilters() {
 
   document.getElementById('ef-backlog-content').innerHTML =
     _renderHistoryTable(filtered, raw.tasks, raw.team);
+  _preloadBlockTimes(filtered.map(i => i.id));
 }
+
+// KPI tooltip: fixed positioning to escape stacking contexts
+document.addEventListener('mouseover', e => {
+  const icon = e.target.closest('.kpi-tip-icon');
+  if (!icon) return;
+  const box = icon.closest('.kpi-tip')?.querySelector('.kpi-tip-box');
+  if (!box) return;
+  box.style.display = 'block';
+  box.style.top = '-999px'; box.style.left = '-999px';
+  const bh = box.offsetHeight;
+  const r  = icon.getBoundingClientRect();
+  let left = r.left + r.width / 2 - 115;
+  left = Math.max(8, Math.min(left, window.innerWidth - 238));
+  let top = r.top - bh - 10;
+  if (top < 8) top = r.bottom + 10;
+  box.style.left = left + 'px';
+  box.style.top  = top  + 'px';
+});
+document.addEventListener('mouseout', e => {
+  if (!e.target.closest('.kpi-tip-icon')) return;
+  const box = e.target.closest('.kpi-tip')?.querySelector('.kpi-tip-box');
+  if (box) box.style.display = 'none';
+});
 
 // Close dropdowns when clicking outside
 document.addEventListener('click', e => {
@@ -3639,6 +3732,110 @@ function buildFeedbackContext() {
   return ctx;
 }
 
+function _fmtBlockTime(ms, startMs) {
+  const h = ms / 3600000;
+  if (h <= 8) return Math.round(h)+'h';
+  if (h < 24 && startMs) {
+    const tod = new Date(); tod.setHours(0,0,0,0);
+    const yes = new Date(tod); yes.setDate(tod.getDate()-1);
+    const sd  = new Date(startMs); sd.setHours(0,0,0,0);
+    if (sd.getTime()===tod.getTime()) return 'hoje';
+    if (sd.getTime()===yes.getTime()) return 'ontem';
+  }
+  return Math.round(ms/86400000)+'d';
+}
+
+async function _preloadBlockTimes(ids) {
+  const team = Store.getActiveTeam();
+  const pat  = await Store.getActivePat();
+  if (!team || !pat) return;
+  await Promise.all(ids.map(async id => {
+    try {
+      const revs   = await EficienciaAPI.getRevisions(team.org, team.proj, String(id), pat);
+      const result = _buildColumnTimeline(revs);
+      if (result.totalBlockMs > 0) {
+        const blkEl = document.getElementById('blk-'+id);
+        if (blkEl) blkEl.innerHTML = `<span style="color:#dc2626;font-weight:700">${_fmtBlockTime(result.totalBlockMs, result.totalBlockStartMs)}</span>`;
+      }
+    } catch {}
+  }));
+}
+
+function _buildColumnTimeline(revs) {
+  if (!revs || !revs.length) return { html: '<div class="tl-loading">Sem histórico disponível.</div>', totalBlockDays: 0 };
+  const steps = [];
+  let prevCol = '', prevDate = null;
+  for (const rev of revs) {
+    const f   = rev.fields || {};
+    const col = f['System.BoardColumn'] || f['System.State'] || '';
+    const at  = f['System.ChangedDate'];
+    const by  = f['System.ChangedBy'];
+    const who = typeof by === 'object' ? (by?.displayName || '') : String(by || '');
+    if (!col) continue;
+    if (col !== prevCol) {
+      if (prevCol && prevDate && at && steps.length) {
+        const endDt = new Date(at);
+        steps[steps.length - 1].days = Math.max(0, Math.round((endDt - new Date(prevDate)) / 86400000));
+        steps[steps.length - 1].endDate = endDt;
+      }
+      steps.push({ col, startDate: at, enteredBy: who, days: null, isCurrent: false, endDate: null, blockMs: 0, blockStartMs: null });
+      prevCol = col; prevDate = at;
+    }
+  }
+  if (steps.length) {
+    const last = steps[steps.length - 1];
+    if (last.days === null) {
+      const now = new Date();
+      last.days = last.startDate ? Math.round((now - new Date(last.startDate)) / 86400000) : null;
+      last.endDate = now;
+      last.isCurrent = true;
+    }
+  }
+  if (!steps.length) return { html: '<div class="tl-loading">Sem mudanças de coluna registradas.</div>', totalBlockDays: 0 };
+
+  const blockIntervals = [];
+  let blockStart = null;
+  for (const rev of revs) {
+    const f = rev.fields || {};
+    const b = f['Custom.Block'];
+    const tags2 = String(f['System.Tags'] || '').toLowerCase();
+    const isBlocked = b === true || b === 'true' || b === 'True' ||
+      tags2.includes('blocked') || tags2.includes('bloqueado') || tags2.includes('block');
+    const at = f['System.ChangedDate'];
+    if (isBlocked && blockStart === null) { blockStart = at; }
+    else if (!isBlocked && blockStart !== null) { blockIntervals.push({ start: new Date(blockStart), end: new Date(at) }); blockStart = null; }
+  }
+  if (blockStart !== null) blockIntervals.push({ start: new Date(blockStart), end: new Date() });
+
+  for (const step of steps) {
+    if (!step.startDate || !step.endDate) continue;
+    const sS = new Date(step.startDate).getTime(), sE = step.endDate.getTime();
+    let bms = 0, bsms = null;
+    for (const iv of blockIntervals) {
+      const os = Math.max(iv.start.getTime(), sS), oe = Math.min(iv.end.getTime(), sE);
+      if (oe > os) { bms += (oe - os); if (bsms === null) bsms = os; }
+    }
+    step.blockMs = bms; step.blockStartMs = bsms;
+  }
+  const totalBlockMs = blockIntervals.reduce((s, iv) => s + (iv.end.getTime() - iv.start.getTime()), 0);
+  const totalBlockStartMs = blockIntervals.length ? blockIntervals[0].start.getTime() : null;
+
+  const fmtD  = d => { if (!d) return ''; const dt = new Date(d); return dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}); };
+  const short = n => { if (!n) return '—'; const p = n.trim().split(' '); return p.length > 1 ? p[0]+' '+p[p.length-1][0]+'.' : n; };
+  const trunc = c => c.length > 22 ? c.slice(0,20)+'…' : c;
+  const html  = steps.map((s, i) => {
+    const alert = s.days !== null && s.days > 15;
+    return `<div class="tl-step${s.isCurrent ? ' tl-current' : ''}">`+
+      `<div class="tl-col-name" title="${s.col}">${trunc(s.col)}</div>`+
+      `<div class="tl-days${alert ? ' tl-alert' : ''}">${s.days !== null ? s.days+'d' : '—'}</div>`+
+      `<div class="tl-who" title="${s.enteredBy}">${short(s.enteredBy)}</div>`+
+      `<div class="tl-date">${fmtD(s.startDate)}</div>`+
+      (s.blockMs > 0 ? `<div class="tl-block">🔒 ${_fmtBlockTime(s.blockMs, s.blockStartMs)}</div>` : '')+
+      `</div>${i < steps.length - 1 ? '<div class="tl-arrow">›</div>' : ''}`;
+  }).join('');
+  return { html, totalBlockMs, totalBlockStartMs };
+}
+
 function toggleCh(id) {
   const row = document.getElementById('cr-'+id);
   const ico = document.getElementById('ico-'+id);
@@ -3646,6 +3843,35 @@ function toggleCh(id) {
   const open = row.style.display !== 'none';
   row.style.display = open ? 'none' : '';
   if (ico) ico.classList.toggle('expanded', !open);
+}
+
+async function toggleTimeline(btn, itemId) {
+  const card  = btn.closest('.tl-card');
+  const track = card.querySelector('.tl-track');
+  const chev  = btn.querySelector('.tl-chevron');
+  if (!card.dataset.tlLoaded) {
+    if (chev) chev.textContent = '⏳';
+    const team = Store.getActiveTeam();
+    const pat  = await Store.getActivePat();
+    try {
+      const revs = await EficienciaAPI.getRevisions(team.org, team.proj, String(itemId), pat);
+      const result = _buildColumnTimeline(revs);
+      track.innerHTML = result.html;
+      if (result.totalBlockMs > 0) {
+        const blkEl = document.getElementById('blk-'+itemId);
+        if (blkEl) blkEl.innerHTML = `<span style="color:#dc2626;font-weight:700">${_fmtBlockTime(result.totalBlockMs, result.totalBlockStartMs)}</span>`;
+      }
+    } catch {
+      track.innerHTML = '<div class="tl-loading">Histórico indisponível.</div>';
+    }
+    card.dataset.tlLoaded = '1';
+    track.style.display = '';
+    if (chev) chev.textContent = '▼';
+    return;
+  }
+  const open = track.style.display !== 'none';
+  track.style.display = open ? 'none' : '';
+  if (chev) chev.textContent = open ? '▶' : '▼';
 }
 
 function sortTbl(th) {
@@ -3668,12 +3894,12 @@ function sortTbl(th) {
     if (typeof va === 'number' && typeof vb === 'number') return isAsc ? va - vb : vb - va;
     return isAsc ? String(va).localeCompare(String(vb),'pt',{numeric:true}) : String(vb).localeCompare(String(va),'pt',{numeric:true});
   };
-  if (table.classList.contains('bl-table')) {
+  if (table.classList.contains('bl-table') || table.classList.contains('qual-tbl')) {
     const allRows = Array.from(tbody.querySelectorAll('tr'));
     const groups = [];
     allRows.forEach(r => {
-      if (r.classList.contains('bl-row')) groups.push({p:r, c:null});
-      else if (r.classList.contains('children-row') && groups.length) groups[groups.length-1].c = r;
+      if (r.classList.contains('bl-row') || r.classList.contains('qual-parent-row')) groups.push({p:r, c:null});
+      else if ((r.classList.contains('children-row') || r.classList.contains('qual-child-row')) && groups.length) groups[groups.length-1].c = r;
     });
     groups.sort((a,b) => cmp(a.p.querySelectorAll('td')[col], b.p.querySelectorAll('td')[col]));
     groups.forEach(g => { tbody.appendChild(g.p); if (g.c) tbody.appendChild(g.c); });
@@ -3779,11 +4005,39 @@ function fcWelcomeHtml() {
   return `<div class="fc-welcome"><div class="fc-welcome-icon">🤖</div><strong>AgileViewAI</strong><p style="margin-top:6px">Time ativo: <strong>${teamName}</strong></p><p style="margin-top:6px;font-size:12px">Pergunte sobre sprint, qualidade, eficiência ou qualquer aspecto do time.</p></div>`;
 }
 
+function _mdToHtml(md) {
+  md = md.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim();
+  const blocks = [], icodes = [];
+  md = md.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, c) => { blocks.push(c.trim()); return '\x02B'+(blocks.length-1)+'\x03'; });
+  md = md.replace(/`([^`\n]+)`/g, (_, c) => { icodes.push(c); return '\x02I'+(icodes.length-1)+'\x03'; });
+  const _e = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const inl = t => _e(t)
+    .replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g,'<em>$1</em>')
+    .replace(/(?<!_)_([^_\n]+)_(?!_)/g,'<em>$1</em>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" class="md-a">$1</a>')
+    .replace(/\x02I(\d+)\x03/g, (_,i) => `<code class="md-ic">${_e(icodes[+i])}</code>`);
+  const out = []; let ul=false, ol=false;
+  const cls = () => { if(ul){out.push('</ul>');ul=false;} if(ol){out.push('</ol>');ol=false;} };
+  for (const line of md.split('\n')) {
+    let m;
+    if (/^\x02B\d+\x03$/.test(line))              { cls(); out.push(line); continue; }
+    if ((m=line.match(/^(#{1,3})\s+(.*)/)))          { cls(); const t=['h3','h4','h5'][m[1].length-1]||'h5'; out.push(`<${t} class="md-h">${inl(m[2])}</${t}>`); continue; }
+    if (/^[-*]{3,}\s*$/.test(line))                 { cls(); out.push('<hr class="md-hr">'); continue; }
+    if ((m=line.match(/^[-*+]\s+(.*)/)))             { if(ol){out.push('</ol>');ol=false;} if(!ul){out.push('<ul class="md-ul">');ul=true;} out.push(`<li>${inl(m[1])}</li>`); continue; }
+    if ((m=line.match(/^\d+\.\s+(.*)/)))            { if(ul){out.push('</ul>');ul=false;} if(!ol){out.push('<ol class="md-ol">');ol=true;} out.push(`<li>${inl(m[1])}</li>`); continue; }
+    if (!line.trim())                                { cls(); out.push('<div style="height:5px"></div>'); continue; }
+    cls(); out.push(`<p class="md-p">${inl(line)}</p>`);
+  }
+  cls();
+  return out.join('').replace(/\x02B(\d+)\x03/g, (_,i) => `<pre class="md-pre"><code>${_e(blocks[+i])}</code></pre>`);
+}
+
 function fcBubbleHtml(role, content) {
-  const text = esc(content).replace(/\n/g, '<br>');
   return role === 'user'
-    ? `<div class="fc-msg-user">${text}</div>`
-    : `<div class="fc-msg-ai">${text}</div>`;
+    ? `<div class="fc-msg-user">${esc(content).replace(/\n/g,'<br>')}</div>`
+    : `<div class="fc-msg-ai">${_mdToHtml(content)}</div>`;
 }
 
 function fcRenderSidebar() {
@@ -3973,7 +4227,7 @@ async function fcSend() {
       if (!r.ok) throw new Error(`Gemini ${r.status}: ${(await r.text()).substring(0,200)}`);
       resp = (await r.json()).candidates?.[0]?.content?.parts?.[0]?.text || '';
     } else throw new Error('Provider desconhecido: '+provider);
-    thinkEl.innerHTML = esc(resp.replace(/^```[\w]*\n?/,'').replace(/```$/,'').trim()).replace(/\n/g,'<br>');
+    thinkEl.innerHTML = _mdToHtml(resp);
     const userMsg = {role:'user',    content:question, timestamp:Date.now()};
     const aiMsg   = {role:'assistant',content:resp,     timestamp:Date.now()};
     APP.chatMessages.push(userMsg, aiMsg);
@@ -4352,30 +4606,178 @@ function handleImport(e) {
 
 // ── DOWNLOAD DASHBOARD HTML ───────────────────────────────────────────
 function downloadDashboardHtml() {
-  const data = APP.sprintData;
-  if (!data) { toast('Sem dados para exportar.','warn'); return; }
-  const el = document.getElementById('panel-dashboard');
-  const sprintLabel = data.activeSprint.path.split('\\').pop();
-  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>AgileViewAI — ${sprintLabel}</title>
-<style>${document.querySelector('style').textContent.replace(/#vault-overlay[^}]*}/g,'').replace(/#app[^}]*}/g,'')}</style>
-</head><body style="background:#f8fafc;padding:20px;font-family:-apple-system,sans-serif">
-<div style="background:#1e293b;color:#fff;padding:12px 24px;border-radius:10px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
-<div><strong>${esc(data.team.proj)}</strong> · ${esc(sprintLabel)}</div>
-<div style="font-size:12px;color:#94a3b8">Exportado em ${new Date().toLocaleString('pt-BR')}</div>
+  const spData   = APP.sprintData;
+  const efData   = APP.eficienciaData;
+  const qualData = APP.qualidadeData;
+  if (!spData && !efData && !qualData) { toast('Sem dados para exportar. Carregue pelo menos um módulo.','warn'); return; }
+
+  const team = Store.getActiveTeam();
+  const _e   = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const _avg = arr => arr && arr.length ? +(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1) : null;
+  const _pct = (arr,p) => { if(!arr||!arr.length) return null; const s=[...arr].sort((a,b)=>a-b); return Math.round(s[Math.min(Math.ceil(p/100*s.length)-1,s.length-1)]*10)/10; };
+  const _fmtP = (arr,p) => { const v=_pct(arr,p); return v!==null?v+'d':'—'; };
+  const projUrl = `https://dev.azure.com/${encodeURIComponent(team?.org||'')}/${encodeURIComponent(team?.proj||'')}`;
+
+  const css = `*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;color:#1e293b;font-size:13px;padding:20px}h2{font-size:15px;font-weight:700;margin:0 0 12px;color:#1e293b;border-left:4px solid #3b82f6;padding-left:10px}h3{font-size:12px;font-weight:600;margin:16px 0 7px;color:#475569;text-transform:uppercase;letter-spacing:.4px}.rpt-header{background:#1e293b;color:#fff;padding:14px 24px;border-radius:10px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}.rpt-header strong{font-size:15px}.rpt-header span{font-size:11px;color:#94a3b8}.section{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 22px;margin-bottom:18px}.kpi-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}.kpi{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;min-width:120px}.kpi-lbl{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}.kpi-val{font-size:20px;font-weight:700;line-height:1.2}.kpi-sub{font-size:10px;color:#94a3b8;margin-top:2px}.kpi.alert{background:#fef2f2;border-color:#fca5a5}.kpi.alert .kpi-val{color:#dc2626}table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:4px}th{background:#f1f5f9;padding:7px 10px;text-align:left;font-weight:600;color:#475569;border-bottom:2px solid #e2e8f0;white-space:nowrap}td{padding:6px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle}tr:last-child td{border-bottom:none}tr:hover td{background:#fafafa}.badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap}.badge-bug{background:#fef2f2;color:#dc2626}.badge-pbi{background:#eff6ff;color:#2563eb}.sb{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;white-space:nowrap}.s-done{background:#dcfce7;color:#16a34a}.s-doing{background:#dbeafe;color:#1d4ed8}.s-testing{background:#fef9c3;color:#854d0e}.s-todo{background:#f1f5f9;color:#64748b}.tc{text-align:center}a{color:#2563eb;text-decoration:none}.empty{color:#94a3b8;font-style:italic;padding:10px 0;text-align:center}@media print{body{padding:0}.rpt-header{border-radius:0}}`;
+
+  // ── SPRINT ─────────────────────────────────────────────────────────────────
+  let sprintHtml = '';
+  if (spData) {
+    const sp    = spData.activeSprint;
+    const s     = spData.stats || {};
+    const bl    = spData.backlog || [];
+    const tasks = spData.tasks   || [];
+    const cap   = spData.capacity || {};
+    const spLabel = sp.path.split('\\').pop();
+    const kpis = [
+      {l:'Concluídos',    v:s.done||0,        sub:'itens done'},
+      {l:'Em progresso',  v:s.inProgress||0,  sub:'in progress'},
+      {l:'Bloqueados',    v:s.blocked||0,      sub:'bloqueados', al:(s.blocked||0)>0},
+      {l:'Em fixing',     v:s.fixing||0,       sub:'em correção', al:(s.fixing||0)>0},
+      {l:'Alocação',      v:(s.allocPct||0)+'%', sub:`${s.totalRem||0}h / ${s.capacityTotal||0}h`, al:(s.allocPct||0)>100},
+    ];
+    const kpiH = kpis.map(k=>`<div class="kpi${k.al?' alert':''}"><div class="kpi-lbl">${_e(k.l)}</div><div class="kpi-val">${_e(String(k.v))}</div><div class="kpi-sub">${_e(k.sub)}</div></div>`).join('');
+    const scOf = st => { const sl=(st||'').toLowerCase(); if(sl.includes('concluí')||sl==='done'||sl==='closed'||sl==='resolved')return 's-done'; if(sl.includes('progresso')||sl==='active'||sl.includes('progress'))return 's-doing'; if(sl.includes('test')||sl.includes('valid'))return 's-testing'; return 's-todo'; };
+    const blRows = bl.map(item => {
+      const ch  = tasks.filter(t=>t.parentId===item.id);
+      const pct = item.estimativa > 0 ? Math.round(Math.max(0,Math.min(100,(item.estimativa-(item.childRem||0))/item.estimativa*100))) : null;
+      return `<tr>
+        <td><span class="badge badge-pbi">${_e(item.type||'PBI')}</span></td>
+        <td><a href="${projUrl}/_workitems/edit/${item.id}" target="_blank">${item.id}</a></td>
+        <td style="max-width:280px">${_e(item.title||'')}</td>
+        <td><span class="sb ${scOf(item.state)}">${_e(item.state||'')}</span></td>
+        <td>${_e(item.assignedTo||'—')}</td>
+        <td class="tc">${_e(item.sprint||'—')}</td>
+        <td class="tc">${item.estimativa>0?item.estimativa+'h':'—'}</td>
+        <td class="tc">${(item.childRem||0)>0?item.childRem+'h':'—'}</td>
+        <td class="tc">${pct!==null?pct+'%':'—'}</td>
+        <td class="tc">${ch.length}</td>
+      </tr>`;
+    }).join('');
+    const memRows = Object.entries(cap).filter(([,v])=>(v.capacity||0)>0).map(([name,v])=>`<tr><td>${_e(name)}</td><td class="tc">${v.capacity}h</td><td class="tc">${v.daysOff||0}</td></tr>`).join('');
+    sprintHtml = `<div class="section"><h2>🏃 Sprint: ${_e(spLabel)}</h2>
+      <div class="kpi-row">${kpiH}</div>
+      <h3>Backlog — ${bl.length} itens</h3>
+      <table><thead><tr><th>Tipo</th><th>ID</th><th>Nome</th><th>Status</th><th>Responsável</th><th class="tc">Sprint</th><th class="tc">Estimativa</th><th class="tc">Rem.</th><th class="tc">Progresso</th><th class="tc">Tasks</th></tr></thead>
+      <tbody>${blRows||`<tr><td colspan="10" class="empty">Nenhum item</td></tr>`}</tbody></table>
+      ${memRows?`<h3>Capacidade do Time</h3><table><thead><tr><th>Membro</th><th class="tc">Capacidade</th><th class="tc">Folgas</th></tr></thead><tbody>${memRows}</tbody></table>`:''}
+    </div>`;
+  }
+
+  // ── EFICIÊNCIA ─────────────────────────────────────────────────────────────
+  let efHtml = '';
+  if (efData) {
+    const allLT = efData.iterLabels.flatMap(k=>efData.byIter[k]?.leadTimes||[]);
+    const allCT = efData.iterLabels.flatMap(k=>efData.byIter[k]?.cycleTimes||[]);
+    const efKpis = [
+      {l:'Lead Time médio',   v:(efData.avgLeadTime||'—')+'d',    sub:'criação→fechamento'},
+      {l:'Cycle Time médio',  v:(efData.avgCycleTime||'—')+'d',   sub:'ativação→fechamento'},
+      {l:'Velocity média',    v:(efData.avgThroughput||0)+' itens',sub:'itens/sprint'},
+      {l:'Bugs abertos',      v:efData.openBugs||0,               sub:'todo o projeto', al:(efData.openBugs||0)>0},
+      {l:'Lead P50/P80/P95',  v:`${_fmtP(allLT,50)} / ${_fmtP(allLT,80)} / ${_fmtP(allLT,95)}`, sub:'lead time percentis'},
+      {l:'Cycle P50/P80/P95', v:`${_fmtP(allCT,50)} / ${_fmtP(allCT,80)} / ${_fmtP(allCT,95)}`, sub:'cycle time percentis'},
+    ];
+    const efKpiH = efKpis.map(k=>`<div class="kpi${k.al?' alert':''}"><div class="kpi-lbl">${_e(k.l)}</div><div class="kpi-val" style="font-size:${String(k.v).length>10?'13':'20'}px">${_e(String(k.v))}</div><div class="kpi-sub">${_e(k.sub)}</div></div>`).join('');
+    const spRows = efData.iterLabels.map(k => {
+      const it = efData.byIter[k]||{};
+      const avgLT = _avg(it.leadTimes), avgCT = _avg(it.cycleTimes);
+      return `<tr><td>${_e(k)}</td><td class="tc">${it.count||0}</td><td class="tc">${Math.round(it.velocity||0)}h</td>
+        <td class="tc">${avgLT!==null?avgLT+'d':'—'}</td><td class="tc">${_fmtP(it.leadTimes,80)}</td><td class="tc">${_fmtP(it.leadTimes,95)}</td>
+        <td class="tc">${avgCT!==null?avgCT+'d':'—'}</td><td class="tc">${_fmtP(it.cycleTimes,80)}</td><td class="tc">${_fmtP(it.cycleTimes,95)}</td></tr>`;
+    }).join('');
+    const colRows = Object.keys(efData.colTimes||{}).length
+      ? Object.keys(efData.colTimes).sort((a,b)=>(efData.colTimes[b].total/efData.colTimes[b].count)-(efData.colTimes[a].total/efData.colTimes[a].count))
+          .map(c=>`<tr><td>${_e(c)}</td><td class="tc">${(efData.colTimes[c].total/efData.colTimes[c].count).toFixed(1)}d</td><td class="tc">${efData.colTimes[c].count}</td></tr>`).join('')
+      : `<tr><td colspan="3" class="empty">Dados de coluna não disponíveis</td></tr>`;
+    const chartImgs = ['ef-chart-flow','ef-chart-time'].map(id=>{const c=document.getElementById(id);try{return c?`<img src="${c.toDataURL()}" style="max-width:48%;border-radius:6px;border:1px solid #e2e8f0">`:'';}catch{return '';}}).join(' ');
+    efHtml = `<div class="section"><h2>⚡ Eficiência — ${efData.iterLabels.length} sprint(s)</h2>
+      <div class="kpi-row">${efKpiH}</div>
+      ${chartImgs?`<div style="margin-bottom:14px">${chartImgs}</div>`:''}
+      <h3>Por Sprint</h3>
+      <table><thead><tr><th>Sprint</th><th class="tc">Itens</th><th class="tc">Velocity</th><th class="tc">Lead Avg</th><th class="tc">Lead P80</th><th class="tc">Lead P95</th><th class="tc">Cycle Avg</th><th class="tc">Cycle P80</th><th class="tc">Cycle P95</th></tr></thead>
+      <tbody>${spRows||`<tr><td colspan="9" class="empty">Sem dados</td></tr>`}</tbody></table>
+      <h3>Tempo médio por coluna do board</h3>
+      <table><thead><tr><th>Coluna</th><th class="tc">Tempo Médio</th><th class="tc">Amostras</th></tr></thead>
+      <tbody>${colRows}</tbody></table>
+    </div>`;
+  }
+
+  // ── QUALIDADE ──────────────────────────────────────────────────────────────
+  let qualHtml = '';
+  if (qualData && qualData.length) {
+    const _isDone = s => { const sl=(s||'').toLowerCase(); return sl==='done'||sl==='closed'||sl==='resolved'||sl==='completed'; };
+    const _scQ    = s => { const sl=(s||'').toLowerCase(); if(sl==='done'||sl==='closed'||sl==='resolved'||sl==='completed')return 's-done'; if(sl.includes('progress')||sl==='active')return 's-doing'; if(sl.includes('test')||sl.includes('qa'))return 's-testing'; return 's-todo'; };
+    const sevClr  = s => { const sl=(s||'').toLowerCase(); if(sl.includes('critical')||sl.startsWith('1 '))return'#cc0000'; if(sl.includes('high')||sl.startsWith('2 '))return'#e05300'; if(sl.includes('medium')||sl.startsWith('3 '))return'#f0b400'; if(sl.includes('low')||sl.startsWith('4 '))return'#57a300'; return'#94a3b8'; };
+    const priClr  = s => { const v=String(s||''); if(v==='1')return'#cc0000'; if(v==='2')return'#e05300'; if(v==='3')return'#f0b400'; if(v==='4')return'#57a300'; return'#94a3b8'; };
+    const bugs    = qualData.filter(i=>i.fields['System.WorkItemType']==='Bug');
+    const defects = qualData.filter(i=>i.fields['System.WorkItemType']==='Defect');
+    const openAll = qualData.filter(i=>!_isDone(i.fields['System.State']));
+    const doneAll = qualData.filter(i=> _isDone(i.fields['System.State']));
+    const monthAgo= Date.now()-30*86400000;
+    const lastMo  = qualData.filter(i=>{const cd=i.fields['System.CreatedDate'];return cd&&new Date(cd).getTime()>=monthAgo;});
+    const avgDays = arr => { const vals=arr.filter(i=>_isDone(i.fields['System.State'])).map(i=>{const cd=i.fields['Microsoft.VSTS.Common.ClosedDate'],cr=i.fields['System.CreatedDate'];if(!cd||!cr)return null;const d=Math.round((new Date(cd)-new Date(cr))/86400000);return d>=0?d:null;}).filter(v=>v!==null); return vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):null; };
+    const avgBug  = avgDays(bugs), avgDef = avgDays(defects);
+    const totalRem= qualData.reduce((a,i)=>a+(Number(i.fields['Microsoft.VSTS.Scheduling.RemainingWork'])||0),0);
+    const tgo     = APP.qualTempoGasto||{};
+    const qKpis   = [
+      {l:'Abertos',          v:openAll.length,                       sub:'Bugs+Defeitos', al:openAll.length>0},
+      {l:'Fechados',         v:doneAll.length,                       sub:'Done/Closed'},
+      {l:'Último mês',       v:lastMo.length,                        sub:'criados (30d)', al:lastMo.length>0},
+      {l:'Res. médio Bug',   v:avgBug!==null?avgBug+'d':'—',         sub:'criação→fechamento'},
+      {l:'Res. médio Defect',v:avgDef!==null?avgDef+'d':'—',         sub:'criação→fechamento'},
+      {l:'Remaining Work',   v:totalRem>0?totalRem+'h':'—',          sub:'bugs+defeitos abertos'},
+    ];
+    const qKpiH = qKpis.map(k=>`<div class="kpi${k.al?' alert':''}"><div class="kpi-lbl">${_e(k.l)}</div><div class="kpi-val">${_e(String(k.v))}</div><div class="kpi-sub">${_e(k.sub)}</div></div>`).join('');
+    const qRows = [...qualData].sort((a,b)=>(tgo[b.id]||0)-(tgo[a.id]||0)).map(i => {
+      const tipo2=i.fields['System.WorkItemType'], st=i.fields['System.State']||'', at=i.fields['System.AssignedTo'];
+      const atName=typeof at==='object'?(at?.displayName||''):(at||'');
+      const sev2=i.fields['Microsoft.VSTS.Common.Severity']||'—', pri=String(i.fields['Microsoft.VSTS.Common.Priority']||'—');
+      const rem=Number(i.fields['Microsoft.VSTS.Scheduling.RemainingWork'])||0, est=tgo[i.id]||0;
+      const cr=i.fields['System.CreatedDate'], cl=i.fields['Microsoft.VSTS.Common.ClosedDate'], done=_isDone(st);
+      const dias=cr?Math.round(((done&&cl?new Date(cl):new Date())-new Date(cr))/86400000):null;
+      const diasStr=dias===null?'—':dias+(done?' dias':' dias ↑');
+      const diasClr=!done&&dias>30?'#dc2626':!done&&dias>14?'#f59e0b':'inherit';
+      return `<tr>
+        <td><span class="badge ${tipo2==='Bug'?'badge-bug':'badge-pbi'}">${_e(tipo2)}</span></td>
+        <td><a href="${projUrl}/_workitems/edit/${i.id}" target="_blank">${i.id}</a></td>
+        <td style="max-width:260px">${_e(i.fields['System.Title']||'')}</td>
+        <td><span class="sb ${_scQ(st)}">${_e(st)}</span></td>
+        <td>${_e(atName||'—')}</td>
+        <td class="tc" style="color:${diasClr}">${diasStr}</td>
+        <td class="tc">${est>0?est+'h':'—'}</td>
+        <td class="tc">${rem>0?rem+'h':'—'}</td>
+        <td><span style="color:${sevClr(sev2)};font-weight:600">● ${_e(sev2)}</span></td>
+        <td><span style="color:${priClr(pri)};font-weight:600">● ${pri}</span></td>
+      </tr>`;
+    }).join('');
+    qualHtml = `<div class="section"><h2>🎯 Qualidade — ${qualData.length} itens</h2>
+      <div class="kpi-row">${qKpiH}</div>
+      <h3>Bugs e Defeitos — ${qualData.length} itens</h3>
+      <table><thead><tr><th>Tipo</th><th>ID</th><th>Nome</th><th>Status</th><th>Responsável</th><th class="tc">Tempo Correção</th><th class="tc">Estimativa</th><th class="tc">Rem. Work</th><th>Severidade</th><th>Prioridade</th></tr></thead>
+      <tbody>${qRows||`<tr><td colspan="10" class="empty">Nenhum item</td></tr>`}</tbody></table>
+    </div>`;
+  }
+
+  // ── Assemble ───────────────────────────────────────────────────────────────
+  const spLabel2 = spData?spData.activeSprint.path.split('\\').pop():'';
+  const teamName = team?`${_e(team.proj)} — ${_e(team.name)}`:'AgileViewAI';
+  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>AgileViewAI — Relatório${spLabel2?' — '+spLabel2:''}</title>
+<style>${css}</style></head><body>
+<div class="rpt-header">
+  <div><strong>${teamName}</strong>${spLabel2?`<div style="font-size:12px;color:#94a3b8;margin-top:2px">Sprint: ${_e(spLabel2)}</div>`:''}</div>
+  <span>Exportado em ${new Date().toLocaleString('pt-BR')}</span>
 </div>
-${document.getElementById('db-kpis').outerHTML}
-${document.getElementById('db-backlog').outerHTML}
-${document.getElementById('db-progress').outerHTML}
-${document.getElementById('db-insights').outerHTML}
-${document.getElementById('db-members').outerHTML}
-<script>document.querySelectorAll('button').forEach(b=>b.style.display='none');document.querySelectorAll('.chat-section').forEach(e=>e.remove());<\/script>
+${sprintHtml}${efHtml}${qualHtml}
+${!sprintHtml&&!efHtml&&!qualHtml?'<div class="section"><p class="empty">Nenhum módulo com dados disponíveis.</p></div>':''}
 </body></html>`;
-  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+
+  const fileName = `agileviewai_relatorio_${(spLabel2||'completo').replace(/[^a-z0-9]/gi,'_')}_${new Date().toISOString().slice(0,10)}.html`;
+  const blob = new Blob([html],{type:'text/html;charset=utf-8'});
   const a    = document.createElement('a');
   a.href     = URL.createObjectURL(blob);
-  a.download = `agileviewai_${sprintLabel.replace(/[^a-z0-9]/gi,'_')}_${new Date().toISOString().slice(0,10)}.html`;
+  a.download = fileName;
   a.click(); URL.revokeObjectURL(a.href);
-  toast('Dashboard exportado!','ok');
+  toast('Relatório completo exportado!','ok');
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
