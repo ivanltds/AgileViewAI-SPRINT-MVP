@@ -1907,7 +1907,16 @@ const LLM = {
     const saved = Store.getAgentPrompts();
     const sys1 = saved.a1 || AGENT_DEFAULTS.a1;
     const sys2 = saved.a2 || AGENT_DEFAULTS.a2;
-    const sys3 = saved.a3 || AGENT_DEFAULTS.a3;
+    const sys3base = saved.a3 || AGENT_DEFAULTS.a3;
+
+    const stored = Store.getUserProfile();
+    const profileLevel = stored.level || 'neutral';
+    const profileInstr = {
+      technical: 'PERFIL DO USUÁRIO: Técnico — use linguagem técnica, termos ágeis precisos e métricas sem simplificações.',
+      didactic:  'PERFIL DO USUÁRIO: Didático — explique termos técnicos com analogias e exemplos práticos acessíveis.',
+      neutral:   'PERFIL DO USUÁRIO: Equilibrado — balance clareza e precisão técnica, evite excesso de jargões.'
+    }[profileLevel] || '';
+    const sys3 = sys3base + (profileInstr ? `\n\n${profileInstr}` : '');
 
     onProgress?.('🤖 Agente 1 — Gerando insights…', 1);
     const raw1 = await this.call(provider, token, sys1, userPrompt);
@@ -1918,7 +1927,7 @@ const LLM = {
 
     onProgress?.('✍️ Agente 3 — Reescrevendo com tom adequado…', 3);
     const raw3 = await this.call(provider, token, sys3,
-      `Reescreva os seguintes insights com o tom adequado a cada severidade:\n${raw2}`);
+      `Reescreva os seguintes insights com o tom adequado a cada severidade e ao perfil do usuário:\n${raw2}`);
 
     return raw3;
   },
@@ -4422,8 +4431,12 @@ function renderAgentesTab() {
       desc:'Recebe a saída do Agente 2. Reescreve cada card com o tom adequado à severidade e ao perfil.' }
   ];
   el.innerHTML = `
-    <div style="padding:4px 0 14px;color:#64748b;font-size:13px">
-      Cada agente recebe a saída do anterior. Edite os prompts abaixo para personalizar o comportamento de cada etapa.
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div style="color:#64748b;font-size:13px">Cada agente recebe a saída do anterior. Edite os prompts para personalizar cada etapa.</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" style="font-size:12px" onclick="exportAgentPrompts()">⬇ Exportar</button>
+        <button class="btn btn-blue" style="font-size:12px" onclick="importAgentPrompts()">⬆ Importar</button>
+      </div>
     </div>
     ${agents.map(a => `
     <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px;margin-bottom:16px">
@@ -4438,6 +4451,53 @@ function renderAgentesTab() {
       >${(saved[a.id] ?? AGENT_DEFAULTS[a.id]).replace(/</g,'&lt;')}</textarea>
     </div>`).join('')}
   `;
+}
+
+function exportAgentPrompts() {
+  const saved = Store.getAgentPrompts();
+  const out = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    type: 'agileviewai_agent_prompts',
+    prompts: {
+      a1: saved.a1 ?? AGENT_DEFAULTS.a1,
+      a2: saved.a2 ?? AGENT_DEFAULTS.a2,
+      a3: saved.a3 ?? AGENT_DEFAULTS.a3
+    }
+  };
+  const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'agileviewai_agents_' + new Date().toISOString().slice(0, 10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Prompts exportados!', 'ok', 2000);
+}
+
+function importAgentPrompts() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.onchange = async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (data.type !== 'agileviewai_agent_prompts' || !data.prompts)
+        throw new Error('Arquivo inválido — não é um export de prompts de agentes.');
+      const prompts = Store.getAgentPrompts();
+      if (data.prompts.a1) prompts.a1 = data.prompts.a1;
+      if (data.prompts.a2) prompts.a2 = data.prompts.a2;
+      if (data.prompts.a3) prompts.a3 = data.prompts.a3;
+      Store.saveAgentPrompts(prompts);
+      renderAgentesTab();
+      toast('Prompts importados com sucesso!', 'ok', 3000);
+    } catch(err) {
+      toast('Erro ao importar: ' + err.message, 'err', 5000);
+    }
+  };
+  input.click();
 }
 
 function saveAgentPrompt(agentId, value) {
@@ -4571,7 +4631,7 @@ function resetUserLevelOverride() {
 }
 
 function levelLabel(l) {
-  return l === 'technical' ? 'T\u00e9cnico' : l === 'didactic' ? 'Did\u00e1tico' : 'Neutro';
+  return l === 'technical' ? 'Técnico' : l === 'didactic' ? 'Didático' : 'Equilibrado';
 }
 function levelIcon(l) {
   return l === 'technical' ? '\ud83d\udd2c' : l === 'didactic' ? '\ud83d\udcda' : '\u2696\ufe0f';
@@ -4585,11 +4645,11 @@ function renderConversasTab() {
   const active   = stored.override ? stored : inferred;
   const convs    = [...Store.getChatConvs()].reverse();
   const levelBadgeClass = active.level;
-  const LABELS = { technical:'T\u00e9cnico', didactic:'Did\u00e1tico', neutral:'Neutro' };
+  const LABELS = { technical:'Técnico', didactic:'Didático', neutral:'Equilibrado' };
   const DESCS  = {
     technical:'O assistente usar\u00e1 linguagem t\u00e9cnica com termos \u00e1geis e m\u00e9tricas precisas.',
     didactic: 'O assistente explicar\u00e1 conceitos de forma did\u00e1tica, com exemplos e analogias.',
-    neutral:  'Ainda sem massa suficiente para inferir um perfil. O assistente usar\u00e1 linguagem equilibrada.'
+    neutral:  'O assistente usará linguagem equilibrada, balanceando termos técnicos e clareza sem excesso de jargões.'
   };
   const tagLine = inferred.msgCount < 3
     ? `<span class="ul-signal">\u26a0\ufe0f Menos de 3 perguntas analisadas</span>`
@@ -4612,7 +4672,7 @@ function renderConversasTab() {
     <div class="ul-override-row">
       <span style="font-size:11px;color:#64748b;font-weight:600">Definir manualmente:</span>
       <button class="btn-sm${active.level==='technical'?' bp':''}" onclick="setUserLevelOverride('technical')">\ud83d\udd2c T\u00e9cnico</button>
-      <button class="btn-sm${active.level==='neutral'?' bp':''}" onclick="setUserLevelOverride('neutral')">\u2696\ufe0f Neutro</button>
+      <button class="btn-sm${active.level==='neutral'?' bp':''}" onclick="setUserLevelOverride('neutral')">⚖️ Equilibrado</button>
       <button class="btn-sm${active.level==='didactic'?' bp':''}" onclick="setUserLevelOverride('didactic')">\ud83d\udcda Did\u00e1tico</button>
       ${stored.override ? '<button class="btn-sm" onclick="resetUserLevelOverride()" style="margin-left:auto">\ud83d\udd04 Reinfrir</button>' : ''}
     </div>
