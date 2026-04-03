@@ -4703,6 +4703,7 @@ function exportConfig() {
     version: 3,
     exportedAt: new Date().toISOString(),
     teams:         Store.getTeams().map(t=>({...t, patEnc:'(removido por segurança)'})),
+    orgs:          Store.getOrgs().map(o=>({...o, patEnc:'(removido por segurança)'})),
     llm:           Store.getLlmList().map(l=>({...l, tokenEnc:'(removido por segurança)'})),
     rag:           Store.getRagList(),
     conversations: Store.getChatConvs(),
@@ -4726,6 +4727,7 @@ function handleImport(e) {
     try {
       const d = JSON.parse(ev.target.result);
       if (d.teams)          { Store.saveTeams(d.teams.map(t=>({...t,patEnc:''}))); renderTeams(); }
+      if (d.orgs)           { Store.saveOrgs(d.orgs.map(o=>({...o,patEnc:''}))); }
       if (d.llm)            { Store.saveLlmList(d.llm.map(l=>({...l,tokenEnc:''}))); renderLlmList(); }
       if (d.rag)            { Store.saveRagList(d.rag); renderRagList(); }
       if (d.conversations)  { Store.saveChatConvs(d.conversations); }
