@@ -4,7 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AgileViewAI v2.1</title>
 <style>
-:root{--blue:#1d4ed8;--blue-l:#eff6ff;--slate:#1e293b;--gray:#6b7280;--border:#e2e8f0;--bg:#f8fafc;--red:#dc2626;--amber:#d97706;--green:#16a34a;}
+:root{--blue:#257DD9;--blue-l:#EBF4FF;--slate:#1E2A3A;--gray:#6B7A8D;--border:#E4E9F0;--bg:#FBFCFD;--red:#D9534F;--amber:#D9A06F;--green:#2A9D8F;--red-l:#FEF0F0;--amber-l:#FDF3E7;--green-l:#E8F7F5;}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:#1e293b;height:100vh;overflow:hidden}
 button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font-family:inherit}a{color:var(--blue);text-decoration:none}
 #vault-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1e293b,#0f172a);display:flex;align-items:center;justify-content:center;z-index:9999}
@@ -20,10 +20,10 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .slogo{padding:18px 16px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.1)}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;color:#94a3b8;font-size:13px;cursor:pointer;transition:background .15s}
 .nav-item:hover{background:rgba(255,255,255,.08);color:#fff}.nav-item.active{background:rgba(29,78,216,.3);color:#fff}
-.nav-icon{font-size:16px;width:20px;text-align:center}
+.nav-icon{font-size:16px;width:20px;text-align:center;display:inline-flex;align-items:center;justify-content:center}
 #main-content{flex:1;overflow-y:auto;height:100vh}
 .panel{display:none;min-height:100vh}.panel.active{display:block}#panel-rag.active{display:flex;flex-direction:column;overflow:hidden;min-height:100vh}
-.db-topbar{background:var(--slate);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+.db-topbar{background:#fff;color:var(--slate);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
 .sprint-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;display:inline-block;margin-right:4px}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .days-pill{background:#16a34a;color:#fff;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600}
@@ -111,7 +111,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .ins-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .ins-card{border:1px solid;border-radius:10px;padding:14px;position:relative}
 .ins-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
-.ins-icon{font-size:18px;flex-shrink:0}.ins-title2{font-size:13px;font-weight:700;flex:1;line-height:1.3}
+.ins-icon{font-size:18px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px}.ins-title2{font-size:13px;font-weight:700;flex:1;line-height:1.3}
 .ins-rm{background:none;border:none;color:#94a3b8;font-size:14px;cursor:pointer;padding:0 2px;flex-shrink:0}
 .ins-body{font-size:12px;color:#374151;line-height:1.5}
 .spinner-wrap{display:flex;align-items:center;gap:10px;padding:20px;color:#64748b;font-size:13px}
@@ -137,7 +137,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .mod-tab:hover{color:#1e293b}.mod-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
 .mod-panel{display:none}.mod-panel.active{display:block}
 .mod-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:12px;color:#94a3b8}
-.mod-empty-icon{font-size:48px;opacity:.4}.mod-empty h3{font-size:16px;font-weight:600;color:#64748b}.mod-empty p{font-size:13px;text-align:center;max-width:320px;line-height:1.6}
+.mod-empty-icon{font-size:48px;opacity:.4;display:flex;align-items:center;justify-content:center;width:56px;height:56px}.mod-empty h3{font-size:16px;font-weight:600;color:#64748b}.mod-empty p{font-size:13px;text-align:center;max-width:320px;line-height:1.6}
 .panel-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:5}
 .panel-header h2{font-size:18px;font-weight:700}
 .panel-header p{font-size:13px;color:#64748b;margin-top:4px}
@@ -231,6 +231,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
   font-size:20px;
   line-height:1;
   position:relative;
+  display:inline-flex;align-items:center;justify-content:center;
 }
 .mbn-item.active .mbn-icon::after{
   content:'';
@@ -442,8 +443,8 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .ef-sprint-hint{font-size:11px;color:#94a3b8;margin-top:5px}
 /* ── Dashboard team custom dropdown ── */
 .db-team-dd{position:relative;flex-shrink:0}
-.db-team-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:8px;font-size:13px;font-weight:500;padding:6px 12px;cursor:pointer;transition:background .15s;white-space:nowrap;max-width:230px;overflow:hidden}
-.db-team-btn:hover{background:rgba(255,255,255,.22)}
+.db-team-btn{display:flex;align-items:center;gap:8px;background:#f1f5f9;color:var(--slate);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;padding:6px 12px;cursor:pointer;transition:background .15s;white-space:nowrap;max-width:230px;overflow:hidden}
+.db-team-btn:hover{background:#e2e8f0}
 .db-team-btn-avt{width:22px;height:22px;border-radius:6px;background:#3b82f6;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .db-team-btn-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .db-team-btn-arr{font-size:10px;opacity:.7;flex-shrink:0;margin-left:2px}
@@ -602,7 +603,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 .fc-msg-ai strong{font-weight:700}
 .fc-msg-ai em{font-style:italic;color:#475569}
 .fc-welcome{text-align:center;padding:28px 16px;color:#64748b;font-size:13px;margin:auto 0}
-.fc-welcome-icon{font-size:34px;margin-bottom:8px}
+.fc-welcome-icon{font-size:34px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:0 auto 8px}
 .fc-input-area{border-top:1px solid var(--border);padding:10px;display:flex;gap:8px;flex-shrink:0;background:#fff;align-items:flex-end}
 .fc-textarea{flex:1;resize:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;line-height:1.4;max-height:90px;overflow-y:auto}
 .fc-textarea:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(29,78,216,.1)}
@@ -655,12 +656,12 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 <!-- VAULT -->
 <div id="vault-overlay">
   <div class="vbox">
-    <div style="font-size:40px;margin-bottom:12px">🔐</div>
+    <div style="margin-bottom:12px;display:flex;justify-content:center"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#1E2A3A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
     <div style="font-size:22px;font-weight:700;margin-bottom:6px">AgileViewAI</div>
     <div style="font-size:13px;color:#64748b;margin-bottom:24px" id="vsub">Proteja seus tokens com um PIN</div>
     <div style="display:flex;gap:8px;margin-bottom:20px;justify-content:center">
-      <button class="vtab active" id="tab-pin" onclick="vaultTab('pin')">🔒 Vault (PIN)</button>
-      <button class="vtab" id="tab-session" onclick="vaultTab('session')">⚡ Sessão</button>
+      <button class="vtab active" id="tab-pin" onclick="vaultTab('pin')">Vault (PIN)</button>
+      <button class="vtab" id="tab-session" onclick="vaultTab('session')">Sessão</button>
     </div>
     <div id="vault-pin-area">
       <input type="password" class="vinput" id="vpin" maxlength="8" placeholder="••••" autocomplete="off" onkeydown="if(event.key==='Enter')vaultAction()">
@@ -669,7 +670,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
       <div style="font-size:11px;color:#94a3b8;margin-top:10px">4 a 8 dígitos · tokens cifrados com AES-256-GCM</div>
     </div>
     <div id="vault-session-area" style="display:none">
-      <div style="background:#fefce8;border:1px solid #fde047;border-radius:8px;padding:10px;font-size:12px;color:#854d0e;text-align:left;margin-bottom:14px">⚡ Modo sessão: tokens ficam apenas na memória e são apagados ao fechar o navegador.</div>
+      <div style="background:#fefce8;border:1px solid #fde047;border-radius:8px;padding:10px;font-size:12px;color:#854d0e;text-align:left;margin-bottom:14px">Modo sessão: tokens ficam apenas na memória e são apagados ao fechar o navegador.</div>
       <button class="vbtn" onclick="vaultSessionStart()">Continuar sem salvar tokens</button>
     </div>
   </div>
@@ -679,22 +680,22 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 <div id="app" style="display:none">
   <nav id="sidebar">
     <div class="slogo">
-      <div style="font-size:24px">📊</div>
+      <div style="width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
       <div><div style="font-size:15px;font-weight:700;color:#fff">AgileViewAI</div><div style="font-size:10px;color:#94a3b8">v2.1</div></div>
     </div>
     <div style="flex:1;padding:8px 0">
-      <div class="nav-item active" id="nav-dashboard" data-label="Dashboard" onclick="showPanel('dashboard')"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></div>
-      <div class="nav-item" id="nav-teams" data-label="Times" onclick="showPanel('teams')"><span class="nav-icon">👥</span><span class="nav-label">Times</span></div>
-      <div class="nav-item" id="nav-llm" data-label="IA &amp; Tokens" onclick="showPanel('llm')"><span class="nav-icon">🤖</span><span class="nav-label">IA &amp; Tokens</span></div>
-      <div class="nav-item" id="nav-rag" data-label="Treinamento" onclick="showPanel('rag')"><span class="nav-icon">🎓</span><span class="nav-label">Treinamento</span></div>
-      <div class="nav-item" id="nav-settings" data-label="Configurações" onclick="showPanel('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">Configurações</span></div>
+      <div class="nav-item active" id="nav-dashboard" data-label="Dashboard" onclick="showPanel('dashboard')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">Dashboard</span></div>
+      <div class="nav-item" id="nav-teams" data-label="Times" onclick="showPanel('teams')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">Times</span></div>
+      <div class="nav-item" id="nav-llm" data-label="IA &amp; Tokens" onclick="showPanel('llm')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span><span class="nav-label">IA &amp; Tokens</span></div>
+      <div class="nav-item" id="nav-rag" data-label="Treinamento" onclick="showPanel('rag')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span class="nav-label">Treinamento</span></div>
+      <div class="nav-item" id="nav-settings" data-label="Configurações" onclick="showPanel('settings')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nav-label">Configurações</span></div>
     </div>
   </nav>
   <main id="main-content">
     <!-- DASHBOARD -->
     <section id="panel-dashboard" class="panel active">
       <div class="db-topbar" id="db-topbar-static">
-        <div id="db-topbar-info" style="color:#94a3b8;font-size:13px">Nenhuma sprint carregada</div>
+        <div id="db-topbar-info" style="color:var(--gray);font-size:13px">Nenhuma sprint carregada</div>
         <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
           <div class="db-team-dd" id="db-team-dd">
             <button class="db-team-btn" id="db-team-btn" onclick="toggleDashTeamDd()">
@@ -704,20 +705,20 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
             </button>
             <div class="db-team-menu" id="db-team-menu"></div>
           </div>
-          <button class="btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25)" onclick="runSync()">🔄 Sincronizar</button>
-          <button class="btn-sm" style="background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.2)" onclick="downloadDashboardHtml()">⬇ HTML</button>
+          <button class="btn-sm" onclick="runSync()">↺ Sincronizar</button>
+          <button class="btn-sm" onclick="downloadDashboardHtml()">↓ HTML</button>
         </div>
       </div>
       <!-- MODULE TABS -->
       <div class="mod-tabs">
-        <div class="mod-tab active" id="modtab-sprint"    onclick="showModule('sprint')">📋 Sprint</div>
-        <div class="mod-tab"        id="modtab-eficiencia" onclick="showModule('eficiencia')">⚡ Eficiência</div>
-        <div class="mod-tab"        id="modtab-qualidade"  onclick="showModule('qualidade')">🎯 Qualidade</div>
+        <div class="mod-tab active" id="modtab-sprint"    onclick="showModule('sprint')">Sprint</div>
+        <div class="mod-tab"        id="modtab-eficiencia" onclick="showModule('eficiencia')">Eficiência</div>
+        <div class="mod-tab"        id="modtab-qualidade"  onclick="showModule('qualidade')">Qualidade</div>
       </div>
       <!-- MODULE: SPRINT -->
       <div class="mod-panel active" id="module-sprint">
         <div id="db-topbar"></div>
-        <div id="db-no-data" class="no-data" style="display:none">⚠️ Nenhum dado sincronizado. Vá em <strong>Times</strong>, selecione um time e clique em <strong>Sincronizar</strong>.</div>
+        <div id="db-no-data" class="no-data" style="display:none">Nenhum dado sincronizado. Vá em <strong>Times</strong>, selecione um time e clique em <strong>Sincronizar</strong>.</div>
         <div id="db-kpis"></div>
         <div class="db-body"><div class="db-left" id="db-backlog"></div><div class="db-right" id="db-progress"></div></div>
         <div id="db-insights"></div>
@@ -744,18 +745,18 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
               </div>
             </div>
           </div>
-          <button class="btn btn-blue" onclick="runEficiencia()" style="flex-shrink:0;align-self:flex-end">⚡ Calcular</button>
+          <button class="btn btn-blue" onclick="runEficiencia()" style="flex-shrink:0;align-self:flex-end">Calcular</button>
         </div>
         <div id="ef-content">
           <div class="mod-empty">
-            <div class="mod-empty-icon">⚡</div>
+            <div class="mod-empty-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
             <h3>Eficiência</h3>
             <p>Selecione uma ou mais sprints acima e clique em <strong>Calcular</strong>.</p>
           </div>
         </div>
         <div id="ef-backlog-section" class="sp-history-section" style="display:none">
           <div class="sp-history-hdr">
-            <span class="sp-history-title">&#x1F4CB; Backlog das sprints selecionadas</span>
+            <span class="sp-history-title">Backlog das sprints selecionadas</span>
           </div>
           <div class="ef-bl-filters">
             <input type="text" id="efbl-title" class="ef-bl-input" placeholder="&#x1F50D; Título" style="min-width:180px" oninput="applyEfBacklogFilters()">
@@ -791,19 +792,19 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
       <!-- MODULE: QUALIDADE -->
       <div class="mod-panel" id="module-qualidade">
         <div class="qual-header">
-          <button class="btn btn-blue" onclick="runQualidade()">🎯 Carregar</button>
+          <button class="btn btn-blue" onclick="runQualidade()">Carregar</button>
         </div>
         <div id="qual-content">
           <div class="mod-empty">
-            <div class="mod-empty-icon">🎯</div>
+            <div class="mod-empty-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
             <h3>Qualidade</h3>
             <p>Clique em <strong>Carregar</strong> para buscar os Bugs e Defeitos do projeto.</p>
           </div>
         </div>
         <div id="qual-llm-section" class="qual-llm-section" style="display:none">
           <div class="qual-llm-hdr">
-            <span class="qual-llm-title">🤖 Análise de Qualidade com IA</span>
-            <button class="btn btn-blue" onclick="runQualidadeLLM()" style="font-size:12px;padding:6px 14px">&#x26A1; Analisar com IA</button>
+            <span class="qual-llm-title">Análise de Qualidade com IA</span>
+            <button class="btn btn-blue" onclick="runQualidadeLLM()" style="font-size:12px;padding:6px 14px">Analisar com IA</button>
           </div>
           <div id="qual-llm-output"></div>
         </div>
@@ -811,13 +812,13 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
     </section>
     <!-- TEAMS -->
     <section id="panel-teams" class="panel">
-      <div class="panel-header"><h2>👥 Times e Organizações</h2><p>Cadastre times do Azure DevOps.</p>
+      <div class="panel-header"><h2>Times e Organizações</h2><p>Cadastre times do Azure DevOps.</p>
         <div class="panel-actions"><button class="btn btn-blue" onclick="openTeamModal()">+ Novo time</button></div>
       </div>
       <div class="panel-content">
         <div id="teams-list"></div>
         <div style="border-top:2px solid var(--border);margin-top:24px;padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-          <div><h3 style="font-size:15px;font-weight:700;color:#1e293b;margin:0">🏢 Organizações</h3><p style="font-size:12px;color:#64748b;margin:4px 0 0">PATs por organização — reutilizados por todos os times vinculados.</p></div>
+          <div><h3 style="font-size:15px;font-weight:700;color:#1e293b;margin:0">Organizações</h3><p style="font-size:12px;color:#64748b;margin:4px 0 0">PATs por organização — reutilizados por todos os times vinculados.</p></div>
           <button class="btn btn-blue" onclick="openOrgModal()">+ Nova organização</button>
         </div>
         <div id="orgs-list" style="margin-top:12px"></div>
@@ -825,7 +826,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
     </section>
     <!-- LLM -->
     <section id="panel-llm" class="panel">
-      <div class="panel-header"><h2>🤖 IA &amp; Tokens LLM</h2><p>Gerencie tokens de OpenAI, Claude ou Gemini.</p>
+      <div class="panel-header"><h2>IA &amp; Tokens LLM</h2><p>Gerencie tokens de OpenAI, Claude ou Gemini.</p>
         <div class="panel-actions"><button class="btn btn-blue" onclick="openLlmModal()">+ Novo token</button></div>
       </div>
       <div class="panel-content"><div id="llm-list"></div></div>
@@ -833,15 +834,15 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
     <!-- RAG / TRAINING -->
     <section id="panel-rag" class="panel">
       <div class="panel-header" style="flex-shrink:0">
-        <h2>🎓 Gestão de Treinamento</h2>
+        <h2>Gestão de Treinamento</h2>
         <p>Contextos, feedbacks e perfil de conhecimento do usuário.</p>
       </div>
       <!-- Tab bar -->
       <div class="train-tabs">
-        <button class="train-tab active" id="ttab-contextos" onclick="showTrainingTab('contextos')">📚 Contextos</button>
-        <button class="train-tab" id="ttab-feedback"  onclick="showTrainingTab('feedback')">👍 Feedback de Insights</button>
-        <button class="train-tab" id="ttab-conversas" onclick="showTrainingTab('conversas')">💬 Conversas</button>
-        <button class="train-tab" id="ttab-agentes"   onclick="showTrainingTab('agentes')">🤖 Agentes de IA</button>
+        <button class="train-tab active" id="ttab-contextos" onclick="showTrainingTab('contextos')">Contextos</button>
+        <button class="train-tab" id="ttab-feedback"  onclick="showTrainingTab('feedback')">Feedback de Insights</button>
+        <button class="train-tab" id="ttab-conversas" onclick="showTrainingTab('conversas')">Conversas</button>
+        <button class="train-tab" id="ttab-agentes"   onclick="showTrainingTab('agentes')">Agentes de IA</button>
       </div>
       <!-- Tab content wrapper (scrollable) -->
       <div style="flex:1;overflow-y:auto">
@@ -868,14 +869,14 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
     </section>
     <!-- SETTINGS -->
     <section id="panel-settings" class="panel">
-      <div class="panel-header"><h2>⚙️ Configurações</h2></div>
+      <div class="panel-header"><h2>Configurações</h2></div>
       <div class="panel-content">
-        <div class="settings-section"><h3>🔐 Vault</h3>
+        <div class="settings-section"><h3>Vault</h3>
           <div class="srow"><div><div class="slabel">Modo de armazenamento</div><div class="sdesc" id="vault-mode-desc">—</div></div><button class="btn" onclick="changeVaultMode()">Alterar</button></div>
           <div class="srow"><div><div class="slabel">Alterar PIN</div><div class="sdesc">Apenas modo PIN</div></div><button class="btn" onclick="changePinModal()">Alterar PIN</button></div>
           <div class="srow"><div><div class="slabel">Limpar vault</div><div class="sdesc">Remove tokens do localStorage</div></div><button class="btn-red" onclick="clearVault()">Limpar vault</button></div>
         </div>
-        <div class="settings-section"><h3>📦 Dados</h3>
+        <div class="settings-section"><h3>Dados</h3>
           <div class="srow"><div><div class="slabel">Exportar configurações</div><div class="sdesc">Baixa times e treinamentos sem tokens</div></div><button class="btn" onclick="exportConfig()">Exportar JSON</button></div>
           <div class="srow"><div><div class="slabel">Importar configurações</div></div><button class="btn" onclick="document.getElementById('import-file').click()">Importar JSON</button></div>
           <div class="srow"><div><div class="slabel">Apagar tudo</div><div class="sdesc">Remove todos os dados do navegador</div></div><button class="btn-red" onclick="clearAll()">Apagar tudo</button></div>
@@ -887,14 +888,14 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 
 <!-- FLOATING CHAT -->
 <button class="fc-fab" id="fc-fab" onclick="fcTogglePanel()" title="Assistente IA">
-  <span id="fc-fab-icon">💬</span>
+  <span id="fc-fab-icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
 </button>
 <div class="fc-panel" id="fc-panel">
   <div class="fc-header">
-    <span style="font-size:14px">🤖</span>
+    <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v1"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/></svg></span>
     <span class="fc-header-title" id="fc-title">AgileViewAI</span>
-    <button class="fc-hbtn" onclick="fcNewConv()" title="Nova conversa">✏️</button>
-    <button class="fc-hbtn" onclick="fcToggleSidebar()" title="Histórico">📋</button>
+    <button class="fc-hbtn" onclick="fcNewConv()" title="Nova conversa"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+    <button class="fc-hbtn" onclick="fcToggleSidebar()" title="Histórico"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
     <button class="fc-hbtn" onclick="fcTogglePanel()" title="Fechar">✕</button>
   </div>
   <div class="fc-body">
@@ -928,7 +929,7 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
       <div class="form-row"><label>Projeto Azure</label><input id="tf-proj" placeholder="Ex: MeuProjeto"></div>
       <div class="form-row"><label>Team Azure (nome exato)</label><input id="tf-team" placeholder="Ex: Time de Backend"><div class="form-hint">Deve ser idêntico ao nome no Azure DevOps</div></div>
       <div id="tf-pat-row" class="form-row"><label>PAT (Personal Access Token)</label><input id="tf-pat" type="password" placeholder="Cole o PAT"><div class="form-hint">Permissões: Work Items (Read), Project and Team (Read)</div></div>
-      <div id="tf-pat-reuse" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:8px 12px;font-size:12px;color:#15803d;margin-bottom:12px">✅ PAT da organização será reutilizado automaticamente.</div>
+      <div id="tf-pat-reuse" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:8px 12px;font-size:12px;color:#15803d;margin-bottom:12px">PAT da organização será reutilizado automaticamente.</div>
       <input type="hidden" id="tf-id">
     </div>
     <div class="mfooter"><button class="btn" onclick="closeModal('modal-team')">Cancelar</button><button class="btn btn-blue" onclick="saveTeam()">Salvar</button></div>
@@ -1011,23 +1012,23 @@ button{cursor:pointer;border:none;font-family:inherit}input,select,textarea{font
 <nav id="mobile-bottom-nav" aria-label="Navegação principal">
   <div class="mbn-items">
     <button class="mbn-item active" id="mbn-dashboard" onclick="showPanel('dashboard')" aria-label="Dashboard">
-      <span class="mbn-icon">📊</span>
+      <span class="mbn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
       <span>Dashboard</span>
     </button>
     <button class="mbn-item" id="mbn-teams" onclick="showPanel('teams')" aria-label="Times">
-      <span class="mbn-icon">👥</span>
+      <span class="mbn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
       <span>Times</span>
     </button>
     <button class="mbn-item" id="mbn-llm" onclick="showPanel('llm')" aria-label="IA e Tokens">
-      <span class="mbn-icon">🤖</span>
+      <span class="mbn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span>
       <span>IA</span>
     </button>
     <button class="mbn-item" id="mbn-rag" onclick="showPanel('rag')" aria-label="Treinamento">
-      <span class="mbn-icon">🎓</span>
+      <span class="mbn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
       <span>Treino</span>
     </button>
     <button class="mbn-item" id="mbn-settings" onclick="showPanel('settings')" aria-label="Configurações">
-      <span class="mbn-icon">⚙️</span>
+      <span class="mbn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
       <span>Config</span>
     </button>
   </div>
@@ -1652,6 +1653,23 @@ const DataProcessor = {
   }
 };
 
+// ── SVG ICON HELPERS ───────────────────────────────────────────────
+const ICONS = {
+  critical: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  warning:  `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  info:     `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+  ok:       `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  thumbUp:  `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>`,
+  thumbDn:  `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>`,
+  lock:     `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+  bot:      `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v1"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/></svg>`,
+};
+function _insIcon(sev) {
+  const m = { critical:{svg:ICONS.critical,c:'var(--red)'}, warning:{svg:ICONS.warning,c:'var(--amber)'}, info:{svg:ICONS.info,c:'var(--blue)'}, ok:{svg:ICONS.ok,c:'var(--green)'} };
+  const s = m[sev] || m.info;
+  return `<span class="ins-icon" style="color:${s.c}">${s.svg}</span>`;
+}
+
 // ── DASHBOARD BUILDER ───────────────────────────────────────────────
 const DB = {
   _e(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); },
@@ -1672,10 +1690,10 @@ const DB = {
     const sprintLabel = sp.path.split('\\').pop();
     document.getElementById('db-topbar').innerHTML = '';
     document.getElementById('db-topbar-info').innerHTML =
-      `<div style="font-weight:700;font-size:15px;color:#fff">${e(team.proj)}</div>
+      `<div style="font-weight:700;font-size:15px;color:var(--slate)">${e(team.proj)}</div>
        <div style="display:flex;align-items:center;gap:8px;margin-top:2px;flex-wrap:wrap">
-         <span style="font-size:13px;color:#94a3b8">${e(team.org)} · ${e(team.name)}</span>
-         <span style="font-size:13px;font-weight:600;color:#fff;display:flex;align-items:center;gap:4px"><span class="sprint-dot"></span>${e(sprintLabel)}</span>
+         <span style="font-size:13px;color:var(--gray)">${e(team.org)} · ${e(team.name)}</span>
+         <span style="font-size:13px;font-weight:600;color:var(--slate);display:flex;align-items:center;gap:4px"><span class="sprint-dot"></span>${e(sprintLabel)}</span>
          ${sp.bizDaysLeft>0?`<span class="days-pill">${sp.bizDaysLeft} dia${sp.bizDaysLeft!==1?'s':''} úteis</span>`:'<span class="days-pill ended">Encerrada</span>'}
          <span style="font-size:11px;color:#64748b">${e(this._fmtDate(sp.startRaw))} — ${e(this._fmtDate(sp.endRaw))}</span>
        </div>`;
@@ -1766,7 +1784,7 @@ const DB = {
             (c.assignedTo?`<div class="tc-assigned">${e(c.assignedTo)}</div>`:'')+`</div>`;
         };
         rows += `<tr class="children-row" id="cr-${id}" data-item-id="${id}" style="display:none"><td colspan="10" class="children-cell">`+
-          `<div class="tl-card"><div class="tl-header" onclick="toggleTimeline(this,${id})">📋 Histórico do Board <span class="tl-chevron">▶</span></div><div class="tl-track" style="display:none"></div></div>`+
+          `<div class="tl-card"><div class="tl-header" onclick="toggleTimeline(this,${id})">Histórico do Board <span class="tl-chevron">▶</span></div><div class="tl-track" style="display:none"></div></div>`+
           `<div class="children-wrap">`+
           `<div class="children-col"><div class="col-header col-doing">Em andamento (${doing.length})</div><div class="cards-wrap">${doing.map(c=>mk(c,false)).join('')||'<div style="font-size:11px;color:#94a3b8;padding:4px 0;font-style:italic">Nenhuma em andamento</div>'}</div></div>`+
           `<div class="children-col"><div class="col-header col-done">Concluído (${doneC.length})</div><div class="cards-wrap">${doneC.map(c=>mk(c,true)).join('')||'<div style="font-size:11px;color:#94a3b8;padding:4px 0;font-style:italic">Nenhuma concluída</div>'}</div></div>`+
@@ -1804,7 +1822,7 @@ const DB = {
       ? '<div class="empty-dayoff">Nenhum day off nos dias restantes</div>'
       : (() => {
           const byD={}; s.dayOffCards.forEach(c=>{if(!byD[c.label])byD[c.label]=[];byD[c.label].push(c);});
-          return Object.keys(byD).map(lbl=>`<div class="dayoff-card"><div class="dayoff-date">🏖 ${e(lbl)}</div>${byD[lbl].map(c=>`<div class="dayoff-member">${e(c.member)} — ${e(c.activity)}</div>`).join('')}</div>`).join('');
+          return Object.keys(byD).map(lbl=>`<div class="dayoff-card"><div class="dayoff-date">${e(lbl)}</div>${byD[lbl].map(c=>`<div class="dayoff-member">${e(c.member)} — ${e(c.activity)}</div>`).join('')}</div>`).join('');
         })();
 
     document.getElementById('db-progress').innerHTML = `
@@ -1830,10 +1848,10 @@ ${Object.keys(s.byActivity).length>0?`<div class="act-panel"><div class="act-tog
     document.getElementById('db-insights').innerHTML = `
 <div class="insights-section">
   <div class="ins-header">
-    <div class="ins-title">🤖 Insights de IA</div>
+    <div class="ins-title">Insights de IA</div>
     <div style="display:flex;gap:8px">
       <button class="btn-sm bp" onclick="loadInsights(false)">↻ Mais insights</button>
-      <button class="btn-sm" onclick="fcTogglePanel()">💬 Pergunta</button>
+      <button class="btn-sm" onclick="fcTogglePanel()">Pergunta</button>
       <button class="btn-sm br" onclick="clearInsights()">✕ Limpar</button>
     </div>
   </div>
@@ -1865,7 +1883,7 @@ ${Object.keys(s.byActivity).length>0?`<div class="act-panel"><div class="act-tog
     }).join('');
     document.getElementById('db-members').innerHTML = `
 <div class="members-section">
-  <div class="ins-title" style="margin-bottom:12px">👤 Distribuição por Responsável</div>
+  <div class="ins-title" style="margin-bottom:12px">Distribuição por Responsável</div>
   <table class="mem-table">
     <thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Membro</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Cap. rest.</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Rem. work</th><th class="sort-th" onclick="sortTbl(this)">% Alocado</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Tasks ✓</th></tr></thead>
     <tbody>${mRows}</tbody>
@@ -1875,17 +1893,17 @@ ${Object.keys(s.byActivity).length>0?`<div class="act-panel"><div class="act-tog
 
   renderInsightCard(ins) {
     const ST = {
-      critical:{ bg:'#fef2f2', bd:'#fca5a5', tc:'#991b1b' },
-      warning: { bg:'#fefce8', bd:'#fde047', tc:'#854d0e' },
-      info:    { bg:'#eff6ff', bd:'#bfdbfe', tc:'#1e3a8a' },
-      ok:      { bg:'#f0fdf4', bd:'#86efac', tc:'#14532d' }
+      critical:{ bg:'rgba(220,38,38,.06)',  bd:'rgba(220,38,38,.25)',  tc:'#991b1b' },
+      warning: { bg:'rgba(245,158,11,.07)', bd:'rgba(245,158,11,.35)', tc:'#78350f' },
+      info:    { bg:'rgba(59,130,246,.06)',  bd:'rgba(59,130,246,.25)', tc:'#1e40af' },
+      ok:      { bg:'rgba(22,163,74,.06)',   bd:'rgba(22,163,74,.25)',  tc:'#14532d' }
     };
     const s = ST[ins.severity] || ST.info;
     const e = this._e.bind(this);
     return `<div class="ins-card" style="background:${s.bg};border-color:${s.bd}">
-      <div class="ins-head"><span class="ins-icon">${ins.icon||'💡'}</span><span class="ins-title2" style="color:${s.tc}">${e(ins.title)}</span><button class="ins-rm" onclick="rmInsight(this)" title="Remover">✕</button></div>
+      <div class="ins-head">${_insIcon(ins.severity)}<span class="ins-title2" style="color:${s.tc}">${e(ins.title)}</span><button class="ins-rm" onclick="rmInsight(this)" title="Remover">✕</button></div>
       <p class="ins-body">${e(ins.body)}</p>
-      <div class="ins-fb-bar"><span class="ins-fb-hint">Feedback de treinamento</span><button class="ins-fb-btn" onclick="giveInsightFeedback(this,'good')" title="Insight útil">👍</button><button class="ins-fb-btn" onclick="giveInsightFeedback(this,'bad')" title="Insight ruim">👎</button></div>
+      <div class="ins-fb-bar"><span class="ins-fb-hint">Feedback de treinamento</span><button class="ins-fb-btn" onclick="giveInsightFeedback(this,'good')" title="Insight útil">${ICONS.thumbUp}</button><button class="ins-fb-btn" onclick="giveInsightFeedback(this,'bad')" title="Insight ruim">${ICONS.thumbDn}</button></div>
     </div>`;
   },
 
@@ -1918,14 +1936,14 @@ const LLM = {
     }[profileLevel] || '';
     const sys3 = sys3base + (profileInstr ? `\n\n${profileInstr}` : '');
 
-    onProgress?.('🤖 Agente 1 — Gerando insights…', 1);
+    onProgress?.('Agente 1 — Gerando insights…', 1);
     const raw1 = await this.call(provider, token, sys1, userPrompt);
 
-    onProgress?.('🔍 Agente 2 — Revisando e deduplicando…', 2);
+    onProgress?.('Agente 2 — Revisando e deduplicando…', 2);
     const raw2 = await this.call(provider, token, sys2,
       `Revise e consolide os seguintes insights gerados:\n${raw1}`);
 
-    onProgress?.('✍️ Agente 3 — Reescrevendo com tom adequado…', 3);
+    onProgress?.('Agente 3 — Reescrevendo com tom adequado…', 3);
     const raw3 = await this.call(provider, token, sys3,
       `Reescreva os seguintes insights com o tom adequado a cada severidade e ao perfil do usuário:\n${raw2}`);
 
@@ -1989,7 +2007,7 @@ const LLM = {
     if (!raw) throw new Error('LLM retornou resposta vazia.');
     let clean = raw.replace(/```json/gi,'').replace(/```/g,'').trim();
     const s = clean.indexOf('['), e2 = clean.lastIndexOf(']');
-    if (s === -1 || e2 === -1) return [{ severity:'info', icon:'💡', title:'💡 Resposta', body: clean.substring(0,400) }];
+    if (s === -1 || e2 === -1) return [{ severity:'info', icon:'info', title:'Resposta', body: clean.substring(0,400) }];
     try {
       const arr = JSON.parse(clean.substring(s, e2+1));
       if (!Array.isArray(arr) || !arr.length) throw new Error('vazio');
@@ -1997,9 +2015,9 @@ const LLM = {
         let body = String(item.body||'');
         if (body.includes('Explique em 1 frase') || body.includes('resposta objetiva com dados reais') || body === 'resposta')
           body = 'Não foi possível gerar resposta específica. Reformule a pergunta.';
-        return { severity: ['critical','warning','info','ok'].includes(item.severity)?item.severity:'info', icon:String(item.icon||'💡'), title:String(item.title||'Resposta'), body };
+        return { severity: ['critical','warning','info','ok'].includes(item.severity)?item.severity:'info', icon:String(item.icon||'info'), title:String(item.title||'Resposta'), body };
       });
-    } catch { return [{ severity:'info', icon:'💡', title:'💡 Resposta', body: clean.replace(/[\[\]{}\"]/g,'').trim().substring(0,400) }]; }
+    } catch { return [{ severity:'info', icon:'info', title:'Resposta', body: clean.replace(/[\[\]{}\"]/g,'').trim().substring(0,400) }]; }
   },
 
   buildSystemPrompt() {
@@ -2179,8 +2197,8 @@ const Validator = {
         if (!citaMembro && s.totalRem < s.capacityTotal) {
           if (!r0Fired) {
             const folga = Math.round(((s.capacityTotal-s.totalRem)/s.capacityTotal)*100);
-            result.severity = 'info'; result.icon = '📊';
-            result.title = '📊 Capacidade com folga';
+            result.severity = 'info'; result.icon = 'info';
+            result.title = 'Capacidade com folga';
             result.body  = `Remaining total (${s.totalRem}h) < capacidade (${s.capacityTotal}h) — há ${folga}% de folga no agregado. Risco real = sobrecarga individual, não falta de capacidade.`;
             r0Fired = true;
           } else { return null; }
@@ -2191,7 +2209,7 @@ const Validator = {
       if (result.severity === 'critical') {
         const mentTot = bl.includes('total')||bl.includes('equipe')||bl.includes('time');
         const mentMem = Object.keys(capacity).some(m => bl.includes(m.split(' ')[0].toLowerCase()));
-        if (mentTot && !mentMem && s.allocPct < 100) { result.severity='info'; result.icon='📊'; }
+        if (mentTot && !mentMem && s.allocPct < 100) { result.severity='info'; result.icon='info'; }
       }
 
       // R2: critical, no one >100% → warning
@@ -2214,7 +2232,7 @@ const Validator = {
               let idx = ragLow.indexOf(ln); if (idx===-1) idx=ragLow.indexOf(fn);
               if (idx !== -1) {
                 const slice = ragLow.substring(Math.max(0,idx-200), idx+200);
-                if (TREATED.some(kw=>slice.includes(kw))) { result.severity='ok'; result.icon='✅'; }
+                if (TREATED.some(kw=>slice.includes(kw))) { result.severity='ok'; result.icon='ok'; }
               }
             }
           });
@@ -2230,7 +2248,7 @@ const Validator = {
           if (cited && memberAlloc[m].alloc<70 && memberAlloc[m].cap>0) idle.push(`${m} (${memberAlloc[m].alloc}%)`);
         });
         if (idle.length) {
-          result.severity='warning'; result.icon='⚠️';
+          result.severity='warning'; result.icon='warning';
           result.body += ` Atenção: ${idle.join(', ')} com alocação abaixo de 70% — verificar tasks não estimadas.`;
         }
       }
@@ -2256,8 +2274,8 @@ const Validator = {
         const add=`${det} abaixo de 70% em ${role} — verificar tasks não estimadas ou oportunidade de adiantar refinamento.`;
         const rl=role.toLowerCase();
         const ex=validated.find(ins=>ins&&ins.severity!=='ok'&&ins.severity!=='critical'&&((ins.body||'')+(ins.title||'')).toLowerCase().includes(rl.split(' ')[0]));
-        if (ex) { ex.body+=' | Também: '+add; ex.severity='warning'; ex.icon='⚠️'; }
-        else validated.push({ severity:'warning',icon:'⚠️',section:'opportunity',title:`⚠️ Baixa utilização em ${role}`,body:add });
+        if (ex) { ex.body+=' | Também: '+add; ex.severity='warning'; ex.icon='warning'; }
+        else validated.push({ severity:'warning',icon:'warning',section:'opportunity',title:`Baixa utilização em ${role}`,body:add });
       });
     })();
 
@@ -2277,15 +2295,15 @@ const Validator = {
       const addedText=Object.keys(byAct).map(a=>a+': '+byAct[a].map(m=>`${m} (${memberAlloc[m].alloc}%, rem=${memberAlloc[m].rem}h, cap=${memberAlloc[m].cap}h)`).join(', ')).join(' | ');
       const overIdx=clean.findIndex(i=>i.severity==='critical');
       if(overIdx!==-1) clean[overIdx].body+=' | Também: '+addedText+'.';
-      else clean.unshift({ severity:'critical',icon:'🚨',section:'overload',title:'🚨 Alertas de Sobrecarga',body:addedText+' — sem membros ociosos no mesmo papel. Negociar escopo com o PO.' });
+      else clean.unshift({ severity:'critical',icon:'critical',section:'overload',title:'Alertas de Sobrecarga',body:addedText+' — sem membros ociosos no mesmo papel. Negociar escopo com o PO.' });
     }
 
     // R7: multiple criticals → merge into 1
     const crits=clean.filter(i=>i.severity==='critical');
     if(crits.length>1){
-      const merged=crits.map(i=>(i.title||'').replace(/🚨\s*/g,'').trim()+': '+(i.body||'')).join(' | ');
+      const merged=crits.map(i=>(i.title||'').trim()+': '+(i.body||'')).join(' | ');
       clean=clean.filter(i=>i.severity!=='critical');
-      clean.unshift({ severity:'critical',icon:'🚨',section:'overload',title:'🚨 Alertas de Sobrecarga',body:merged });
+      clean.unshift({ severity:'critical',icon:'critical',section:'overload',title:'Alertas de Sobrecarga',body:merged });
     }
 
     // Dedup by title
@@ -2296,14 +2314,14 @@ const Validator = {
   localFallback(stats, capacity, byActivity) {
     const s=stats; const out=[];
     const over=Object.keys(capacity).filter(m=>{ const bm=s.byMember?.[m]||{remaining:0}; return capacity[m].capRest>0&&(bm.remaining/capacity[m].capRest)>1.1; });
-    if(over.length) out.push({ severity:'critical',icon:'🚨',title:'Sobrecarga de membros',body:`${over.length} membro(s) acima de 110%: ${over.slice(0,3).join(', ')}${over.length>3?'...':''}. Redistribua tarefas.` });
-    if(s.blocked>0) out.push({ severity:'critical',icon:'🚧',title:'Bloqueios ativos',body:`${s.blocked} PBI(s) bloqueado(s). Priorize desbloqueio imediato.` });
-    if(s.fixing>0)  out.push({ severity:'warning',icon:'⚠️',title:'Itens em correção',body:`${s.fixing} item(ns) em fixing. Analise a causa raiz.` });
-    if(s.allocPct>100) out.push({ severity:'warning',icon:'⚠️',title:'Capacidade excedida',body:`Demanda (${s.totalRem}h) supera capacidade (${s.capacityTotal}h) em ${s.allocPct-100}%.` });
-    else if(s.allocPct<60&&s.allocPct>0) out.push({ severity:'info',icon:'💡',title:'Capacidade subutilizada',body:`Apenas ${s.allocPct}% alocado. Há espaço para incluir mais itens.` });
-    if(s.donePct>=70) out.push({ severity:'ok',icon:'📈',title:'Ritmo saudável',body:`${s.done} de ${s.total} PBIs concluídos (${s.donePct}%). Caminho certo!` });
-    else if(s.done===0&&s.bizDays<3) out.push({ severity:'critical',icon:'🚨',title:'Entregas em risco',body:`Nenhum PBI concluído com ${s.bizDays} dias úteis restantes. Revisão urgente.` });
-    else out.push({ severity:'info',icon:'📊',title:'Progresso da sprint',body:`${s.done} de ${s.total} PBIs concluídos (${s.donePct}%). ${s.totalTasksDone} tasks finalizadas.` });
+    if(over.length) out.push({ severity:'critical',icon:'critical',title:'Sobrecarga de membros',body:`${over.length} membro(s) acima de 110%: ${over.slice(0,3).join(', ')}${over.length>3?'...':''}. Redistribua tarefas.` });
+    if(s.blocked>0) out.push({ severity:'critical',icon:'critical',title:'Bloqueios ativos',body:`${s.blocked} PBI(s) bloqueado(s). Priorize desbloqueio imediato.` });
+    if(s.fixing>0)  out.push({ severity:'warning',icon:'warning',title:'Itens em correção',body:`${s.fixing} item(ns) em fixing. Analise a causa raiz.` });
+    if(s.allocPct>100) out.push({ severity:'warning',icon:'warning',title:'Capacidade excedida',body:`Demanda (${s.totalRem}h) supera capacidade (${s.capacityTotal}h) em ${s.allocPct-100}%.` });
+    else if(s.allocPct<60&&s.allocPct>0) out.push({ severity:'info',icon:'info',title:'Capacidade subutilizada',body:`Apenas ${s.allocPct}% alocado. Há espaço para incluir mais itens.` });
+    if(s.donePct>=70) out.push({ severity:'ok',icon:'ok',title:'Ritmo saudável',body:`${s.done} de ${s.total} PBIs concluídos (${s.donePct}%). Caminho certo!` });
+    else if(s.done===0&&s.bizDays<3) out.push({ severity:'critical',icon:'critical',title:'Entregas em risco',body:`Nenhum PBI concluído com ${s.bizDays} dias úteis restantes. Revisão urgente.` });
+    else out.push({ severity:'info',icon:'info',title:'Progresso da sprint',body:`${s.done} de ${s.total} PBIs concluídos (${s.donePct}%). ${s.totalTasksDone} tasks finalizadas.` });
     return out.slice(0,6);
   }
 };
@@ -2485,7 +2503,7 @@ function renderTeams() {
   const activeId = Store.getActiveTeamId();
   const el = document.getElementById('teams-list');
   if (!teams.length) {
-    if (el) el.innerHTML = '<div class="empty-st"><div style="font-size:36px;margin-bottom:10px">👥</div><h3>Nenhum time cadastrado</h3><p>Clique em "Novo time" para começar.</p></div>';
+    if (el) el.innerHTML = '<div class="empty-st"><div style="font-size:36px;margin-bottom:10px;opacity:.3"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h3>Nenhum time cadastrado</h3><p>Clique em "Novo time" para começar.</p></div>';
     renderDashTeamSel();
     return;
   }
@@ -2632,7 +2650,7 @@ function renderOrgList() {
   el.innerHTML = orgs.map(o => {
     const linked = teams.filter(t => t.orgId === o.id).length;
     return `<div class="team-card">
-      <div class="tavatar">🏢</div>
+      <div class="tavatar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
       <div class="tinfo">
         <div class="tname">${esc(o.name)}</div>
         <div class="tmeta">${linked} time${linked!==1?'s':''} vinculado${linked!==1?'s':''}</div>
@@ -2716,15 +2734,15 @@ function activateTeam(id) {
 function renderLlmList() {
   const list = Store.getLlmList();
   const el   = document.getElementById('llm-list');
-  const icons = { openai:'🟢', claude:'🟣', gemini:'🔵' };
+  const icons = { openai:'<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#10b981"></span>', claude:'<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#8b5cf6"></span>', gemini:'<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3b82f6"></span>' };
   const labels= { openai:'OpenAI (gpt-4o)', claude:'Claude (claude-sonnet-4-5)', gemini:'Gemini (gemini-1.5-pro)' };
   if (!list.length) {
-    el.innerHTML = '<div class="empty-st"><div style="font-size:36px;margin-bottom:10px">🤖</div><h3>Nenhum token configurado</h3><p>Adicione um token para habilitar os insights de IA.</p></div>';
+    el.innerHTML = '<div class="empty-st"><div style="margin-bottom:10px;opacity:.3"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div><h3>Nenhum token configurado</h3><p>Adicione um token para habilitar os insights de IA.</p></div>';
     return;
   }
   el.innerHTML = list.map(l => `
     <div class="llm-card${l.active?' act':''}">
-      <div style="font-size:28px;width:40px;text-align:center">${icons[l.provider]||'🤖'}</div>
+      <div style="width:40px;text-align:center;display:flex;align-items:center;justify-content:center">${icons[l.provider]||'<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#94a3b8"></span>'}</div>
       <div style="flex:1">
         <div style="font-weight:700;font-size:14px">${labels[l.provider]||l.provider}</div>
         <div style="font-size:11px;color:#64748b;font-family:monospace;margin-top:2px">${l.tokenEnc?'••••••••••••':'(sessão)'}${l.active?' · ✓ Ativo':''}</div>
@@ -2785,7 +2803,7 @@ function renderRagList() {
   const el    = document.getElementById('rag-list');
   if (!el) return;
   if (!list.length) {
-    el.innerHTML = '<div class="empty-st"><div style="font-size:36px;margin-bottom:10px">🎓</div><h3>Nenhum treinamento cadastrado</h3><p>Adicione contexto para que a IA gere insights mais precisos.</p></div>';
+    el.innerHTML = '<div class="empty-st"><div style="margin-bottom:10px;opacity:.3"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><h3>Nenhum treinamento cadastrado</h3><p>Adicione contexto para que a IA gere insights mais precisos.</p></div>';
     return;
   }
   el.innerHTML = list.map(r => {
@@ -2793,8 +2811,8 @@ function renderRagList() {
       ? (teams.find(t=>t.id===r.teamId)?.name || 'Time desconhecido')
       : null;
     const scopeLabel = r.scope==='team'
-      ? `📍 ${esc(teamName||'Por time')}`
-      : '🌐 Geral';
+      ? `Por time: ${esc(teamName||'?')}`
+      : 'Geral';
     return `<div class="rag-card">
       <span class="rag-chip">${esc(r.type)}</span>
       <div style="flex:1">
@@ -2964,7 +2982,7 @@ async function runEficiencia() {
     renderEficienciaCharts(result);
     runEficienciaBacklogTable(team, pat, checked);
   } catch(e) {
-    content.innerHTML = `<div class="mod-empty"><div class="mod-empty-icon">⚠️</div><h3>Erro ao calcular</h3><p>${esc(e.message)}</p></div>`;
+    content.innerHTML = `<div class="mod-empty"><div class="mod-empty-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><h3>Erro ao calcular</h3><p>${esc(e.message)}</p></div>`;
     toast('Erro: '+e.message,'err');
   }
 }
@@ -2973,16 +2991,16 @@ function renderEficienciaKPIs(r) {
   const el = document.getElementById('ef-kpis');
   if (!el) return;
   const kpis = [
-    { l:'Vazão Média',          v: r.avgThroughput,    sub:'itens concluídos/sprint',    icon:'📦', tip:'Média de itens concluídos por sprint nas sprints selecionadas. Mede a produtividade histórica da equipe.' },
-    { l:'Lead Time Médio',      v: r.avgLeadTime+'d',  sub:'criação → fechamento',        icon:'⏱️', tip:'Média de dias entre a criação e o fechamento de um item. Inclui todo o tempo de espera e execução.' },
-    { l:'Cycle Time Médio',     v: r.avgCycleTime+'d', sub:'ativação → fechamento',       icon:'🔄', tip:'Média de dias entre a ativação (In Progress) e o fechamento. Mede a eficiência real da execução.' },
-    { l:'Bugs/Defeitos Abertos',v: r.openBugs,         sub:'todos (ignora filtro sprint)', icon:'🐛', alert: r.openBugs > 0, tip:'Contagem global de Bugs e Defects em aberto no projeto, independente do filtro de sprint selecionado.' },
-    { l:'Capacidade Sprint',    v: r.capTotal+'h',     sub:'horas totais (sprint atual)', icon:'⚡', tip:'Soma das horas disponíveis da equipe na sprint atual, descontando folgas e dias não úteis cadastrados.' },
+    { l:'Vazão Média',          v: r.avgThroughput,    sub:'itens concluídos/sprint',    icon:'', tip:'Média de itens concluídos por sprint nas sprints selecionadas. Mede a produtividade histórica da equipe.' },
+    { l:'Lead Time Médio',      v: r.avgLeadTime+'d',  sub:'criação → fechamento',        icon:'', tip:'Média de dias entre a criação e o fechamento de um item. Inclui todo o tempo de espera e execução.' },
+    { l:'Cycle Time Médio',     v: r.avgCycleTime+'d', sub:'ativação → fechamento',       icon:'', tip:'Média de dias entre a ativação (In Progress) e o fechamento. Mede a eficiência real da execução.' },
+    { l:'Bugs/Defeitos Abertos',v: r.openBugs,         sub:'todos (ignora filtro sprint)', icon:'', alert: r.openBugs > 0, tip:'Contagem global de Bugs e Defects em aberto no projeto, independente do filtro de sprint selecionado.' },
+    { l:'Capacidade Sprint',    v: r.capTotal+'h',     sub:'horas totais (sprint atual)', icon:'', tip:'Soma das horas disponíveis da equipe na sprint atual, descontando folgas e dias não úteis cadastrados.' },
   ];
   const _etip = t => `<span class="kpi-tip"><i class="kpi-tip-icon">i</i><span class="kpi-tip-box">${t}</span></span>`;
   el.innerHTML = kpis.map(k => `
     <div class="ef-kpi-card${k.alert?' kpi-card alert':''}">
-      <div class="ef-kpi-label">${k.icon} ${k.l} ${_etip(k.tip)}</div>
+      <div class="ef-kpi-label">${k.icon?k.icon+' ':''}${k.l} ${_etip(k.tip)}</div>
       <div class="ef-kpi-val">${k.v}</div>
       <div class="ef-kpi-sub">${k.sub}</div>
     </div>`).join('');
@@ -2997,13 +3015,13 @@ function renderEficienciaCharts(r) {
   el.innerHTML = `
     <div class="ef-chart-card ef-chart-card-full">
       <div class="ef-chart-hdr">
-        <span class="ef-chart-title">⏳ Tempo médio em cada coluna do board</span>
+        <span class="ef-chart-title">Tempo médio em cada coluna do board</span>
       </div>
       <div style="position:relative;height:200px"><canvas id="ef-chart-col"></canvas></div>
     </div>
     <div class="ef-chart-card ef-chart-card-full">
       <div class="ef-chart-hdr">
-        <span class="ef-chart-title">📈 Vazão / Velocity por Sprint</span>
+        <span class="ef-chart-title">Vazão / Velocity por Sprint</span>
         <div class="ef-toggle">
           <button class="ef-toggle-btn active" id="ef-t-throughput" onclick="switchEfChart('flow','throughput')">Vazão</button>
           <button class="ef-toggle-btn"        id="ef-t-velocity"   onclick="switchEfChart('flow','velocity')">Velocity</button>
@@ -3013,7 +3031,7 @@ function renderEficienciaCharts(r) {
     </div>
     <div class="ef-chart-card ef-chart-card-full">
       <div class="ef-chart-hdr">
-        <span class="ef-chart-title">📊 Tempo de entrega por Sprint</span>
+        <span class="ef-chart-title">Tempo de entrega por Sprint</span>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <div class="ef-toggle">
             <button class="ef-toggle-btn active" id="ef-t-lead"  onclick="switchEfChart('time','lead')">Lead Time</button>
@@ -3181,7 +3199,7 @@ async function runQualidade() {
 
     renderQualidadeCharts(items);
   } catch(e) {
-    content.innerHTML = `<div class="mod-empty"><div class="mod-empty-icon">⚠️</div><h3>Erro</h3><p>${esc(e.message)}</p></div>`;
+    content.innerHTML = `<div class="mod-empty"><div class="mod-empty-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><h3>Erro</h3><p>${esc(e.message)}</p></div>`;
     toast('Erro: '+e.message,'err');
   }
 }
@@ -3750,7 +3768,7 @@ async function runQualidadeLLM() {
     APP.insightCards = ins;
     el.innerHTML = `<div class="insights-grid">${DB.renderInsightCards(ins)}</div>`;
   } catch(e) {
-    el.innerHTML = `<div style="color:#dc2626;padding:12px;font-size:13px">⚠️ Erro: ${esc(e.message)}</div>`;
+    el.innerHTML = `<div style="color:#dc2626;padding:12px;font-size:13px">Erro: ${esc(e.message)}</div>`;
     toast('Erro LLM: '+e.message,'err');
   }
 }
@@ -3763,13 +3781,13 @@ async function runSync() {
   if (!team) { toast('Nenhum time ativo. Vá em Times e ative um.','warn'); APP.syncRunning=false; return; }
   const topbar = document.getElementById('db-topbar');
   if (topbar.firstChild) topbar.insertAdjacentHTML('afterbegin','<div style="height:3px;background:linear-gradient(90deg,transparent,#60a5fa,transparent);background-size:200% 100%;animation:loading 1.5s infinite;margin-bottom:8px"></div>');
-  toast('🔄 Sincronizando…');
+  toast('Sincronizando…');
   try {
     const data = await DataProcessor.sync();
     APP.insightCards = [];
     DB.render(data);
     loadInsights(false);
-    toast(`✅ Sprint "${data.activeSprint.path.split('\\').pop()}" sincronizada!`,'ok');
+    toast(`Sprint "${data.activeSprint.path.split('\\').pop()}" sincronizada!`,'ok');
   } catch(e) {
     toast('Erro na sincronização: '+e.message,'err',6000);
     console.error(e);
@@ -3800,7 +3818,7 @@ async function loadInsights(fromCache) {
   }
 
   const _setSpinner = msg => { grid.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div>${msg}</div>`; };
-  _setSpinner('🤖 Agente 1 — Gerando insights…');
+  _setSpinner('Agente 1 — Gerando insights…');
   try {
     const token = await Store.getActiveLlmToken();
     if (!token) throw new Error('Token LLM indisponível — verifique se o vault está desbloqueado e o token salvo.');
@@ -3858,7 +3876,7 @@ function giveInsightFeedback(btn, rating) {
   Store.saveInsightFeedback(kept);
   card.querySelectorAll('.ins-fb-btn').forEach(b => b.classList.remove('voted-good','voted-bad'));
   btn.classList.add(rating === 'good' ? 'voted-good' : 'voted-bad');
-  toast(rating === 'good' ? '👍 Feedback positivo registrado!' : '👎 Feedback negativo registrado!', 'ok', 2000);
+  toast(rating === 'good' ? 'Feedback positivo registrado!' : 'Feedback negativo registrado!', 'ok', 2000);
 }
 
 function buildUserLevelContext() {
@@ -3983,7 +4001,7 @@ function _buildColumnTimeline(revs) {
       `<div class="tl-days${alert ? ' tl-alert' : ''}">${s.days !== null ? s.days+'d' : '—'}</div>`+
       `<div class="tl-who" title="${s.enteredBy}">${short(s.enteredBy)}</div>`+
       `<div class="tl-date">${fmtD(s.startDate)}</div>`+
-      (s.blockMs > 0 ? `<div class="tl-block">🔒 ${_fmtBlockTime(s.blockMs, s.blockStartMs)}</div>` : '')+
+      (s.blockMs > 0 ? `<div class="tl-block">${ICONS.lock} ${_fmtBlockTime(s.blockMs, s.blockStartMs)}</div>` : '')+
       `</div>${i < steps.length - 1 ? '<div class="tl-arrow">›</div>' : ''}`;
   }).join('');
   return { html, totalBlockMs, totalBlockStartMs };
@@ -4155,7 +4173,7 @@ function fcRenderMessages() {
 function fcWelcomeHtml() {
   const team = Store.getActiveTeam();
   const teamName = team ? esc(team.name) : 'nenhum time ativo';
-  return `<div class="fc-welcome"><div class="fc-welcome-icon">🤖</div><strong>AgileViewAI</strong><p style="margin-top:6px">Time ativo: <strong>${teamName}</strong></p><p style="margin-top:6px;font-size:12px">Pergunte sobre sprint, qualidade, eficiência ou qualquer aspecto do time.</p></div>`;
+  return `<div class="fc-welcome"><div class="fc-welcome-icon">${ICONS.bot}</div><strong>AgileViewAI</strong><p style="margin-top:6px">Time ativo: <strong>${teamName}</strong></p><p style="margin-top:6px;font-size:12px">Pergunte sobre sprint, qualidade, eficiência ou qualquer aspecto do time.</p></div>`;
 }
 
 function _mdToHtml(md) {
@@ -4198,7 +4216,7 @@ function fcRenderSidebar() {
   if (!el) return;
   const convs = [...Store.getChatConvs()].reverse();
   const activeId = APP.chatConvId;
-  const newBtn = `<button class="fc-conv-new" onclick="fcNewConv()">✏️ Nova conversa</button>`;
+  const newBtn = `<button class="fc-conv-new" onclick="fcNewConv()">+ Nova conversa</button>`;
   if (!convs.length) {
     el.innerHTML = newBtn + '<div style="padding:12px;font-size:12px;color:#94a3b8;text-align:center">Nenhuma conversa</div>';
     return;
@@ -4417,105 +4435,7 @@ function showTrainingTab(name) {
   if (name === 'agentes')    renderAgentesTab();
 }
 
-// ── AGENTES TAB ──────────────────────────────────────────────────────
-function renderAgentesTab() {
-  const el = document.getElementById('tt-agentes-content');
-  if (!el) return;
-  const saved = Store.getAgentPrompts();
-  const agents = [
-    { id:'a1', label:'Agente 1 — Gerador', icon:'🤖',
-      desc:'Recebe todos os dados (Sprint, Eficiência, Qualidade) e gera a lista inicial de insights.' },
-    { id:'a2', label:'Agente 2 — Revisor', icon:'🔍',
-      desc:'Recebe a saída do Agente 1. Remove duplicatas, agrupa itens relacionados e valida métricas.' },
-    { id:'a3', label:'Agente 3 — Redator', icon:'✍️',
-      desc:'Recebe a saída do Agente 2. Reescreve cada card com o tom adequado à severidade e ao perfil.' }
-  ];
-  el.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-      <div style="color:#64748b;font-size:13px">Cada agente recebe a saída do anterior. Edite os prompts para personalizar cada etapa.</div>
-      <div style="display:flex;gap:8px">
-        <button class="btn" style="font-size:12px" onclick="exportAgentPrompts()">⬇ Exportar</button>
-        <button class="btn btn-blue" style="font-size:12px" onclick="importAgentPrompts()">⬆ Importar</button>
-      </div>
-    </div>
-    ${agents.map(a => `
-    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px;margin-bottom:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div style="font-weight:700;font-size:14px">${a.icon} ${a.label}</div>
-        <button class="btn" style="font-size:11px;padding:4px 10px" onclick="resetAgentPrompt('${a.id}')">↺ Restaurar padrão</button>
-      </div>
-      <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">${a.desc}</div>
-      <textarea id="agent-ta-${a.id}"
-        style="width:100%;box-sizing:border-box;min-height:180px;font-size:12px;font-family:monospace;padding:10px;border:1px solid #e2e8f0;border-radius:6px;resize:vertical;line-height:1.5"
-        oninput="saveAgentPrompt('${a.id}', this.value)"
-      >${(saved[a.id] ?? AGENT_DEFAULTS[a.id]).replace(/</g,'&lt;')}</textarea>
-    </div>`).join('')}
-  `;
-}
-
-function exportAgentPrompts() {
-  const saved = Store.getAgentPrompts();
-  const out = {
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    type: 'agileviewai_agent_prompts',
-    prompts: {
-      a1: saved.a1 ?? AGENT_DEFAULTS.a1,
-      a2: saved.a2 ?? AGENT_DEFAULTS.a2,
-      a3: saved.a3 ?? AGENT_DEFAULTS.a3
-    }
-  };
-  const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'agileviewai_agents_' + new Date().toISOString().slice(0, 10) + '.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-  toast('Prompts exportados!', 'ok', 2000);
-}
-
-function importAgentPrompts() {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.json,application/json';
-  input.onchange = async e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    try {
-      const text = await file.text();
-      const data = JSON.parse(text);
-      if (data.type !== 'agileviewai_agent_prompts' || !data.prompts)
-        throw new Error('Arquivo inválido — não é um export de prompts de agentes.');
-      const prompts = Store.getAgentPrompts();
-      if (data.prompts.a1) prompts.a1 = data.prompts.a1;
-      if (data.prompts.a2) prompts.a2 = data.prompts.a2;
-      if (data.prompts.a3) prompts.a3 = data.prompts.a3;
-      Store.saveAgentPrompts(prompts);
-      renderAgentesTab();
-      toast('Prompts importados com sucesso!', 'ok', 3000);
-    } catch(err) {
-      toast('Erro ao importar: ' + err.message, 'err', 5000);
-    }
-  };
-  input.click();
-}
-
-function saveAgentPrompt(agentId, value) {
-  const prompts = Store.getAgentPrompts();
-  prompts[agentId] = value;
-  Store.saveAgentPrompts(prompts);
-}
-
-function resetAgentPrompt(agentId) {
-  const prompts = Store.getAgentPrompts();
-  prompts[agentId] = AGENT_DEFAULTS[agentId];
-  Store.saveAgentPrompts(prompts);
-  const ta = document.getElementById('agent-ta-' + agentId);
-  if (ta) ta.value = AGENT_DEFAULTS[agentId];
-  toast('Prompt restaurado ao padrão.', 'ok', 2000);
-}
-
-// \u2500 FEEDBACK TAB \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+// ── FEEDBACK TAB ────────────────────────────────────────────────────
 function renderFeedbackTab() {
   const el = document.getElementById('tt-feedback-content');
   if (!el) return;
@@ -4524,20 +4444,20 @@ function renderFeedbackTab() {
   const bad  = all.filter(f => f.rating === 'bad');
   if (!all.length) {
     el.innerHTML = `<div style="text-align:center;padding:40px 0;color:#94a3b8;font-size:13px">
-      <div style="font-size:36px;margin-bottom:10px">\ud83d\udcca</div>
-      Nenhum feedback ainda.<br>Avalie os insights no dashboard com \ud83d\udc4d / \ud83d\udc4e.</div>`;
+      <div style="margin-bottom:10px;opacity:.3"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></div>
+      Nenhum feedback ainda.<br>Avalie os insights no dashboard.</div>`;
     return;
   }
   const team = Store.getActiveTeam();
   const sprint = APP.sprintData?.activeSprint?.path?.split('\\').pop() || '\u2014';
   el.innerHTML = `
   <div class="fb-stat-row">
-    <div class="fb-stat"><div class="fb-stat-num" style="color:#16a34a">${good.length}</div><div class="fb-stat-lbl">\ud83d\udc4d Aprovados</div></div>
-    <div class="fb-stat"><div class="fb-stat-num" style="color:#dc2626">${bad.length}</div><div class="fb-stat-lbl">\ud83d\udc4e Reprovados</div></div>
+    <div class="fb-stat"><div class="fb-stat-num" style="color:#16a34a">${good.length}</div><div class="fb-stat-lbl">Aprovados</div></div>
+    <div class="fb-stat"><div class="fb-stat-num" style="color:#dc2626">${bad.length}</div><div class="fb-stat-lbl">Reprovados</div></div>
     <div class="fb-stat"><div class="fb-stat-num">${all.length}</div><div class="fb-stat-lbl">Total feedbacks</div></div>
   </div>
   <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:14px">
-    <button class="btn" style="font-size:12px" onclick="exportFeedback()">\u2b07 Exportar</button>
+    <button class="btn" style="font-size:12px" onclick="exportFeedback()">Exportar</button>
     <button class="btn-red" style="font-size:12px;padding:4px 12px;border-radius:6px" onclick="clearFeedback()">Limpar tudo</button>
   </div>
   <div>` + [...all].reverse().map(f => {
@@ -4545,7 +4465,7 @@ function renderFeedbackTab() {
     const isG = f.rating === 'good';
     const sevColor = {critical:'#dc2626',warning:'#d97706',info:'#1d4ed8',ok:'#16a34a'}[f.insight.severity] || '#475569';
     return `<div class="fb-entry">
-      <div class="fb-entry-badge">${isG ? '\ud83d\udc4d' : '\ud83d\udc4e'}</div>
+      <div class="fb-entry-badge" style="color:${isG?'#16a34a':'#dc2626'}"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 2h-4c-1.1 0-2 .9-2 2v18l4-4h14c1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H6"/><path d="M6 12h6v2H6z"/><path d="M6 18h12v-2H6z"/></svg></div>
       <div class="fb-entry-info">
         <div class="fb-entry-title">${esc(f.insight.title)}</div>
         <div class="fb-entry-body">${esc(f.insight.body)}</div>
@@ -4559,82 +4479,10 @@ function renderFeedbackTab() {
   }).join('') + '</div>';
 }
 
-function deleteFeedback(id) {
-  Store.saveInsightFeedback(Store.getInsightFeedback().filter(f => f.id !== id));
-  renderFeedbackTab();
-}
-
-function clearFeedback() {
-  if (!confirm('Apagar todos os feedbacks de treinamento?')) return;
-  Store.saveInsightFeedback([]);
-  renderFeedbackTab();
-  toast('Feedbacks apagados.','warn');
-}
-
-function exportFeedback() {
-  const all = Store.getInsightFeedback();
-  if (!all.length) { toast('Nenhum feedback para exportar.','warn'); return; }
-  const blob = new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),feedback:all},null,2)],{type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'agileviewai_feedback_'+new Date().toISOString().slice(0,10)+'.json';
-  a.click(); URL.revokeObjectURL(a.href);
-  toast('Feedback exportado!','ok');
-}
-
-// \u2500 CONVERSAS TAB \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-const TECH_TERMS = [
-  'velocity','throughput','lead time','cycle time','burndown','burnup','wip','story point',
-  'story points','capacidade','eficiência','throughput','sprint backlog','definition of done',
-  'dod','retrospectiva','refinamento','épico','critérios de aceitação','acceptance criteria',
-  'azure devops','pipeline','deployment','devops','kanban','scrum','impediment','impedimento',
-  'fibonacci','planning poker','sprint review','daily','standup','release','roadmap',
-  'throughput','monte carlo','percentil','p85','p95','lead time','cycle time'
-];
-const DIDACTIC_SIGNALS = [
-  'o que é','o que são','o que significa','o que quer dizer','como funciona','como se calcula',
-  'pode explicar','me explica','não entendo','o que é isso','o que isso significa',
-  'para que serve','o que representa','como interpretar','o que quer dizer','por que',
-  'o que acontece','me diz','o que preciso','como faço','como posso'
-];
-
-function analyzeUserLevel() {
-  const profile = Store.getUserProfile();
-  if (profile.override) return profile;
-  const convs = Store.getChatConvs();
-  const allUserMsgs = convs.flatMap(c => c.messages.filter(m => m.role === 'user').map(m => m.content.toLowerCase()));
-  if (allUserMsgs.length < 3) return { level:'neutral', override:false, techScore:0, didScore:0, msgCount:allUserMsgs.length };
-  let techScore = 0, didScore = 0;
-  for (const msg of allUserMsgs) {
-    for (const t of TECH_TERMS)       if (msg.includes(t)) techScore++;
-    for (const d of DIDACTIC_SIGNALS) if (msg.includes(d)) didScore++;
-  }
-  const total = techScore + didScore || 1;
-  const techPct = techScore / total;
-  let level = 'neutral';
-  if (techPct >= 0.55 && techScore >= 3)  level = 'technical';
-  else if (techPct <= 0.35 && didScore >= 2) level = 'didactic';
-  return { level, override:false, techScore, didScore, msgCount:allUserMsgs.length, updatedAt:Date.now() };
-}
-
-function setUserLevelOverride(level) {
-  Store.saveUserProfile({ level, override:true, updatedAt:Date.now() });
-  renderConversasTab();
-  toast(`Perfil definido como "${levelLabel(level)}" manualmente.`,'ok');
-}
-
-function resetUserLevelOverride() {
-  const inferred = analyzeUserLevel();
-  Store.saveUserProfile({ level:inferred.level, override:false, updatedAt:Date.now() });
-  renderConversasTab();
-  toast('Perfil redefinido com base nas conversas.','ok');
-}
-
-function levelLabel(l) {
-  return l === 'technical' ? 'Técnico' : l === 'didactic' ? 'Didático' : 'Equilibrado';
-}
 function levelIcon(l) {
-  return l === 'technical' ? '\ud83d\udd2c' : l === 'didactic' ? '\ud83d\udcda' : '\u2696\ufe0f';
+  if (l === 'technical') return '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>';
+  if (l === 'didactic')  return '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
 }
 
 function renderConversasTab() {
@@ -4652,10 +4500,10 @@ function renderConversasTab() {
     neutral:  'O assistente usará linguagem equilibrada, balanceando termos técnicos e clareza sem excesso de jargões.'
   };
   const tagLine = inferred.msgCount < 3
-    ? `<span class="ul-signal">\u26a0\ufe0f Menos de 3 perguntas analisadas</span>`
-    : `<span class="ul-signal">\ud83d\udcac ${inferred.msgCount} mensagens analisadas</span>`+
-      `<span class="ul-signal">\ud83d\udd2c Termos t\u00e9cnicos: ${inferred.techScore||0}</span>`+
-      `<span class="ul-signal">\ud83d\udcda Sinais did\u00e1ticos: ${inferred.didScore||0}</span>`;
+    ? `<span class="ul-signal">Menos de 3 perguntas analisadas</span>`
+    : `<span class="ul-signal">${inferred.msgCount} mensagens analisadas</span>`+
+      `<span class="ul-signal">T\u00e9cnicos: ${inferred.techScore||0}</span>`+
+      `<span class="ul-signal">Did\u00e1ticos: ${inferred.didScore||0}</span>`;
   el.innerHTML = `
   <div class="ul-profile-box">
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
@@ -4671,29 +4519,28 @@ function renderConversasTab() {
     <div class="ul-signals">${tagLine}</div>
     <div class="ul-override-row">
       <span style="font-size:11px;color:#64748b;font-weight:600">Definir manualmente:</span>
-      <button class="btn-sm${active.level==='technical'?' bp':''}" onclick="setUserLevelOverride('technical')">\ud83d\udd2c T\u00e9cnico</button>
-      <button class="btn-sm${active.level==='neutral'?' bp':''}" onclick="setUserLevelOverride('neutral')">⚖️ Equilibrado</button>
-      <button class="btn-sm${active.level==='didactic'?' bp':''}" onclick="setUserLevelOverride('didactic')">\ud83d\udcda Did\u00e1tico</button>
-      ${stored.override ? '<button class="btn-sm" onclick="resetUserLevelOverride()" style="margin-left:auto">\ud83d\udd04 Reinfrir</button>' : ''}
+      <button class="btn-sm${active.level==='technical'?' bp':''}" onclick="setUserLevelOverride('technical')">T\u00e9cnico</button>
+      <button class="btn-sm${active.level==='neutral'?' bp':''}" onclick="setUserLevelOverride('neutral')">Equilibrado</button>
+      <button class="btn-sm${active.level==='didactic'?' bp':''}" onclick="setUserLevelOverride('didactic')">Did\u00e1tico</button>
+      ${stored.override ? '<button class="btn-sm" onclick="resetUserLevelOverride()" style="margin-left:auto">Reinfrir</button>' : ''}
     </div>
   </div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-    <div style="font-size:13px;font-weight:700;color:#1e293b">\ud83d\udcac Conversas (${convs.length})</div>
+    <div style="font-size:13px;font-weight:700;color:#1e293b">Conversas (${convs.length})</div>
     <div style="display:flex;gap:8px">
-      <button class="btn" style="font-size:12px" onclick="exportConversations()">\u2b07 Exportar</button>
+      <button class="btn" style="font-size:12px" onclick="exportConversations()">Exportar</button>
     </div>
-  </div>` +
-  (convs.length ? convs.map(c => {
+  </div>` + (convs.length ? convs.map(c => {
     const dt  = new Date(c.createdAt).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
     const cnt = Math.floor(c.messages.length/2);
     const userMsgs = c.messages.filter(m => m.role === 'user');
     const techHits = userMsgs.reduce((n,m)=>n+TECH_TERMS.filter(t=>m.content.toLowerCase().includes(t)).length,0);
     const didHits  = userMsgs.reduce((n,m)=>n+DIDACTIC_SIGNALS.filter(d=>m.content.toLowerCase().includes(d)).length,0);
-    const tag = techHits > didHits ? '<span class="ul-signal" style="background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8">\ud83d\udd2c t\u00e9cnico</span>'
-              : didHits > techHits ? '<span class="ul-signal" style="background:#fefce8;border-color:#fde047;color:#92400e">\ud83d\udcda did\u00e1tico</span>'
+    const tag = techHits > didHits ? '<span class="ul-signal" style="background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8">t\u00e9cnico</span>'
+              : didHits > techHits ? '<span class="ul-signal" style="background:#fefce8;border-color:#fde047;color:#92400e">did\u00e1tico</span>'
               : '';
     return `<div class="conv-card">
-      <div style="font-size:22px;margin-top:2px">\ud83d\udcac</div>
+      <div style="margin-top:2px;opacity:.5"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></div>
       <div class="conv-card-info">
         <div class="conv-card-title">${esc(c.title)}</div>
         <div class="conv-card-meta">${dt} \u00b7 ${cnt} pergunta${cnt!==1?'s':''} ${tag}</div>
@@ -4703,7 +4550,42 @@ function renderConversasTab() {
         <button class="btn-sm br" style="font-size:11px" onclick="fcDeleteConvFromRag('${c.id}',event)">Excluir</button>
       </div>
     </div>`;
-  }).join('') : '<div style="text-align:center;padding:32px 0;color:#94a3b8;font-size:13px">Nenhuma conversa ainda.<br>Use o bot\u00e3o \ud83d\udcac para come\u00e7ar.</div>');
+  }).join('') : '<div style="text-align:center;padding:32px 0;color:#94a3b8;font-size:13px">Nenhuma conversa ainda.<br>Use o bot\u00e3o de chat para come\u00e7ar.</div>');
+}
+
+function renderAgentesTab() {
+  const el = document.getElementById('tt-agentes-content');
+  if (!el) return;
+  const saved = Store.getAgentPrompts();
+  const agents = [
+    { id:'a1', label:'Agente 1 — Gerador', icon:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>',
+      desc:'Recebe todos os dados (Sprint, Efici\u00eancia, Qualidade) e gera a lista inicial de insights.' },
+    { id:'a2', label:'Agente 2 — Revisor', icon:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+      desc:'Recebe a sa\u00edda do Agente 1. Remove duplicatas, agrupa itens relacionados e valida m\u00e9tricas.' },
+    { id:'a3', label:'Agente 3 — Redator', icon:'<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+      desc:'Recebe a sa\u00edda do Agente 2. Reescreve cada card com o tom adequado \u00e0 severidade e ao perfil.' }
+  ];
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div style="color:#64748b;font-size:13px">Cada agente recebe a saída do anterior. Edite os prompts para personalizar cada etapa.</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" style="font-size:12px" onclick="exportAgentPrompts()">Exportar</button>
+        <button class="btn btn-blue" style="font-size:12px" onclick="importAgentPrompts()">Importar</button>
+      </div>
+    </div>
+    ${agents.map(a => `
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="font-weight:700;font-size:14px">${a.icon} ${a.label}</div>
+        <button class="btn" style="font-size:11px;padding:4px 10px" onclick="resetAgentPrompt('${a.id}')">Restaurar padr\u00e3o</button>
+      </div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:10px">${a.desc}</div>
+      <textarea id="agent-ta-${a.id}"
+        style="width:100%;box-sizing:border-box;min-height:180px;font-size:12px;font-family:monospace;padding:10px;border:1px solid #e2e8f0;border-radius:6px;resize:vertical;line-height:1.5"
+        oninput="saveAgentPrompt('${a.id}', this.value)"
+      >${(saved[a.id] ?? AGENT_DEFAULTS[a.id]).replace(/</g,'&lt;')}</textarea>
+    </div>`).join('')}
+  `;
 }
 
 function fcDeleteConvFromRag(id, event) {
@@ -4907,7 +4789,7 @@ function downloadDashboardHtml() {
       </tr>`;
     }).join('');
     const memRows = Object.entries(cap).filter(([,v])=>(v.capacity||0)>0).map(([name,v])=>`<tr><td>${_e(name)}</td><td class="tc">${v.capacity}h</td><td class="tc">${v.daysOff||0}</td></tr>`).join('');
-    sprintHtml = `<div class="section"><h2>🏃 Sprint: ${_e(spLabel)}</h2>
+    sprintHtml = `<div class="section"><h2>Sprint: ${_e(spLabel)}</h2>
       <div class="kpi-row">${kpiH}</div>
       <h3>Backlog — ${bl.length} itens</h3>
       <table><thead><tr><th>Tipo</th><th>ID</th><th>Nome</th><th>Status</th><th>Responsável</th><th class="tc">Sprint</th><th class="tc">Estimativa</th><th class="tc">Rem.</th><th class="tc">Progresso</th><th class="tc">Tasks</th></tr></thead>
@@ -4942,7 +4824,7 @@ function downloadDashboardHtml() {
           .map(c=>`<tr><td>${_e(c)}</td><td class="tc">${(efData.colTimes[c].total/efData.colTimes[c].count).toFixed(1)}d</td><td class="tc">${efData.colTimes[c].count}</td></tr>`).join('')
       : `<tr><td colspan="3" class="empty">Dados de coluna não disponíveis</td></tr>`;
     const chartImgs = ['ef-chart-flow','ef-chart-time'].map(id=>{const c=document.getElementById(id);try{return c?`<img src="${c.toDataURL()}" style="max-width:48%;border-radius:6px;border:1px solid #e2e8f0">`:'';}catch{return '';}}).join(' ');
-    efHtml = `<div class="section"><h2>⚡ Eficiência — ${efData.iterLabels.length} sprint(s)</h2>
+    efHtml = `<div class="section"><h2>Eficiência — ${efData.iterLabels.length} sprint(s)</h2>
       <div class="kpi-row">${efKpiH}</div>
       ${chartImgs?`<div style="margin-bottom:14px">${chartImgs}</div>`:''}
       <h3>Por Sprint</h3>
@@ -5002,7 +4884,7 @@ function downloadDashboardHtml() {
         <td><span style="color:${priClr(pri)};font-weight:600">● ${pri}</span></td>
       </tr>`;
     }).join('');
-    qualHtml = `<div class="section"><h2>🎯 Qualidade — ${qualData.length} itens</h2>
+    qualHtml = `<div class="section"><h2>Qualidade — ${qualData.length} itens</h2>
       <div class="kpi-row">${qKpiH}</div>
       <h3>Bugs e Defeitos — ${qualData.length} itens</h3>
       <table><thead><tr><th>Tipo</th><th>ID</th><th>Nome</th><th>Status</th><th>Responsável</th><th class="tc">Tempo Correção</th><th class="tc">Estimativa</th><th class="tc">Rem. Work</th><th>Severidade</th><th>Prioridade</th></tr></thead>
