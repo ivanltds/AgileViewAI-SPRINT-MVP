@@ -4,16 +4,16 @@
   "description": "BDD Tests for AgileViewAI modularization",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/.bin/jest --verbose",
-    "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --watch",
-    "test:coverage": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
-    "test:vault": "node --experimental-vm-modules node_modules/.bin/jest tests/bdd/vault.feature.test.js --verbose",
-    "test:times": "node --experimental-vm-modules node_modules/.bin/jest tests/bdd/times.feature.test.js --verbose",
-    "test:sync": "node --experimental-vm-modules node_modules/.bin/jest tests/bdd/sync.feature.test.js --verbose",
-    "test:bdd": "node --experimental-vm-modules node_modules/.bin/jest tests/bdd/ --verbose",
-    "test:unit": "node --experimental-vm-modules node_modules/.bin/jest tests/unit/ --verbose",
-    "test:integration": "node --experimental-vm-modules node_modules/.bin/jest tests/integration/ --verbose",
-    "test:ci": "node --experimental-vm-modules node_modules/.bin/jest --coverage --ci --forceExit"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test:vault": "node --experimental-vm-modules node_modules/jest/bin/jest.js tests/bdd/vault.feature.test.js --verbose",
+    "test:times": "node --experimental-vm-modules node_modules/jest/bin/jest.js tests/bdd/times.feature.test.js --verbose",
+    "test:sync": "node --experimental-vm-modules node_modules/jest/bin/jest.js tests/bdd/sync.feature.test.js --verbose",
+    "test:bdd": "node --experimental-vm-modules node_modules/jest/bin/jest.js tests/bdd/ --verbose",
+    "test:unit": "node --experimental-vm-modules node_modules/jest/bin/jest.js tests/unit/ --verbose",
+    "test:integration": "node --experimental-vm-modules node_modules/jest/bin/jest.js tests/integration/ --verbose",
+    "test:ci": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --ci --forceExit"
   },
   "devDependencies": {
     "@babel/core": "^7.23.0",

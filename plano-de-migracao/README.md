@@ -6,7 +6,7 @@
 
 | Fase | Arquivo | Status | Agente Principal |
 |------|---------|--------|------------------|
-| FASE 1 | Concluída (sem arquivo) | ✅ | — |
+| FASE 1 | [fase-1-fundacao-testes.md](./fase-1-fundacao-testes.md) | ✅ | AG-ORC |
 | FASE 2 | [fase-2-modulos-core.md](./fase-2-modulos-core.md) | 🔴 | AG-EXT |
 | FASE 3 | [fase-3-servicos.md](./fase-3-servicos.md) | 🔴 | AG-EXT |
 | FASE 4 | [fase-4-componentes-ui.md](./fase-4-componentes-ui.md) | 🔴 | AG-EXT |

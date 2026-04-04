@@ -4,13 +4,16 @@
  */
 
 import { jest } from '@jest/globals';
+import { Vault } from '../../src/core/vault.js';
+import { Store } from '../../src/core/store.js';
+import { AzureAPI } from '../../src/core/azure-api.js';
 
 // Mock fetch for Azure API calls
 global.fetch = jest.fn();
 
 describe('Feature: Sincronização com Azure DevOps', () => {
   beforeEach(() => {
-    fetch.mockClear();
+    fetch.mockReset();
     localStorage.clear();
     APP.sprintData = null;
     APP.syncRunning = false;
@@ -120,7 +123,7 @@ describe('Feature: Sincronização com Azure DevOps', () => {
       // When/Then: sincronização falha
       try {
         await AzureAPI.getIterations(team.org, team.project, team.team, expiredPat);
-        fail('Should have thrown error');
+        throw new Error('Should have thrown error');
       } catch (error) {
         expect(error.message).toContain('HTTP 401');
       }
@@ -146,7 +149,7 @@ describe('Feature: Sincronização com Azure DevOps', () => {
       // When/Then: sincronização falha
       try {
         await AzureAPI.getIterations(team.org, team.project, team.team, validPat);
-        fail('Should have thrown error');
+        throw new Error('Should have thrown error');
       } catch (error) {
         expect(error.message).toContain('HTTP 404');
       }

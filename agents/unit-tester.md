@@ -59,6 +59,9 @@ describe('<NomeDoModulo>', () => {
 - Mocks APENAS para dependências externas (localStorage, crypto, fetch)
 - Sem mocks de módulos internos (testar a integração real entre funções do mesmo módulo)
 - Nomes de teste em português do Brasil
+- **ANTI-PATTERN - Falsos Positivos**: NUNCA crie testes que apenas testam o comportamento de um Mock preenchido no próprio teste (ex: manipular uma variável e assertar a mesma variável via mock).
+- **ANTI-PATTERN - Sangramento de Lógica**: NUNCA injete regras de negócio usando `if` ou modifique o DOM diretamente dentro do arquivo de testes. O teste deve apenas invocar a API real (chamando uma interface ou fachada) e realizar o `expect()` no resultado de saída e side-effects.
+- **ANTI-PATTERN - Incompletude**: Um teste BDD deve conferir t-o-d-o-s os steps definidos no bloco "Then" do Gherkin pertinente.
 
 ### SKILL 2: Executar Testes Unitários
 **Quando**: Após criar os testes ou após qualquer alteração no módulo

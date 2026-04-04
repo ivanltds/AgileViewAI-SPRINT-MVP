@@ -25,6 +25,9 @@ O projeto usa **Jest + jsdom** para testes. Setup global em `tests/setup.js` com
 - **Mocks**: APENAS para APIs externas (localStorage, crypto, fetch, DOM)
 - **Nomes**: Em português do Brasil
 - **Padrão**: Arrange → Act → Assert
+- **NÃO testar Mocks**: Testes devem invocar APIs/classes reais, não brincar com os próprios mocks.
+- **NÃO misturar lógica**: Não insira condicionais de regra de negócio (`if`) ou modifique o DOM isoladamente no corpo do arquivo de teste.
+- **Validar Gherkin 100%**: A asserção deve cobrir todos os passos `Then` previstos antes de aprovar.
 
 ### Template
 

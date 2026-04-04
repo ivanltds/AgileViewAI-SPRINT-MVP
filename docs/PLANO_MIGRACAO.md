@@ -381,6 +381,12 @@ init();
 | FASE 5 | Visual (CSS) | Manual | Browser |
 | FASE 6 | E2E / Regressão | 95%+ | Cypress ou Playwright |
 
+### 🛡️ Prevenção de Anti-patterns BDD
+Para evitar falsas seguranças identificadas na Fase 1, o agente de testes **deve obrigatoriamente** revisar e garantir durante a escrita ou refatoração:
+1. **Zero Falsos Positivos**: Testes devem atuar no SUT (System Under Test) verdadeiro e nunca verificar apenas se o mock salvou a variável nele mesmo.
+2. **Zero Sangramento de Lógica**: Teste não é app. Toda lógica condicional de apresentação (`if DOM_ready`) deve estar no Módulo ou Fachada (`APP`), nunca chumbado no próprio `test.js`.
+3. **Validação Estrita do Gherkin**: Não deixe passar cenários cujos "Then" exigiam uma lista abrangente de efeitos colaterais e o teste avaliou apenas 1 deles.
+
 ### Próximos Testes BDD a Implementar
 
 **Prioridade Alta** (alinhados com FASE 2):

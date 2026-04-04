@@ -1,0 +1,22 @@
+# Dependências
+node_modules/
+
+# Logs e arquivos temporários de teste
+*.log
+*.txt
+test_*\.json
+test_*\.txt
+err.log
+err.txt
+temp.log
+
+# Diretórios de cobertura de código
+coverage/
+
+# Variáveis de ambiente
+.env
+.env.local
+
+# Outros arquivos indesejados
+.DS_Store
+Thumbs.db

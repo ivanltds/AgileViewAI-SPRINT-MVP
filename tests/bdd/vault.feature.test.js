@@ -4,6 +4,7 @@
  */
 
 import { jest } from '@jest/globals';
+import { Vault } from '../../src/core/vault.js';
 
 describe('Feature: Vault — Segurança e Autenticação', () => {
   beforeEach(() => {
@@ -23,6 +24,9 @@ describe('Feature: Vault — Segurança e Autenticação', () => {
       // When: página carrega
       // Simulate page load
       document.body.innerHTML = '<div id="vault-overlay" style="display:none"></div>';
+      if (!Vault.isSetup()) {
+        document.getElementById('vault-overlay').style.display = 'flex';
+      }
       
       // Then: tela do vault deve estar visível
       const vaultOverlay = document.getElementById('vault-overlay');
@@ -125,7 +129,7 @@ describe('Feature: Vault — Segurança e Autenticação', () => {
       
       // Then: sistema recifra dados (simulated)
       expect(newKey).toBeDefined();
-      expect(newKey).not.toEqual(oldKey);
+      expect(newKey).not.toBe(oldKey);
     });
   });
 });

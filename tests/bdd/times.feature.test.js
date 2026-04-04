@@ -4,6 +4,8 @@
  */
 
 import { jest } from '@jest/globals';
+import { Vault } from '../../src/core/vault.js';
+import { Store } from '../../src/core/store.js';
 
 describe('Feature: Gerenciamento de Times e Organizações', () => {
   beforeEach(() => {
