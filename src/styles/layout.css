@@ -1,0 +1,112 @@
+/* 
+ * Layout CSS: Scaffolding, Sidebar e Painéis globais 
+ */
+
+#app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#sidebar {
+  width: 200px;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.slogo {
+  padding: 18px 16px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  color: #94a3b8;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.nav-item.active {
+  background: rgba(26, 110, 200, 0.3);
+  color: #fff;
+}
+
+.nav-icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#main-content {
+  flex: 1;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.panel {
+  display: none;
+  min-height: 100vh;
+}
+
+.panel.active {
+  display: block;
+}
+
+#panel-rag.active {
+  display: flex;
+  flex-direction: column; 
+  overflow: hidden; 
+  min-height: 100vh;
+}
+
+.db-topbar {
+  background: var(--topbar-bg);
+  color: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.db-body {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  align-items: start;
+}
+
+.db-left {
+  padding: 0 0 24px;
+  min-width: 0;
+}
+
+.db-right {
+  padding: 16px 24px 24px;
+  border-left: 1px solid var(--border);
+  background: var(--card-bg);
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+}

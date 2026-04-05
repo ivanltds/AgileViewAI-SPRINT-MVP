@@ -20,6 +20,14 @@ export const Store = {
     localStorage.setItem(k, JSON.stringify(v)); 
   },
   
+  init() {
+    // Inicialização opcional da engine de fallback (vault etc)
+  },
+  
+  clear() {
+    localStorage.clear();
+  },
+  
   getTeams() { return this._g('avai_teams'); },
   saveTeams(v) { this._s('avai_teams', v); },
   
@@ -45,6 +53,12 @@ export const Store = {
   
   getSprintCache() { return this._g('avai_sprint_cache', null); },
   saveSprintCache(v) { this._s('avai_sprint_cache', v); },
+  
+  getBacklog() { return this._g('avai_backlog', []); },
+  setBacklog(v) { this._s('avai_backlog', v); },
+  
+  getInsights() { return this._g('avai_insights', null); },
+  setInsights(v) { this._s('avai_insights', v); },
   
   getActiveTeamId() { 
     return localStorage.getItem('avai_active_team') || null; 

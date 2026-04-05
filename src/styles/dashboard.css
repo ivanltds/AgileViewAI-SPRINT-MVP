@@ -1,0 +1,312 @@
+/* 
+ * Dashboard CSS: Grids, Cards, Tables, Trackers
+ */
+
+.sprint-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite ease;
+  display: inline-block;
+  margin-right: var(--space-xs);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.days-pill {
+  background: var(--green);
+  color: #fff;
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.days-pill.ended {
+  background: var(--red);
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  padding: var(--space-lg) var(--space-2xl);
+}
+
+.kpi-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--blue);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.kpi-card.alert {
+  background: rgba(192, 57, 43, 0.08); /* --red rgba */
+  border-color: rgba(192, 57, 43, 0.2);
+  border-left-color: var(--red);
+}
+
+.kpi-card.alert .kpi-val {
+  color: var(--red);
+}
+
+.kpi-label {
+  font-size: 11px;
+  color: var(--gray);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpi-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-top: 4px;
+}
+
+.kpi-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+/* Tooltip info para KPI */
+.kpi-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.kpi-tip-icon {
+  font-size: 9px;
+  font-style: normal;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 13px;
+  height: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.kpi-tip-box {
+  display: none;
+  position: fixed;
+  background: var(--slate);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.55;
+  padding: 9px 11px;
+  border-radius: 7px;
+  white-space: normal;
+  width: 230px;
+  z-index: 9999;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  pointer-events: none;
+  text-align: left;
+}
+
+/* Wrapping area para a tabela do Backlog */
+.bl-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 var(--space-2xl) var(--space-2xl);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.bl-table {
+  min-width: 700px;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.bl-table th {
+  text-align: left;
+  padding: var(--space-sm) 6px;
+  font-size: 11px;
+  color: var(--gray);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--table-header-bg);
+  border-bottom: 2px solid var(--border);
+}
+
+.bl-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  font-weight: 500;
+}
+
+.bl-row:hover {
+  background: var(--table-hover);
+}
+
+.bl-row.row-blocked {
+  background: rgba(192, 57, 43, 0.04);
+}
+
+.sort-th {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.sort-th:hover {
+  color: var(--blue);
+}
+
+/* Status Badges */
+.s-todo { background: rgba(90, 104, 130, 0.12); color: #5A6882; }
+.s-doing { background: rgba(26, 110, 200, 0.12); color: #1A6EC8; font-weight: 700; }
+.s-testing { background: rgba(180, 83, 9, 0.12); color: #B45309; font-weight: 600; }
+.s-done { background: rgba(13, 122, 85, 0.12); color: #0D7A55; }
+.s-blocked { background: rgba(192, 57, 43, 0.12); color: #C0392B; font-weight: 700; }
+.s-fixing { background: rgba(210, 100, 20, 0.12); color: #D26414; }
+.s-removed { background: rgba(200, 80, 100, 0.12); color: #A0455A; }
+.s-design { background: rgba(120, 80, 200, 0.12); color: #7850C8; }
+
+.task-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 6px;
+}
+
+.tc-done {
+  opacity: 0.7;
+}
+
+/* Tabs */
+.filter-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 16px 0 12px;
+  flex-wrap: wrap;
+}
+
+.ftab {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  background: var(--btn-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.ftab.active {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+
+/* Progress bar helpers */
+.pbar-wrap {
+  background: var(--border);
+  border-radius: 6px;
+  height: 10px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.pbar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+  background: var(--blue);
+}
+
+.prog-lbl {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--gray);
+  margin-bottom: 8px;
+}
+
+.vel-cards {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.vel-card {
+  flex: 1;
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-align: center;
+  background: var(--btn-bg);
+}
+
+.vel-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.dayoff-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.dayoff-card {
+  background: rgba(180, 83, 9, 0.08); /* Amber claro */
+  border: 1px solid rgba(180, 83, 9, 0.3);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.dayoff-date {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--amber);
+  margin-bottom: 4px;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.xicon {
+  color: var(--gray);
+  font-size: 10px;
+  transition: transform 0.2s ease;
+  display: inline-block;
+  width: 14px;
+}
+
+.xicon.expanded {
+  transform: rotate(90deg);
+}

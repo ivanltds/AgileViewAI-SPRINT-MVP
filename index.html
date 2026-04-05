@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AgileViewAI v2.1</title>
+<link rel='stylesheet' href='src/styles/index.css'>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<body>
+
+<!-- VAULT -->
+<div id="vault-overlay">
+  <div class="vbox">
+    <div style="margin-bottom:12px;display:flex;justify-content:center"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#1E2A3A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <div style="font-size:22px;font-weight:700;margin-bottom:6px">AgileViewAI</div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:24px" id="vsub">Proteja seus tokens com um PIN</div>
+    <div style="display:flex;gap:8px;margin-bottom:20px;justify-content:center">
+      <button class="vtab active" id="tab-pin" onclick="vaultTab('pin')">Vault (PIN)</button>
+      <button class="vtab" id="tab-session" onclick="vaultTab('session')">Sessão</button>
+    </div>
+    <div id="vault-pin-area">
+      <input type="password" class="vinput" id="vpin" maxlength="8" placeholder="••••" autocomplete="off" onkeydown="if(event.key==='Enter')vaultAction()">
+      <button class="vbtn" onclick="vaultAction()" id="vbtn">Entrar</button>
+      <div class="verr" id="verr"></div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:10px">4 a 8 dígitos · tokens cifrados com AES-256-GCM</div>
+    </div>
+    <div id="vault-session-area" style="display:none">
+      <div style="background:#fefce8;border:1px solid #fde047;border-radius:8px;padding:10px;font-size:12px;color:#854d0e;text-align:left;margin-bottom:14px">Modo sessão: tokens ficam apenas na memória e são apagados ao fechar o navegador.</div>
+      <button class="vbtn" onclick="vaultSessionStart()">Continuar sem salvar tokens</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+  <nav id="sidebar">
+    <div class="slogo">
+      <div style="width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+      <div><div style="font-size:15px;font-weight:700;color:#fff">AgileViewAI</div><div style="font-size:10px;color:#94a3b8">v2.1</div></div>
+    </div>
+    <div style="flex:1;padding:8px 0">
+      <div class="nav-item active" id="nav-dashboard" data-label="Dashboard" onclick="showPanel('dashboard')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">Dashboard</span></div>
+      <div class="nav-item" id="nav-teams" data-label="Times" onclick="showPanel('teams')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">Times</span></div>
+      <div class="nav-item" id="nav-llm" data-label="IA &amp; Tokens" onclick="showPanel('llm')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span><span class="nav-label">IA &amp; Tokens</span></div>
+      <div class="nav-item" id="nav-rag" data-label="Treinamento" onclick="showPanel('rag')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span class="nav-label">Treinamento</span></div>
+      <div class="nav-item" id="nav-settings" data-label="Configurações" onclick="showPanel('settings')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nav-label">Configurações</span></div>
+    </div>
+  </nav>
+  <main id="main-content">
+    <!-- DASHBOARD -->
+    <section id="panel-dashboard" class="panel active">
+      <div class="db-topbar" id="db-topbar-static">
+        <div id="db-topbar-info" style="color:var(--gray);font-size:13px">Nenhuma sprint carregada</div>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <div class="db-team-dd" id="db-team-dd">
+            <button class="db-team-btn" id="db-team-btn" onclick="toggleDashTeamDd()">
+              <span class="db-team-btn-avt" id="db-team-btn-avt">—</span>
+              <span class="db-team-btn-name" id="db-team-btn-name">Selecione um time</span>
+              <span class="db-team-btn-arr">▾</span>
+            </button>
+            <div class="db-team-menu" id="db-team-menu"></div>
+          </div>
+          <button class="btn-sm" onclick="runSync()">↺ Sincronizar</button>
+          <button class="btn-sm" onclick="downloadDashboardHtml()">↓ HTML</button>
+        </div>
+      </div>
+      <!-- MODULE TABS -->
+      <div class="mod-tabs">
+        <div class="mod-tab active" id="modtab-sprint"    onclick="showModule('sprint')">Sprint</div>
+        <div class="mod-tab"        id="modtab-eficiencia" onclick="showModule('eficiencia')">Eficiência</div>
+        <div class="mod-tab"        id="modtab-qualidade"  onclick="showModule('qualidade')">Qualidade</div>
+      </div>
+      <!-- MODULE: SPRINT -->
+      <div class="mod-panel active" id="module-sprint">
+        <div id="db-topbar"></div>
+        <div id="db-no-data" class="no-data" style="display:none">Nenhum dado sincronizado. Vá em <strong>Times</strong>, selecione um time e clique em <strong>Sincronizar</strong>.</div>
+        <div id="db-kpis"></div>
+        <div class="db-body"><div class="db-left" id="db-backlog"></div><div class="db-right" id="db-progress"></div></div>
+        <div id="db-insights"></div>
+        <div id="db-chat"></div>
+        <div id="db-members"></div>
+      </div>
+      <!-- MODULE: EFICIÊNCIA -->
+      <div class="mod-panel" id="module-eficiencia">
+        <div class="ef-filter-bar">
+          <div style="flex:1;min-width:0">
+            <div class="ef-filter-label" style="margin-bottom:6px">Período rápido</div>
+            <div style="display:flex;gap:6px;margin-bottom:14px">
+              <button class="ef-qbtn" onclick="loadEficienciaFilter(3)">3 meses</button>
+              <button class="ef-qbtn" onclick="loadEficienciaFilter(6)">6 meses</button>
+              <button class="ef-qbtn" onclick="loadEficienciaFilter(12)">1 ano</button>
+            </div>
+            <div class="ef-filter-label" style="margin-bottom:6px">Sprints para análise</div>
+            <div class="ef-bl-dd-wrap" id="ef-sprint-graph-wrap">
+              <button class="ef-bl-dd-btn" onclick="toggleEfSprintDd()">Sprints selecionadas&nbsp;<span id="ef-sprint-graph-count" style="color:#3b82f6;font-weight:700"></span>&nbsp;&#x25BE;</button>
+              <div class="ef-bl-dd" id="ef-sprint-graph-dd" style="min-width:240px;max-height:260px;overflow-y:auto">
+                <div id="ef-filter-list">
+                  <span style="font-size:12px;color:#94a3b8">Sincronize um time para carregar as sprints.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-blue" onclick="runEficiencia()" style="flex-shrink:0;align-self:flex-end">Calcular</button>
+        </div>
+        <div id="ef-content">
+          <div class="mod-empty">
+            <div class="mod-empty-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+            <h3>Eficiência</h3>
+            <p>Selecione uma ou mais sprints acima e clique em <strong>Calcular</strong>.</p>
+          </div>
+        </div>
+        <div id="ef-backlog-section" class="sp-history-section" style="display:none">
+          <div class="sp-history-hdr">
+            <span class="sp-history-title">Backlog das sprints selecionadas</span>
+          </div>
+          <div class="ef-bl-filters">
+            <input type="text" id="efbl-title" class="ef-bl-input" placeholder="&#x1F50D; Título" style="min-width:180px" oninput="applyEfBacklogFilters()">
+            <input type="text" id="efbl-id" class="ef-bl-input" placeholder="&#x1F50D; ID" style="width:90px" oninput="applyEfBacklogFilters()">
+            <div class="ef-bl-dd-wrap">
+              <button class="ef-bl-dd-btn" onclick="toggleEfDd('status')">Status&nbsp;<span id="efbl-status-count" style="color:#3b82f6;font-weight:700"></span>&nbsp;&#x25BE;</button>
+              <div class="ef-bl-dd" id="efbl-status-dd">
+                <label class="ef-bl-dd-item"><input type="checkbox" id="efbl-status-all" onchange="toggleEfDdAll('status')"> <em>Todos</em></label>
+                <hr class="ef-bl-dd-sep">
+                <div id="efbl-status-list"></div>
+              </div>
+            </div>
+            <div class="ef-bl-dd-wrap">
+              <button class="ef-bl-dd-btn" onclick="toggleEfDd('exec')">Executores&nbsp;<span id="efbl-exec-count" style="color:#3b82f6;font-weight:700"></span>&nbsp;&#x25BE;</button>
+              <div class="ef-bl-dd" id="efbl-exec-dd">
+                <label class="ef-bl-dd-item"><input type="checkbox" id="efbl-exec-all" onchange="toggleEfDdAll('exec')"> <em>Todos</em></label>
+                <hr class="ef-bl-dd-sep">
+                <div id="efbl-exec-list"></div>
+              </div>
+            </div>
+            <div class="ef-bl-dd-wrap">
+              <button class="ef-bl-dd-btn" onclick="toggleEfDd('sprint')">Sprint&nbsp;<span id="efbl-sprint-count" style="color:#3b82f6;font-weight:700"></span>&nbsp;&#x25BE;</button>
+              <div class="ef-bl-dd" id="efbl-sprint-dd">
+                <label class="ef-bl-dd-item"><input type="checkbox" id="efbl-sprint-all" onchange="toggleEfDdAll('sprint')"> <em>Todos</em></label>
+                <hr class="ef-bl-dd-sep">
+                <div id="efbl-sprint-list"></div>
+              </div>
+            </div>
+          </div>
+          <div id="ef-backlog-content"></div>
+        </div>
+      </div>
+      <!-- MODULE: QUALIDADE -->
+      <div class="mod-panel" id="module-qualidade">
+        <div class="qual-header">
+          <button class="btn btn-blue" onclick="runQualidade()">Carregar</button>
+        </div>
+        <div id="qual-content">
+          <div class="mod-empty">
+            <div class="mod-empty-icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+            <h3>Qualidade</h3>
+            <p>Clique em <strong>Carregar</strong> para buscar os Bugs e Defeitos do projeto.</p>
+          </div>
+        </div>
+        <div id="qual-llm-section" class="qual-llm-section" style="display:none">
+          <div class="qual-llm-hdr">
+            <span class="qual-llm-title">Análise de Qualidade com IA</span>
+            <button class="btn btn-blue" onclick="runQualidadeLLM()" style="font-size:12px;padding:6px 14px">Analisar com IA</button>
+          </div>
+          <div id="qual-llm-output"></div>
+        </div>
+      </div>
+    </section>
+    <!-- TEAMS -->
+    <section id="panel-teams" class="panel">
+      <div class="panel-header"><h2>Times e Organizações</h2><p>Cadastre times do Azure DevOps.</p>
+        <div class="panel-actions"><button class="btn btn-blue" onclick="openTeamModal()">+ Novo time</button></div>
+      </div>
+      <div class="panel-content">
+        <div id="teams-list"></div>
+        <div style="border-top:2px solid var(--border);margin-top:24px;padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div><h3 style="font-size:15px;font-weight:700;color:#1e293b;margin:0">Organizações</h3><p style="font-size:12px;color:#64748b;margin:4px 0 0">PATs por organização — reutilizados por todos os times vinculados.</p></div>
+          <button class="btn btn-blue" onclick="openOrgModal()">+ Nova organização</button>
+        </div>
+        <div id="orgs-list" style="margin-top:12px"></div>
+      </div>
+    </section>
+    <!-- LLM -->
+    <section id="panel-llm" class="panel">
+      <div class="panel-header"><h2>IA &amp; Tokens LLM</h2><p>Gerencie tokens de OpenAI, Claude ou Gemini.</p>
+        <div class="panel-actions"><button class="btn btn-blue" onclick="openLlmModal()">+ Novo token</button></div>
+      </div>
+      <div class="panel-content"><div id="llm-list"></div></div>
+    </section>
+    <!-- RAG / TRAINING -->
+    <section id="panel-rag" class="panel">
+      <div class="panel-header" style="flex-shrink:0">
+        <h2>Gestão de Treinamento</h2>
+        <p>Contextos, feedbacks e perfil de conhecimento do usuário.</p>
+      </div>
+      <!-- Tab bar -->
+      <div class="train-tabs">
+        <button class="train-tab active" id="ttab-contextos" onclick="showTrainingTab('contextos')">Contextos</button>
+        <button class="train-tab" id="ttab-feedback"  onclick="showTrainingTab('feedback')">Feedback de Insights</button>
+        <button class="train-tab" id="ttab-conversas" onclick="showTrainingTab('conversas')">Conversas</button>
+        <button class="train-tab" id="ttab-agentes"   onclick="showTrainingTab('agentes')">Agentes de IA</button>
+      </div>
+      <!-- Tab content wrapper (scrollable) -->
+      <div style="flex:1;overflow-y:auto">
+        <!-- TAB: Contextos -->
+        <div class="train-panel active" id="tt-contextos">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+            <button class="btn btn-blue" onclick="openRagModal()">+ Novo contexto</button>
+          </div>
+          <div id="rag-list"></div>
+        </div>
+        <!-- TAB: Feedback de Insights -->
+        <div class="train-panel" id="tt-feedback">
+          <div id="tt-feedback-content"></div>
+        </div>
+        <!-- TAB: Conversas -->
+        <div class="train-panel" id="tt-conversas">
+          <div id="tt-conversas-content"></div>
+        </div>
+        <!-- TAB: Agentes de IA -->
+        <div class="train-panel" id="tt-agentes">
+          <div id="tt-agentes-content"></div>
+        </div>
+      </div>
+    </section>
+    <!-- SETTINGS -->
+    <section id="panel-settings" class="panel">
+      <div class="panel-header"><h2>Configurações</h2></div>
+      <div class="panel-content">
+        <div class="settings-section"><h3>Vault</h3>
+          <div class="srow"><div><div class="slabel">Modo de armazenamento</div><div class="sdesc" id="vault-mode-desc">—</div></div><button class="btn" onclick="changeVaultMode()">Alterar</button></div>
+          <div class="srow"><div><div class="slabel">Alterar PIN</div><div class="sdesc">Apenas modo PIN</div></div><button class="btn" onclick="changePinModal()">Alterar PIN</button></div>
+          <div class="srow"><div><div class="slabel">Limpar vault</div><div class="sdesc">Remove tokens do localStorage</div></div><button class="btn-red" onclick="clearVault()">Limpar vault</button></div>
+        </div>
+        <div class="settings-section"><h3>Dados</h3>
+          <div class="srow"><div><div class="slabel">Exportar configurações</div><div class="sdesc">Baixa times e treinamentos sem tokens</div></div><button class="btn" onclick="exportConfig()">Exportar JSON</button></div>
+          <div class="srow"><div><div class="slabel">Importar configurações</div></div><button class="btn" onclick="document.getElementById('import-file').click()">Importar JSON</button></div>
+          <div class="srow"><div><div class="slabel">Apagar tudo</div><div class="sdesc">Remove todos os dados do navegador</div></div><button class="btn-red" onclick="clearAll()">Apagar tudo</button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- FLOATING CHAT -->
+<button class="fc-fab" id="fc-fab" onclick="fcTogglePanel()" title="Assistente IA">
+  <span id="fc-fab-icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+</button>
+<div class="fc-panel" id="fc-panel">
+  <div class="fc-header">
+    <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v1"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/></svg></span>
+    <span class="fc-header-title" id="fc-title">AgileViewAI</span>
+    <button class="fc-hbtn" onclick="fcNewConv()" title="Nova conversa"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+    <button class="fc-hbtn" onclick="fcToggleSidebar()" title="Histórico"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+    <button class="fc-hbtn" onclick="fcTogglePanel()" title="Fechar">✕</button>
+  </div>
+  <div class="fc-body">
+    <div class="fc-sidebar collapsed" id="fc-sidebar">
+      <div class="fc-sidebar-hdr">Conversas</div>
+      <div id="fc-conv-list"></div>
+    </div>
+    <div class="fc-main">
+      <div class="fc-messages" id="fc-messages"></div>
+      <div class="fc-input-area">
+        <textarea class="fc-textarea" id="fc-textarea" placeholder="Pergunte sobre o time, sprint, qualidade…" rows="2" onkeydown="fcKeyDown(event)"></textarea>
+        <button class="fc-send-btn" id="fc-send-btn" onclick="fcSend()">&#x2191;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-team">
+  <div class="modal">
+    <div class="mhdr"><span class="mhdr-title" id="team-modal-title">Novo time</span><button class="mclose" onclick="closeModal('modal-team')">×</button></div>
+    <div class="mbody">
+      <div class="form-row"><label>Nome do time</label><input id="tf-name" placeholder="Ex: Time Backend"></div>
+      <div class="form-row">
+        <label>Organização</label>
+        <select id="tf-org-sel" onchange="onOrgSelChange()">
+          <option value="">+ Nova organização</option>
+        </select>
+      </div>
+      <div id="tf-new-org-row" class="form-row"><label>Nome da organização</label><input id="tf-org" placeholder="Ex: MinhaEmpresa"></div>
+      <div class="form-row"><label>Projeto Azure</label><input id="tf-proj" placeholder="Ex: MeuProjeto"></div>
+      <div class="form-row"><label>Team Azure (nome exato)</label><input id="tf-team" placeholder="Ex: Time de Backend"><div class="form-hint">Deve ser idêntico ao nome no Azure DevOps</div></div>
+      <div id="tf-pat-row" class="form-row"><label>PAT (Personal Access Token)</label><input id="tf-pat" type="password" placeholder="Cole o PAT"><div class="form-hint">Permissões: Work Items (Read), Project and Team (Read)</div></div>
+      <div id="tf-pat-reuse" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:8px 12px;font-size:12px;color:#15803d;margin-bottom:12px">PAT da organização será reutilizado automaticamente.</div>
+      <input type="hidden" id="tf-id">
+    </div>
+    <div class="mfooter"><button class="btn" onclick="closeModal('modal-team')">Cancelar</button><button class="btn btn-blue" onclick="saveTeam()">Salvar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-llm">
+  <div class="modal">
+    <div class="mhdr"><span class="mhdr-title">Token LLM</span><button class="mclose" onclick="closeModal('modal-llm')">×</button></div>
+    <div class="mbody">
+      <div class="form-row"><label>Provider</label>
+        <select id="lf-provider"><option value="openai">OpenAI (gpt-4o)</option><option value="claude">Claude (claude-sonnet-4-5)</option><option value="gemini">Gemini (gemini-1.5-pro)</option></select>
+      </div>
+      <div class="form-row"><label>Token / API Key</label><input id="lf-token" type="password" placeholder="Cole o token"><div class="form-hint">Criptografado antes de salvar.</div></div>
+      <input type="hidden" id="lf-id">
+    </div>
+    <div class="mfooter"><button class="btn" onclick="closeModal('modal-llm')">Cancelar</button><button class="btn btn-blue" onclick="saveLlm()">Salvar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-org">
+  <div class="modal">
+    <div class="mhdr"><span class="mhdr-title" id="org-modal-title">Nova organização</span><button class="mclose" onclick="closeModal('modal-org')">×</button></div>
+    <div class="mbody">
+      <div class="form-row"><label>Nome da organização</label><input id="of-name" placeholder="Ex: MinhaEmpresa"></div>
+      <div class="form-row"><label>PAT (Personal Access Token)</label><input id="of-pat" type="password" placeholder="Cole o PAT"><div class="form-hint">Permissões: Work Items (Read), Project and Team (Read)</div></div>
+      <input type="hidden" id="of-id">
+    </div>
+    <div class="mfooter"><button class="btn" onclick="closeModal('modal-org')">Cancelar</button><button class="btn btn-blue" onclick="saveOrg()">Salvar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-rag">
+  <div class="modal">
+    <div class="mhdr"><span class="mhdr-title">Treinamento do Assistente</span><button class="mclose" onclick="closeModal('modal-rag')">×</button></div>
+    <div class="mbody">
+      <div class="form-row"><label>Escopo</label>
+        <select id="rf-scope" onchange="onRfScopeChange()"><option value="geral">Geral (todos os times)</option><option value="team">Por time específico</option></select>
+      </div>
+      <div class="form-row" id="rf-team-row" style="display:none"><label>Time</label>
+        <select id="rf-team-id"><option value="">— selecione um time —</option></select>
+      </div>
+      <div class="form-row"><label>Tipo de contexto</label>
+        <div class="type-chips" id="rag-type-chips">
+          <div class="type-chip sel" data-type="acordos de time" onclick="selRagType(this)">Acordos de time</div>
+          <div class="type-chip" data-type="capacidade especial" onclick="selRagType(this)">Capacidade especial</div>
+          <div class="type-chip" data-type="itens negociados" onclick="selRagType(this)">Itens negociados</div>
+          <div class="type-chip" data-type="membros em férias" onclick="selRagType(this)">Membros em férias</div>
+          <div class="type-chip" data-type="riscos conhecidos" onclick="selRagType(this)">Riscos conhecidos</div>
+          <div class="type-chip" data-type="dependências externas" onclick="selRagType(this)">Dependências externas</div>
+          <div class="type-chip" data-type="definição de pronto" onclick="selRagType(this)">Definição de pronto</div>
+          <div class="type-chip" data-type="velocidade histórica" onclick="selRagType(this)">Velocidade histórica</div>
+          <div class="type-chip" data-type="contexto de negócio" onclick="selRagType(this)">Contexto de negócio</div>
+          <div class="type-chip" data-type="notas técnicas" onclick="selRagType(this)">Notas técnicas</div>
+        </div>
+      </div>
+      <div class="form-row"><label>Especificação</label><textarea id="rf-spec" rows="4" placeholder="Descreva o contexto..."></textarea></div>
+      <input type="hidden" id="rf-id">
+    </div>
+    <div class="mfooter"><button class="btn" onclick="closeModal('modal-rag')">Cancelar</button><button class="btn btn-blue" onclick="saveRag()">Salvar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-pin">
+  <div class="modal" style="width:380px">
+    <div class="mhdr"><span class="mhdr-title" id="pin-modal-title">Alterar PIN</span><button class="mclose" onclick="closeModal('modal-pin')">×</button></div>
+    <div class="mbody">
+      <div class="form-row" id="pin-cur-row"><label>PIN atual</label><input type="password" id="pin-cur" maxlength="8" placeholder="PIN atual"></div>
+      <div class="form-row"><label>Novo PIN</label><input type="password" id="pin-new" maxlength="8" placeholder="4 a 8 dígitos"></div>
+      <div class="form-row"><label>Confirmar</label><input type="password" id="pin-conf" maxlength="8" placeholder="Repita o PIN"></div>
+      <div class="verr" id="pin-err"></div>
+    </div>
+    <div class="mfooter"><button class="btn" onclick="closeModal('modal-pin')">Cancelar</button><button class="btn btn-blue" onclick="savePinChange()">Salvar PIN</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav id="mobile-bottom-nav" aria-label="Navegação principal">
+  <div class="mbn-items">
+    <button class="mbn-item active" id="mbn-dashboard" onclick="showPanel('dashboard')" aria-label="Dashboard">
+      <span class="mbn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+      <span>Dashboard</span>
+    </button>
+    <button class="mbn-item" id="mbn-teams" onclick="showPanel('teams')" aria-label="Times">
+      <span class="mbn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      <span>Times</span>
+    </button>
+    <button class="mbn-item" id="mbn-llm" onclick="showPanel('llm')" aria-label="IA e Tokens">
+      <span class="mbn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span>
+      <span>IA</span>
+    </button>
+    <button class="mbn-item" id="mbn-rag" onclick="showPanel('rag')" aria-label="Treinamento">
+      <span class="mbn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+      <span>Treino</span>
+    </button>
+    <button class="mbn-item" id="mbn-settings" onclick="showPanel('settings')" aria-label="Configurações">
+      <span class="mbn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+      <span>Config</span>
+    </button>
+  </div>
+</nav>
+
+<input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
+<script type='module' src='src/globals.js'></script>
+<script src='src/legacy.js' defer></script>
+<script type='module' src='src/app.js'></script>
+</body>
+</html>

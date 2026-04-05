@@ -68,5 +68,15 @@ export const AzureAPI = {
       } catch {}
     }
     return all;
+  },
+  
+  async getRevisions(org, proj, id, pat) {
+    const url = `https://dev.azure.com/${encodeURIComponent(org)}/${encodeURIComponent(proj)}/_apis/wit/workitems/${id}/revisions?api-version=7.1`;
+    try { 
+      const d = await this._fetch(url, { headers: this._auth(pat) }); 
+      return d.value || []; 
+    } catch { 
+      return []; 
+    }
   }
 };

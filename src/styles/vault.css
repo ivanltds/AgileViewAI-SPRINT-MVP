@@ -1,0 +1,80 @@
+/* 
+ * Vault CSS: Tela de entrada / PIN 
+ */
+
+#vault-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(160deg, #061526 0%, #0A2240 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.vbox {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 40px;
+  width: 420px;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+}
+
+.vtab {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  background: var(--btn-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vtab.active {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+
+.vinput {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  letter-spacing: 4px;
+  text-align: center;
+  outline: none;
+  margin-bottom: 12px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+}
+
+.vinput:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(26, 110, 200, 0.15);
+}
+
+.vbtn {
+  width: 100%;
+  padding: 11px;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background 0.15s ease;
+}
+
+.vbtn:hover {
+  background: var(--blue-dark);
+}
+
+.verr {
+  color: var(--red);
+  font-size: 12px;
+  margin-top: 8px;
+  min-height: 18px;
+}

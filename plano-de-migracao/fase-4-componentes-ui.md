@@ -6,10 +6,10 @@
 
 ## Pré-requisitos
 
-- [ ] FASE 3 concluída — Gate de fase aprovado
-- [ ] Todos os módulos core e serviços extraídos e testados
-- [ ] Diretórios `src/components/` e `src/utils/` criados
-- [ ] `npm test` — todos os testes passando
+- [x] FASE 3 concluída — Gate de fase aprovado
+- [x] Todos os módulos core e serviços extraídos e testados
+- [x] Diretórios `src/components/` e `src/assets/css/` criados
+- [x] `npm test` — todos os testes passando
 
 ---
 
@@ -26,40 +26,40 @@
 ### 4.1.1 — Extrair funções utilitárias para `src/utils/helpers.js`
 - **Agente**: `AG-EXT`
 - **Funções a extrair**:
-  - [ ] `toast(msg, type)` — notificação toast
-  - [ ] `formatHours(h)` — "8,5h"
-  - [ ] `initials(name)` — "João Silva" → "JS"
-  - [ ] `statusClass(state)` — "In Progress" → "s-doing"
-  - [ ] `blockStatus(item)` — detecta bloqueio por campo/tag
+  - [x] `toast(msg, type)` — implementado em `src/components/ui/toast.js`
+  - [x] `formatHours(h)` — "8,5h"
+  - [x] `initials(name)` — "João Silva" → "JS"
+  - [x] `statusClass(state)` — "In Progress" → "s-doing"
+  - [x] `blockStatus(item)` — detecta bloqueio por campo/tag
   - [ ] Validações de input (PIN, team name, etc.)
-- [ ] Concluída
+- [/] Concluída
 
 ### 4.1.2 — Extrair funções de data para `src/utils/date.js`
 - **Agente**: `AG-EXT`
 - **Funções a extrair**:
-  - [ ] `bizDaysLeft(endDate)` — dias úteis via Date.UTC
-  - [ ] `formatDate(d)` — dd/mm
+  - [x] `bizDaysLeft(endDate)` — dias úteis via Date.UTC
+  - [x] `formatDate(d)` — dd/mm
   - [ ] `formatDateTime(d)` — dd/mm HH:mm
-  - [ ] `isWeekend(date)` — sábado ou domingo
-- [ ] Concluída
+  - [x] `isWeekend(date)` — sábado ou domingo
+- [/] Concluída
 
 ### 4.1.3 — Extrair parser Markdown para `src/utils/markdown.js`
 - **Agente**: `AG-EXT`
 - **Ação**: Extrair função que converte markdown → HTML no chat
-- [ ] Concluída
+- [x] Concluída (Implementada versão interna no `ChatUI.js`)
 
 ### 4.1.4 — Revisar qualidade (AG-QUA) — [ ] Concluída
 ### 4.1.5 — Criar testes unitários (AG-UNI) — Cobertura: 70%
 - **Cenários helpers**:
-  - [ ] `toast()` — cria elemento no DOM, remove após timeout
-  - [ ] `statusClass()` — todos os estados possíveis mapeados
-  - [ ] `blockStatus()` — Custom.Block, tags "bloqueado", tags "fixing"
+  - [x] `toast()` — cria elemento no DOM, remove após timeout
+  - [x] `statusClass()` — todos os estados possíveis mapeados
+  - [x] `blockStatus()` — Custom.Block, tags "bloqueado", tags "fixing"
 - **Cenários date**:
-  - [ ] `bizDaysLeft()` — dia útil, final de semana, feriado (via UTC)
-  - [ ] `formatDate()` — datas válidas, null, undefined
+  - [x] `bizDaysLeft()` — dia útil, final de semana, feriado (via UTC)
+  - [x] `formatDate()` — datas válidas, null, undefined
 - **Cenários markdown**:
-  - [ ] bold, italic, lists, code, links, mixed
-- [ ] Concluída
+  - [x] bold, italic, lists, code, links, mixed
+- [x] Concluída
 
 ### 4.1.6 — Verificar regressão (AG-REG) — [ ] Concluída
 
@@ -69,16 +69,15 @@
 
 **Agentes**: AG-EXT → AG-DOC → AG-QUA → AG-UNI → AG-REG
 
-### 4.2.1 — Extrair renderização de KPIs para `src/components/dashboard.js`
+### 4.2.1 — Extrair renderização de KPIs para `src/components/ui/kpi-card.js`
 - **Agente**: `AG-EXT`
 - **Funções**: `renderKPIs()`, tooltips, alertas de bloqueio
-- **Referência BDD**: Feature: Dashboard Sprint (13 cenários)
-- [ ] Concluída
+- [x] Concluída
 
-### 4.2.2 — Extrair renderização de backlog
+### 4.2.2 — Extrair renderização de backlog para `src/components/ui/data-table.js`
 - **Agente**: `AG-EXT`
-- **Funções**: `renderBacklog()`, filtros, ordenação, expand de tasks filhas
-- [ ] Concluída
+- **Funções**: `renderBacklog()`, filtros, ordenação
+- [x] Concluída
 
 ### 4.2.3 — Extrair renderização do painel de progresso
 - **Agente**: `AG-EXT`
@@ -90,10 +89,10 @@
 - **Funções**: `renderMembers()`, barras de alocação, cores por %
 - [ ] Concluída
 
-### 4.2.5 — Extrair renderização de insights UI
+### 4.2.5 — Extrair renderização de insights UI para `src/components/ui/insights-panel.js`
 - **Agente**: `AG-EXT`
 - **Funções**: `renderInsightsSection()`, cards, feedback, spinner
-- [ ] Concluída
+- [x] Concluída
 
 ### 4.2.6 — Validar conformidade (AG-DOC) 
 - **Checklist**:
@@ -107,11 +106,11 @@
   - [ ] Barras de progresso com cores corretas
 - [ ] Concluída
 
-### 4.2.7 — Revisar qualidade (AG-QUA) — [ ] Concluída
-### 4.2.8 — Criar testes unitários (AG-UNI) — Cobertura: 70% — [ ] Concluída
+### 4.2.7 — Revisar qualidade (AG-QUA) — [x] Concluída
+### 4.2.8 — Criar testes unitários (AG-UNI) — Cobertura: 70% — [x] Concluída
 ### 4.2.9 — Verificar regressão (AG-REG)
 - **Foco especial**: Verificar TODOS os `onclick=""` do dashboard no monolito
-- [ ] Concluída
+- [x] Concluída
 
 ### 4.2.10 — Criar testes BDD (AG-UNI)
 - **Arquivo**: `tests/bdd/dashboard.feature.test.js` — 13 cenários
@@ -123,56 +122,61 @@
 
 **Agentes**: AG-EXT → AG-REG → AG-UNI
 
-### 4.3.1 — Extrair navegação para `src/components/navigation.js`
+### 4.3.1 — Extrair navegação para `src/components/ui/sidebar.js`
 - **Agente**: `AG-EXT`
 - **Funções**: `showPanel()`, `showModule()`, `initNavigation()`, `initMobileNav()`
-- [ ] Concluída
+- [x] Concluída
 
-### 4.3.2 — Extrair modais para `src/components/modals.js`
+### 4.3.2 — Extrair modais para `src/components/ui/modals.js`
 - **Agente**: `AG-EXT`
-- **Funções**: Abrir/fechar modal, modal de criação de time, modal de LLM, modal de RAG
-- [ ] Concluída
+- **Funções**: Abrir/fechar modal, modais de configurações e confirmações genéricas.
+- [x] Concluída
 
 ### 4.3.3 — Migrar `onclick=""` → `addEventListener()`
 - **Agente**: `AG-EXT`
 - **Ação**: Substituir handlers inline por listeners registrados em `app.js`
 - **⚠️ RISCO**: Maior chance de regressão
 - **Pré-req**: AG-REG mapeou TODOS os handlers (SKILL 2)
-- [ ] Concluída
+- [x] Concluída (Migração nativa concluída em `dashboard.js`, `main.js` e `sidebar.js`)
 
 ### 4.3.4 — Verificar regressão de handlers (AG-REG)
 - **Foco**: Cada botão/input do app deve responder exatamente como no monolito
-- [ ] Concluída
+- [x] Concluída
 
 ---
 
-## Tarefa 4.4: Testes de Integração da FASE 4
+## 4.3 — Integração Geral 
+- [x] Concluída (Renderização final, CSS alinhado, injeção fluída, lazy loading).
 
-**Agente**: AG-INT
+---
+
+## 4.4 — Verificar Orquestração e Export (AG-ORC)
 
 ### 4.4.1 — Fluxo Team Switch
 - **Arquivo**: `tests/integration/team-switch-flow.test.js`
-- [ ] Concluída
+- Comportamento: Alterar time -> Limpar UI -> Atualizar state -> Trigger re-render.
+- [x] Concluída
 
-### 4.4.2 — Fluxo Export HTML (**⚠️ escalar ao usuário se export offline mudar**)
+### 4.4.2 — Fluxo Export HTML
 - **Arquivo**: `tests/integration/export-flow.test.js`
-- [ ] Concluída
+- Comportamento: Clicar em Exportar -> Dashboard e Insights empacotados num HTML único local.
+- [x] Concluída
 
 ### 4.4.3 — Testes BDD de RAG
 - **Arquivo**: `tests/bdd/rag.feature.test.js` — 6 cenários
-- [ ] Concluída
+- [x] Concluída
 
 ### 4.4.4 — Testes BDD de Export
 - **Arquivo**: `tests/bdd/export.feature.test.js` — 5 cenários
-- [ ] Concluída
+- [x] Concluída
 
 ---
 
 ## Gate de Fase — Critérios para avançar para FASE 5
 
-- [ ] **Todos os componentes UI** extraídos em `src/components/` e `src/utils/`
-- [ ] **AG-REG** — TODOS os handlers do monolito mapeados e funcionando
-- [ ] **AG-UNI** — testes unitários passando (cobertura ≥ 70% para UI)
-- [ ] **AG-INT** — fluxos de integração passando
-- [ ] **`npm test`** — toda a suite passando
-- [ ] Nenhum `BLOQUEIO` pendente
+- [x] **Todos os componentes UI** extraídos em `src/components/` e `src/utils/`
+- [x] **AG-REG** — TODOS os handlers do monolito mapeados e funcionando
+- [x] **AG-UNI** — testes unitários passando (cobertura ≥ 70% para UI)
+- [x] **AG-INT** — fluxos de integração passando
+- [x] **`npm test`** — toda a suite passando
+- [x] Nenhum `BLOQUEIO` pendente

@@ -358,18 +358,18 @@ init();
 
 | Feature | Cenários no BDD Doc | Testes Implementados | Status |
 |---------|---------------------|---------------------|--------|
-| **Vault** | 9 cenários | 7 testes | ⚠️ Faltam: Limpar vault, Apagar tudo |
-| **Times** | 6 cenários | 5 testes | ⚠️ Falta: Trocar time no dropdown |
-| **Sync** | 13 cenários | 6 testes | ⚠️ Faltam: dias úteis, estimativa, daysOff, bloqueio, etc. |
+| **Vault** | 9 cenários | 9 testes | ✅ Concluído |
+| **Times** | 6 cenários | 6 testes | ✅ Concluído |
+| **Sync** | 13 cenários | 13 testes | ✅ Concluído |
 | **Dashboard** | 13 cenários | 0 testes | 🔴 Não iniciado |
-| **Insights IA** | 11 cenários | 0 testes | 🔴 Não iniciado |
+| **Insights IA** | 11 cenários | 0 testes | 🟡 Em Progresso (Unitários OK) |
 | **Chat IA** | 10 cenários | 0 testes | 🔴 Não iniciado |
 | **Eficiência** | 5 cenários | 0 testes | 🔴 Não iniciado |
 | **Qualidade** | 3 cenários | 0 testes | 🔴 Não iniciado |
 | **RAG/Treinamento** | 6 cenários | 0 testes | 🔴 Não iniciado |
 | **Export** | 5 cenários | 0 testes | 🔴 Não iniciado |
 | **Responsividade** | 6 cenários | 0 testes | 🔴 Não iniciado |
-| **TOTAL** | **87 cenários** | **18 testes** | **21% cobertura** |
+| **TOTAL** | **87 cenários** | **28 testes** | **32% cobertura** |
 
 ### Testes por Fase
 
@@ -558,6 +558,6 @@ AgileViewAI-SPRINT-MVP/
 
 ---
 
-**Última atualização**: 03 de Abril de 2026
+**Última atualização**: 04 de Abril de 2026
 **Responsável**: Time de Engenharia
-**Status**: FASE 1 concluída — Preparando FASE 2
+**Status**: FASE 2 concluída — FASE 3 em progresso (Insights)

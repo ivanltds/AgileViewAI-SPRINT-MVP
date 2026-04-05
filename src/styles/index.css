@@ -1,0 +1,18 @@
+/* 
+ * AgileViewAI CSS Entrypoint 
+ * ===========================
+ * Este arquivo importa todos os estilos granulares da Fase 5 e serve
+ * de entrada única para o bundle final do projeto.
+ */
+
+@import './variables.css';
+@import './base.css';
+@import './layout.css';
+@import './vault.css';
+@import './dashboard.css';
+@import './insights.css';
+@import './chat.css';
+@import './eficiencia.css';
+@import './qualidade.css';
+@import './components.css';
+@import './responsive.css';

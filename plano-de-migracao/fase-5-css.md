@@ -37,11 +37,11 @@
     --green-l: #E8F7F5;
   }
   ```
-- [ ] Concluída
+- [x] Concluída
 
 ### 5.1.2 — Validar conformidade visual (AG-DOC)
 - **Ação**: Comparar variáveis com `docs/00_identidade_visual.md`
-- [ ] Concluída
+- [x] Concluída
 
 ---
 
@@ -51,11 +51,11 @@
 
 ### 5.2.1 — Criar `src/styles/base.css`
 - **Conteúdo**: Reset, *, body, button, input, select, textarea, a, .badge, .sb, .btn, .btn-sm, .btn-red, .btn-blue
-- [ ] Concluída
+- [x] Concluída
 
 ### 5.2.2 — Criar `src/styles/layout.css`
 - **Conteúdo**: #app, #sidebar, .slogo, .nav-item, .nav-icon, .nav-label, #main-content, .panel, .db-topbar, .db-body, .db-left, .db-right
-- [ ] Concluída
+- [x] Concluída
 
 ---
 
@@ -65,35 +65,35 @@
 
 ### 5.3.1 — `src/styles/vault.css`
 - **Classes**: #vault-overlay, .vbox, .vtab, .vinput, .vbtn, .verr
-- [ ] Concluída
+- [x] Concluída
 
 ### 5.3.2 — `src/styles/dashboard.css`
 - **Classes**: .kpi-grid, .kpi-card, .kpi-val, .kpi-sub, .bl-table, .bl-row, .children-*, .task-card, .filter-tabs, .ftab, .sort-th, .pbar-*, .prog-*, .vel-*, .act-*, .sp-*, .mem-*, .avatar, .dayoff-*, .badge-*, .xicon
-- [ ] Concluída
+- [x] Concluída
 
 ### 5.3.3 — `src/styles/insights.css`
 - **Classes**: .ins-grid, .ins-card, .ins-head, .ins-body, .ins-icon, .ins-rm, .ins-fb-*, .spinner-*
-- [ ] Concluída
+- [x] Concluída
 
 ### 5.3.4 — `src/styles/chat.css`
 - **Classes**: .fc-fab, .fc-panel, .fc-header, .fc-body, .fc-sidebar, .fc-messages, .fc-msg-*, .fc-input-area, .fc-textarea, .fc-send-btn, .fc-conv-*, .fc-welcome, @keyframes fcIn
-- [ ] Concluída
+- [x] Concluída
 
 ### 5.3.5 — `src/styles/eficiencia.css`
 - **Classes**: .ef-filter-bar, .ef-kpi-*, .ef-charts-grid, .ef-chart-*, .ef-toggle-*, .ef-pct-*, .ef-qbtn, .ef-bl-*, .ef-sprint-*
-- [ ] Concluída
+- [x] Concluída
 
 ### 5.3.6 — `src/styles/qualidade.css`
 - **Classes**: .qual-header, .qual-filter-*, .qual-kpi-*, .qkpi*, .qual-charts-*, .qual-chart-*, .qual-tbl*, .qual-llm-*, .tl-*
-- [ ] Concluída
+- [x] Concluída
 
 ### 5.3.7 — `src/styles/components.css`
 - **Classes**: .panel-header, .panel-content, .panel-actions, .form-row, .form-grid-2, .form-hint, .modal-overlay, .modal, .mhdr, .mbody, .mfooter, .team-card, .llm-card, .rag-card, .settings-section, .srow, #toast, .toast-item, .mod-tabs, .mod-tab, .mod-panel, .mod-empty, .train-*, .fb-*, .ul-*, .conv-*, .db-team-*
-- [ ] Concluída
+- [x] Concluída
 
 ### 5.3.8 — `src/styles/responsive.css`
 - **Conteúdo**: @media(max-width:900px), @media(max-width:768px), #mobile-bottom-nav, .mbn-*, @media print
-- [ ] Concluída
+- [x] Concluída
 
 ---
 
@@ -115,7 +115,7 @@
 @import './components.css';
 @import './responsive.css';
 ```
-- [ ] Concluída
+- [x] Concluída
 
 ---
 
@@ -124,27 +124,27 @@
 **Agente**: AG-REG
 
 ### 5.5.1 — Comparação visual desktop (1280px)
-- [ ] Layout geral idêntico
-- [ ] Cores e espaçamentos idênticos
-- [ ] KPIs, tabelas, cards
+- [x] Layout geral idêntico
+- [x] Cores e espaçamentos idênticos
+- [x] KPIs, tabelas, cards
 
 ### 5.5.2 — Comparação visual tablet (768px)
-- [ ] Sidebar com ícones only
-- [ ] KPIs 3 colunas
-- [ ] Tooltips na sidebar
+- [x] Sidebar com ícones only
+- [x] KPIs 3 colunas
+- [x] Tooltips na sidebar
 
 ### 5.5.3 — Comparação visual mobile (375px)
-- [ ] Sidebar oculto, bottom nav visível
-- [ ] KPIs 2 colunas
-- [ ] Modal como bottom sheet
-- [ ] Chat FAB posicionado corretamente
+- [x] Sidebar oculto, bottom nav visível
+- [x] KPIs 2 colunas
+- [x] Modal como bottom sheet
+- [x] Chat FAB posicionado corretamente
 
 ---
 
 ## Gate de Fase
 
-- [ ] CSS completo extraído em `src/styles/`
-- [ ] `index.css` importa todos os arquivos
-- [ ] AG-REG aprovou paridade visual em 3 viewports
-- [ ] AG-DOC confirmou identidade visual conforme docs
-- [ ] Nenhum `!important` adicionado desnecessariamente
+- [x] CSS completo extraído em `src/styles/`
+- [x] `index.css` importa todos os arquivos
+- [x] AG-REG aprovou paridade visual em 3 viewports
+- [x] AG-DOC confirmou identidade visual conforme docs
+- [x] Nenhum `!important` adicionado desnecessariamente
