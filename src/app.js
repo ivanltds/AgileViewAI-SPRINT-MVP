@@ -9,13 +9,14 @@ import { Toast } from './components/ui/toast.js';
 import { Dashboard } from './components/ui/dashboard.js';
 import { ChatUI } from './components/ui/chat.js';
 import { Store } from './core/store.js';
-import { AzureAPI } from './core/azure-api.js';
-import { InsightsService } from './services/insights.js';
-import { EficienciaService } from './services/eficiencia.js';
-import { QualidadeService } from './services/qualidade.js';
+import { AppState } from './core/app-state.js';
+import { SprintService } from './services/sprint.js';
+import { EfficiencyService } from './services/efficiency.js';
+import { QualityService } from './services/quality.js';
+import { LLMService } from './services/llm.js';
 
 // Estado Global da UI
-const UI = {
+export const UI = {
   panels: ['dashboard', 'teams', 'llm', 'rag', 'settings', 'eficiencia', 'qualidade'],
   activePanel: 'dashboard'
 };
@@ -34,39 +35,49 @@ async function bootstrap() {
     console.log(`Vault desbloqueado via ${mode}.`);
     launchApp();
   });
+
+  // Exportar funções necessárias para o contexto global (compatibilidade com HTML legado)
+  window.showPanel = showPanel;
+  window.handleSync = handleSync;
 }
 
 /**
  * Lançamento do App após autenticação
  */
-function launchApp() {
+export function launchApp() {
   const vaultOverlay = document.getElementById('vault-overlay');
   const appContainer = document.getElementById('app');
 
   // Efeito de transição suave
-  vaultOverlay.style.opacity = '0';
-  setTimeout(() => {
-    vaultOverlay.style.display = 'none';
-    appContainer.style.display = 'flex';
-    appContainer.style.opacity = '1';
-  }, 300);
+  if (vaultOverlay) {
+    vaultOverlay.style.opacity = '0';
+    setTimeout(() => {
+      vaultOverlay.style.display = 'none';
+      if (appContainer) {
+        appContainer.style.display = 'flex';
+        appContainer.style.opacity = '1';
+      }
+    }, 300);
+  }
 
   // 2. Inicializando a Sidebar
   const sidebarContainer = document.getElementById('sidebar');
-  Sidebar.init(sidebarContainer, (panelId) => {
-    showPanel(panelId);
-  });
+  if (sidebarContainer) {
+    Sidebar.init(sidebarContainer, (panelId) => {
+      showPanel(panelId);
+    });
+  }
 
-  // 3. Inicializando Mobile Nav (se existir)
+  // 3. Inicializando Mobile Nav
   initMobileNav();
 
-  // 4. Inicializando o Dashboard (Módulo Padrão)
+  // 4. Inicializando o Dashboard
   const dashboardContent = document.getElementById('dashboard-content');
   if (dashboardContent) {
     Dashboard.init(dashboardContent);
   }
 
-  // 5. Configurando troca de abas do Dashboard (Mod-Tabs)
+  // 5. Configurando troca de abas do Dashboard
   initDashboardTabs();
 
   // 6. Inicializando o Chat Flutuante
@@ -80,14 +91,28 @@ function launchApp() {
 
   Toast.show('Bem-vindo ao AgileViewAI!', 'ok');
   
-  // Carregamento inicial (ex: carregar times)
+  // Renderiza dados iniciais via funções legadas (que agora buscam do Store modular)
+  refreshLegacyUI();
+
+  // Carregamento inicial de cache
   loadInitialData();
+}
+
+/**
+ * Atualiza a UI legada (configurações)
+ */
+function refreshLegacyUI() {
+  if (typeof window.renderTeams === 'function') window.renderTeams();
+  if (typeof window.renderOrgList === 'function') window.renderOrgList();
+  if (typeof window.renderLlmList === 'function') window.renderLlmList();
+  if (typeof window.renderRagList === 'function') window.renderRagList();
+  if (typeof window.renderDashTeamSel === 'function') window.renderDashTeamSel();
 }
 
 /**
  * Gerenciamento de Troca de Painéis
  */
-function showPanel(panelId) {
+export function showPanel(panelId) {
   if (!UI.panels.includes(panelId)) return;
 
   const panels = document.querySelectorAll('.panel');
@@ -98,10 +123,8 @@ function showPanel(panelId) {
   UI.activePanel = panelId;
   console.log(`Navegação: ${panelId}`);
   
-  // Notificar Sidebar se a troca foi disparada por outro lugar (ex: mobile nav)
   Sidebar.setActive(panelId);
   
-  // Se voltou para o dashboard, garantir o estado correto (opcional)
   if (panelId === 'dashboard') {
     Dashboard.render();
   }
@@ -128,17 +151,14 @@ function initMobileNav() {
   mbnItems.forEach(item => {
     item.addEventListener('click', () => {
       const panel = item.getAttribute('data-panel');
-      
-      // Update visual state of mobile buttons
       mbnItems.forEach(i => i.classList.toggle('active', i === item));
-      
       showPanel(panel);
     });
   });
 }
 
 /**
- * Lógica de Sincronização de Dados
+ * Lógica de Sincronização de Dados (Novo SprintService)
  */
 async function handleSync() {
   const activeTeam = Store.getActiveTeam();
@@ -148,48 +168,54 @@ async function handleSync() {
     return;
   }
 
-  Toast.show('Sincronizando com Azure DevOps...', 'warn', 10000);
+  Toast.show('Sincronizando com Azure DevOps...', 'warn', 30000);
+  AppState.syncRunning = true;
   const syncBtn = document.getElementById('btn-sync');
   if (syncBtn) syncBtn.disabled = true;
 
   try {
-    // 1. Buscar Backlog e Configurações da Iteração
-    const backlog = await AzureAPI.getBacklog(activeTeam.org, activeTeam.project, activeTeam.team, activeTeam.iteration);
+    // 1. Sincronização via SprintService
+    const data = await SprintService.sync();
     
-    // 2. Armazenar no Store
-    Store.setBacklog(backlog);
+    // 2. Gerar Insights Automáticos via LLMService
+    Toast.show('Gerando insights inteligentes...', 'warn', 15000);
     
-    // 3. Gerar Insights Automáticos via IA
-    Toast.show('Gerando insights inteligentes...', 'warn', 5000);
-    const insights = await InsightsService.generate(backlog);
-    Store.setInsights(insights);
+    const activeLlm = Store.getActiveLlm();
+    if (activeLlm) {
+      const token = await Store.getActiveLlmToken();
+      if (token) {
+        // Prompt simplificado para geração
+        const userPrompt = `DADOS DA SPRINT:\n${JSON.stringify(data.stats)}\n\nBACKLOG:\n${JSON.stringify(data.backlog.slice(0,20))}`;
+        const insightsRaw = await LLMService.runAgentChain(activeLlm.provider, token, userPrompt);
+        try {
+          const insights = JSON.parse(insightsRaw);
+          Store.setInsights(insights);
+        } catch (e) {
+          console.warn('Falha ao parsear insights da IA:', e);
+        }
+      }
+    }
 
-    // 4. Atualizar UI
+    // 3. Atualizar UI
     Dashboard.render();
-    Dashboard.afterRender();
-    Toast.show('Dados sincronizados com sucesso!', 'ok');
+    Toast.show('Sincronização concluída!', 'ok');
   } catch (error) {
     console.error('Erro na sincronização:', error);
-    Toast.show('Erro ao sincronizar. Verifique seus tokens.', 'err');
+    Toast.show(`Erro: ${error.message}`, 'err');
   } finally {
+    AppState.syncRunning = false;
     if (syncBtn) syncBtn.disabled = false;
   }
 }
 
 /**
- * Carregamento de dados iniciais
+ * Carregamento de dados iniciais do cache
  */
 function loadInitialData() {
-  const activeTeam = Store.getActiveTeam();
-  if (activeTeam) {
-    const infoEl = document.getElementById('db-topbar-info');
-    if (infoEl) infoEl.textContent = `Time: ${activeTeam.name} | Org: ${activeTeam.org}`;
-    
-    // Se já existem dados no store, renderizar
-    if (Store.getBacklog().length > 0) {
-      Dashboard.render();
-      Dashboard.afterRender();
-    }
+  const cache = Store.getSprintCache();
+  if (cache) {
+    AppState.sprintData = cache;
+    Dashboard.render();
   }
 }
 

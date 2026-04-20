@@ -28,7 +28,7 @@ export const InsightsPanel = {
       <div class="insights-section" id="insights-container">
         <div class="ins-header">
           <div class="ins-title">Insights da IA</div>
-          <div class="ins-subtitle" style="font-size: 11px; color: var(--gray);">${insights.length} observações encontradas</div>
+          <div class="ins-subtitle">${insights.length} observações encontradas</div>
         </div>
         <div class="ins-grid">
            ${cardsHtml}
@@ -60,7 +60,7 @@ export const InsightsPanel = {
         <div class="ins-body">${ins.body}</div>
         <div class="ins-fb-bar">
           <div class="ins-fb-hint">Este insight foi útil?</div>
-          <button class="ins-fb-btn" onclick="Toast.show('Obrigado pelo feedback!')">👍</button>
+          <button class="ins-fb-btn" onclick="if(window.Toast) Toast.show('Obrigado pelo feedback!')">👍</button>
           <button class="ins-fb-btn">👎</button>
         </div>
       </div>

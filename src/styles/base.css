@@ -27,6 +27,29 @@ input, select, textarea {
   font-family: inherit;
 }
 
+select, .qual-select, .ef-sprint-select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235A6882' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 36px; /* give room for the chevron */
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+select:focus, .qual-select:focus, .ef-sprint-select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(26, 110, 200, 0.15);
+}
+
 a {
   color: var(--blue);
   text-decoration: none;

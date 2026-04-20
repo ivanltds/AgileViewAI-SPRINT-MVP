@@ -1,8 +1,5 @@
-// src/core/azure-api.js
-
 /**
- * AzureAPI - Módulo Core para interações com Azure DevOps
- * Isolado do monolito original, mantém a assinatura de métodos idêntica.
+ * AgileViewAI - Azure DevOps API Client (ESM)
  */
 
 export const AzureAPI = {
@@ -14,16 +11,14 @@ export const AzureAPI = {
     }
     return resp.json();
   },
-  
+
   _auth(pat) {
-    // btoa is available in browser environments. 
-    // In node/JSDOM for unit tests, global.btoa might need polyfill if not present, but JSDOM provides it.
-    return { 
-      'Authorization': 'Basic ' + globalThis.btoa(':' + pat), 
-      'Content-Type': 'application/json' 
+    return {
+      'Authorization': 'Basic ' + btoa(':' + pat),
+      'Content-Type': 'application/json'
     };
   },
-  
+
   _encTeam(t) {
     return t.split(' ').map(encodeURIComponent).join('%20');
   },
@@ -50,8 +45,12 @@ export const AzureAPI = {
   async getWorkItemIds(org, proj, iterationPath, pat) {
     const url = `https://dev.azure.com/${encodeURIComponent(org)}/${encodeURIComponent(proj)}/_apis/wit/wiql?api-version=7.1`;
     const safe = iterationPath.replace(/'/g, "''");
-    const q = `SELECT [System.Id] FROM WorkItems WHERE [System.TeamProject] = '${proj.replace(/'/g,"''")}' AND [System.IterationPath] UNDER '${safe}' AND [System.WorkItemType] IN ('Product Backlog Item','Defect','Bug','Task') AND [System.State] <> 'Removed' ORDER BY [System.Id]`;
-    const d = await this._fetch(url, { method: 'POST', headers: this._auth(pat), body: JSON.stringify({ query: q }) });
+    const q = `SELECT [System.Id] FROM WorkItems WHERE [System.TeamProject] = '${proj.replace(/'/g, "''")}' AND [System.IterationPath] UNDER '${safe}' AND [System.WorkItemType] IN ('Product Backlog Item','Defect','Bug','Task') AND [System.State] <> 'Removed' ORDER BY [System.Id]`;
+    const d = await this._fetch(url, {
+      method: 'POST',
+      headers: this._auth(pat),
+      body: JSON.stringify({ query: q })
+    });
     return (d.workItems || []).map(w => w.id);
   },
 
@@ -68,15 +67,5 @@ export const AzureAPI = {
       } catch {}
     }
     return all;
-  },
-  
-  async getRevisions(org, proj, id, pat) {
-    const url = `https://dev.azure.com/${encodeURIComponent(org)}/${encodeURIComponent(proj)}/_apis/wit/workitems/${id}/revisions?api-version=7.1`;
-    try { 
-      const d = await this._fetch(url, { headers: this._auth(pat) }); 
-      return d.value || []; 
-    } catch { 
-      return []; 
-    }
   }
 };

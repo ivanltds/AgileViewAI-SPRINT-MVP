@@ -44,49 +44,109 @@ export const ProgressPanel = {
 
     let html = `
       <div class="progress-section" style="padding: 16px 24px;">
-        <div style="margin-bottom: 16px;">
-          <h3 style="margin-bottom: 8px; color: var(--slate);">Progresso da Sprint</h3>
-          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray); margin-bottom:4px;">
-            <span>${progressPct}% Concluído</span>
+        <div style="margin-bottom: 24px;">
+          <h3 style="margin-bottom: 8px; color: var(--slate); font-size: 15px; font-weight: 700;">Progresso da Sprint</h3>
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--gray); margin-bottom:6px;">
+            <span style="font-weight:600; color:var(--blue);">${progressPct}% Concluído</span>
             <span>${Helpers.formatHours(totalRemaining)} restantes de ${Helpers.formatHours(totalEstimate)}</span>
           </div>
-          <div style="background:var(--border); height:8px; border-radius:4px; overflow:hidden;">
-            <div style="background:var(--blue); width:${progressPct}%; height:100%; transition:width 0.3s;"></div>
+          <div style="background:#e2e8f0; height:10px; border-radius:5px; overflow:hidden;">
+            <div style="background:linear-gradient(90deg, var(--blue), #60a5fa); width:${progressPct}%; height:100%; transition:width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
           </div>
         </div>
 
-        <h4 style="margin-bottom: 12px; color: var(--slate); font-size:14px;">Alocação de Membros</h4>
-        <div class="members-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+        <h3 style="margin-bottom: 12px; color: var(--slate); font-size: 15px; font-weight: 700;">Distribuição por Responsável</h3>
+        <div class="dist-table-wrap">
+          <table class="dist-table">
+            <thead>
+              <tr>
+                <th>Membro</th>
+                <th style="text-align:center">Cap. Rest.</th>
+                <th style="text-align:center">Rem. Work</th>
+                <th>Alocação</th>
+                <th style="text-align:right">% Alocado</th>
+              </tr>
+            </thead>
+            <tbody>
     `;
+
+    const avatarColors = ['#1d4ed8','#7c3aed','#059669','#d97706','#dc2626','#0891b2'];
+    
+    let rowsTeam = '';
+    let rowsAcmp = '';
 
     // Renderiza cada membro
     Object.values(memberStats).forEach(m => {
       if (m.estimate === 0 && m.name === 'Não Atribuído') return;
       
       const mDone = m.estimate - m.remaining;
-      const mPct = m.estimate > 0 ? Math.round((mDone / m.estimate) * 100) : 0;
+      const mPct = m.estimate > 0 ? Math.round((m.remaining / (capacityInfo[m.name]?.capRest || m.estimate || 1)) * 100) : 0;
       const initials = Helpers.initials(m.name);
+      const color = avatarColors[m.name.charCodeAt(0) % avatarColors.length];
+      const act = capacityInfo[m.name]?.activity || '—';
       
-      // Cor de alerta se remaining for > capacity alocada (simplificado aqui para visual)
-      const barColor = mPct > 100 ? 'var(--red)' : 'var(--blue)';
+      let barClass = '';
+      if (mPct > 100) barClass = 'over';
+      else if (mPct > 85) barClass = 'warn';
+      const acColor = mPct > 100 ? 'var(--red)' : mPct >= 85 ? 'var(--amber)' : 'var(--blue)';
 
-      html += `
-        <div class="member-card" style="border:1px solid var(--border); border-radius:8px; padding:12px; display:flex; gap:12px; align-items:center; background:#fff;">
-          <div style="width:36px; height:36px; border-radius:50%; background:var(--blue-l); color:var(--blue-d); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;">
-            ${initials}
-          </div>
-          <div style="flex:1;">
-            <div style="font-size:13px; font-weight:600; color:var(--slate); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${m.name}">${m.name}</div>
-            <div style="font-size:11px; color:var(--gray); margin-bottom:4px;">${Helpers.formatHours(m.remaining)} rest. / ${Helpers.formatHours(m.estimate)} cap.</div>
-            <div style="background:var(--border); height:4px; border-radius:2px; overflow:hidden;">
-              <div style="background:${barColor}; width:${Math.min(mPct, 100)}%; height:100%;"></div>
+      const rowHtml = `
+        <tr>
+          <td>
+            <div class="dist-name">
+              <div class="dist-avt" style="background:${color}">${initials}</div>
+              <span>${m.name}</span>
+            </div>
+            <div style="font-size:11px;color:var(--gray)">${act}</div>
+          </td>
+          <td class="text-center mono" style="font-size:12px;color:var(--slate)">
+            ${Helpers.formatHours(capacityInfo[m.name]?.capRest || 0)}h
+          </td>
+          <td class="text-center mono rem-col" style="font-weight:600">
+            ${Helpers.formatHours(m.remaining)}h
+          </td>
+          <td>
+            <div class="dist-bar-wrap">
+              <div class="dist-bar ${barClass}" style="width:${Math.min(mPct, 100)}%;"></div>
+            </div>
+          </td>
+          <td style="text-align:right">
+            <span class="dist-pct" style="color:${acColor}">${mPct}%</span>
+          </td>
+        </tr>
+      `;
+
+      const isAcmp = /scrum master|product owner|tech leader/i.test(act);
+      if (isAcmp) {
+        rowsAcmp += `
+          <div style="display:flex; align-items:center; gap:10px; background:#f8fafc; border:1px solid var(--border); border-radius:30px; padding:6px 16px 6px 6px;">
+            <div class="dist-avt" style="background:${color}">${initials}</div>
+            <div style="display:flex; flex-direction:column;">
+              <span style="font-weight:600; color:var(--slate); font-size:12px; line-height:1.2;">${m.name}</span>
+              <span style="font-size:10px; color:var(--gray);">${act}</span>
             </div>
           </div>
-        </div>
-      `;
+        `;
+      } else {
+        rowsTeam += rowHtml;
+      }
     });
 
+    if (rowsAcmp.length > 0) {
+      let acmpSection = `
+        <h4 style="margin-bottom: 12px; color: var(--slate); font-size: 14px; font-weight: 600;">Acompanhamento da sprint</h4>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px;">
+          ${rowsAcmp}
+        </div>
+      `;
+      // Insert acmpSection right before the h3 of "Distribuição por Responsável"
+      html = html.replace('<h3 style="margin-bottom: 12px; color: var(--slate); font-size: 15px; font-weight: 700;">Distribuição por Responsável</h3>', acmpSection + '<h3 style="margin-bottom: 12px; color: var(--slate); font-size: 15px; font-weight: 700;">Distribuição por Responsável</h3>');
+    }
+
+    html += rowsTeam;
     html += `
+            </tbody>
+          </table>
         </div>
       </div>
     `;

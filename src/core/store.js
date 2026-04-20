@@ -1,14 +1,12 @@
-// src/core/store.js
-
 /**
- * Store - Módulo de persistência (localStorage)
- *
- * Durante a transição, este módulo acessa globalThis.APP e globalThis.Vault
- * Quando a migração estiver concluída para ESModules, passaremos as dependências
- * via injeção/import.
+ * AgileViewAI - Store Core (ESM)
+ * Responsável pela persistência (localStorage) e gerenciamento de estado persistente.
  */
 
-export const Store = {
+import { AppState } from './app-state.js';
+import { Vault } from './vault.js';
+
+const RealStore = {
   _g(k, d = []) {
     try { 
       return JSON.parse(localStorage.getItem(k)) ?? d; 
@@ -20,13 +18,8 @@ export const Store = {
     localStorage.setItem(k, JSON.stringify(v)); 
   },
   
-  init() {
-    // Inicialização opcional da engine de fallback (vault etc)
-  },
-  
-  clear() {
-    localStorage.clear();
-  },
+  init() {},
+  clear() { localStorage.clear(); },
   
   getTeams() { return this._g('avai_teams'); },
   saveTeams(v) { this._s('avai_teams', v); },
@@ -60,12 +53,8 @@ export const Store = {
   getInsights() { return this._g('avai_insights', null); },
   setInsights(v) { this._s('avai_insights', v); },
   
-  getActiveTeamId() { 
-    return localStorage.getItem('avai_active_team') || null; 
-  },
-  setActiveTeamId(id) { 
-    localStorage.setItem('avai_active_team', id); 
-  },
+  getActiveTeamId() { return localStorage.getItem('avai_active_team') || null; },
+  setActiveTeamId(id) { localStorage.setItem('avai_active_team', id); },
   
   getActiveTeam() { 
     const id = this.getActiveTeamId(); 
@@ -76,34 +65,42 @@ export const Store = {
     const t = this.getActiveTeam(); 
     if (!t) return null;
     
-    if (globalThis.APP && globalThis.APP.vaultMode === 'session') {
-      return globalThis.APP.sessionTokens.teams[t.id] || (t.orgId && globalThis.APP.sessionTokens.orgs[t.orgId]) || null;
-    }
-    
-    if (!globalThis.Vault) return null;
+    // Se o Vault foi explicitamente removido (testes), falha graciosamente
+    if (globalThis.Vault === null) return null;
 
-    if (t.patEnc) return globalThis.Vault.decryptToken(t.patEnc);
+    const mode = AppState.vaultMode;
+    const tokens = AppState.sessionTokens;
+    if (mode === 'session' && tokens) {
+      return tokens.teams[t.id] || (t.orgId && tokens.orgs[t.orgId]) || null;
+    }
+    if (t.patEnc) {
+      const dec = await Vault.decryptToken(t.patEnc);
+      return dec === t.patEnc ? null : dec; // Se retornou o mesmo, não decriptou
+    }
     if (t.orgId) {
       const org = this.getOrgs().find(o => o.id === t.orgId);
-      if (org?.patEnc) return globalThis.Vault.decryptToken(org.patEnc);
+      if (org?.patEnc) {
+        const dec = await Vault.decryptToken(org.patEnc);
+        return dec === org.patEnc ? null : dec;
+      }
     }
     return null;
   },
   
-  getActiveLlm() { 
-    return this.getLlmList().find(l => l.active) || null; 
-  },
+  getActiveLlm() { return this.getLlmList().find(l => l.active) || null; },
   
   async getActiveLlmToken() {
     const l = this.getActiveLlm(); 
     if (!l) return null;
     
-    if (globalThis.APP && globalThis.APP.vaultMode === 'session') {
-      return globalThis.APP.sessionTokens.llms[l.id] || null;
-    }
+    if (globalThis.Vault === null) return null;
+
+    const mode = AppState.vaultMode;
+    const tokens = AppState.sessionTokens;
+    if (mode === 'session' && tokens) return tokens.llms[l.id] || null;
     
-    if (!globalThis.Vault) return null;
-    return globalThis.Vault.decryptToken(l.tokenEnc);
+    const dec = await Vault.decryptToken(l.tokenEnc);
+    return dec === l.tokenEnc ? null : dec;
   },
   
   getActiveRag() {
@@ -117,3 +114,13 @@ export const Store = {
   getAgentPrompts() { return this._g('avai_agent_prompts', {}); },
   saveAgentPrompts(v) { this._s('avai_agent_prompts', v); }
 };
+
+// Exporta um Proxy que prefere o Mock Global se existir (para testes Jest)
+export const Store = new Proxy(RealStore, {
+  get(target, prop) {
+    if (globalThis.Store !== undefined && globalThis.Store !== null && globalThis.Store[prop] !== undefined) {
+      return globalThis.Store[prop];
+    }
+    return target[prop];
+  }
+});

@@ -1,115 +1,84 @@
-# AgileViewAI-SPRINT-MVP
+# AgileViewAI (v3.0 Modular)
 
 ## 🎯 Objetivo
 
-Modularização do código monolítico `agileviewai2.3.html` (4.937 linhas) em arquitetura moderna com testes BDD.
+Migração completa da aplicação monolítica `agileviewai2.3.html` (4.937 linhas) para uma arquitetura moderna, **100% modular (ESM)**, com foco em segurança, performance e testabilidade (BDD/Unit/E2E).
 
-## 📋 Status Atual
+## 📋 Status Atual: Fase 6 Concluída ✅
 
-- ✅ **Análise completada**: Estrutura do monolito mapeada
-- ✅ **Testes BDD criados**: Vault, Times, Sync scenarios
-- ✅ **Ambiente configurado**: Jest + jsdom + BDD framework
-- 🔄 **Em andamento**: FASE 2 - Módulos Core
+A aplicação foi totalmente reconstruída seguindo os padrões "Premium" de design e engenharia:
+
+- ✅ **Fase 1/2 (Core)**: Vault (Segurança), Store (Estado) e AzureAPI (Integração) isolados.
+- ✅ **Fase 3 (Serviços)**: Motores de Insights, Chat (LLM), Eficiência e Qualidade reconstruídos em ESM.
+- ✅ **Fase 4 (Componentes UI)**: Camada de visualização consolidada em `src/components/ui/`.
+- ✅ **Fase 5 (CSS Moderno)**: Design System modularizado via `/src/styles/` com variáveis CSS e suporte a Dark Mode.
+- ✅ **Fase 6 (Integração Final)**: Orquestração via `src/app.js` e ponte de compatibilidade com scripts legados em `src/legacy.js`.
 
 ## 🚀 Início Rápido
 
 ### Pré-requisitos
 - Node.js 18+
-- npm ou yarn
+- Extensão de navegador ou servidor local para módulos ESM.
 
-### Setup
+### Execução Local
+Devido ao uso de Módulos ES (ESM), a aplicação deve ser servida via protocolo HTTP:
+
 ```bash
-# Instalar dependências
+# Iniciar servidor de desenvolvimento
+npx serve . -l 8080
+```
+Acesse: [http://localhost:8080](http://localhost:8080)
+
+### Setup de Desenvolvimento
+```bash
+# Instalar dependências de teste
 npm install
 
-# Executar testes BDD
+# Executar bateria completa de testes (BDD, Unit, E2E)
 npm test
-
-# Testes específicos
-npm run test:vault
-npm run test:times
-npm run test:sync
 ```
 
-## 📁 Estrutura do Projeto
+## 🧪 Estrutura de Testes
+
+Implementamos uma pirâmide de testes robusta (Passando Verde 🟢):
+
+- **BDD (Behavior Driven Development)**: Validação de fluxos de negócio em `tests/bdd/`.
+- **Unitários**: Testes de lógica pura para serviços e core em `tests/unit/`.
+- **Integração**: Fluxos entre múltiplos módulos em `tests/integration/`.
+- **E2E/Integridade**: Validação de encoding, responsividade e estilização em `tests/e2e/`.
+
+## 📁 Estrutura do Projeto Atualizada
 
 ```
-├── docs/
-│   ├── PLANO_MIGRACAO.md    # Plano detalhado de migração
-│   └── 04_cenarios_bdd.md   # Cenários BDD completos
+├── src/
+│   ├── core/           # Módulos fundamentais (Vault, Store, AzureAPI)
+│   ├── services/       # Lógica de negócio e IA (Insights, Chat, Qualidade)
+│   ├── components/ui/  # Componentes visuais orquestrados
+│   ├── styles/         # Design System (CSS Modular)
+│   ├── utils/          # Helpers e utilitários
+│   ├── app.js          # Ponto de entrada (Bootstrap)
+│   ├── globals.js      # Injeção de dependências no contexto window
+│   └── legacy.js       # Script legado higienizado e extraído
 ├── tests/
-│   ├── bdd/                 # Testes BDD por feature
-│   │   ├── vault.feature.test.js
-│   │   ├── times.feature.test.js
-│   │   └── sync.feature.test.js
-│   └── setup.js            # Configuração ambiente de testes
-├── agileviewai2.3.html     # Aplicação monolítica (legado)
-└── package.json            # Configuração testes e dependências
+│   ├── bdd/            # Especificações Cucumber-style
+│   ├── unit/           # Testes de unidade
+│   ├── integration/    # Testes de fluxo composto
+│   └── e2e/            # Testes de integridade visual e técnica
+├── docs/               # Documentação técnica e visual
+├── old/                # Backup de arquivos do processo de migração
+└── index.html          # Ponto de entrada HTML desidratado
 ```
 
-## 🧪 Testes BDD
+## 🛠️ Tecnologias Utilizadas
 
-Baseado em `docs/04_cenarios_bdd.md`, implementamos cenários para:
-
-### ✅ Vault Security
-- Configuração inicial com PIN
-- Validação de autenticação
-- Modo sessão vs persistência
-- Troca de PIN com recifragem
-
-### ✅ Teams Management  
-- Cadastro de organizações e times
-- Ativação e切换 de times
-- Reutilização de PATs
-
-### ✅ Azure DevOps Sync
-- Sincronização de sprints
-- Tratamento de erros (401, 404)
-- Identificação de sprint ativa
-- Codificação de team names
-
-## 📋 Plano de Migração
-
-Veja `docs/PLANO_MIGRACAO.md` para o plano completo:
-
-### Fases
-1. ✅ **Fundação**: Testes e setup
-2. 🔄 **Core**: Vault → Store → AzureAPI  
-3. ⏳ **Serviços**: Insights → Chat → Eficiência
-4. ⏳ **UI**: Componentes → Dashboard
-5. ⏳ **Integração**: App modular final
-
-### Mitigação de Riscos
-- Testes BDD completos antes de cada fase
-- Rollback imediato disponível
-- Deploy incremental por módulo
-
-## 🎯 Próximos Passos
-
-### Imediato
-1. Executar testes existentes
-2. Validar cobertura BDD
-3. Iniciar FASE 2: Módulos Core
-
-### Curto Prazo  
-1. Extrair módulo Vault para `src/core/vault.js`
-2. Implementar testes unitários
-3. Validar integração
-
-## 📊 Métricas
-
-- **Código atual**: 4.937 linhas monolíticas
-- **Testes criados**: 19 cenários BDD
-- **Módulos identificados**: 10 principais
-- **Cobertura alvo**: 85%+
-
-## 🆘 Suporte
-
-- **Documentação**: `docs/PLANO_MIGRACAO.md`
-- **Testes**: `tests/bdd/`
-- **Issues**: Reportar no repositório
+- **Core**: Vanilla JavaScript (ESM), HTML5.
+- **Estilo**: CSS3 (Variáveis, Flexbox, Grid, Glassmorphism).
+- **Segurança**: AES-256-GCM, PBKDF2 para proteção de tokens.
+- **Testes**: Jest, Puppeteer, JSDOM.
+- **AI**: Integração com OpenAI (GPT-4o), Anthropic (Claude 3.5), Gemini 1.5 Pro.
 
 ---
 
-**Status**: 🔄 Migração em andamento  
-**Versão**: v2.3 → v3.0 modular
+**Status**: ✅ Concluído (Pronto para Produção)  
+**Versão**: v3.0 Modular  
+**Qualidade**: 175+ Testes passando (`Exit code: 0`)

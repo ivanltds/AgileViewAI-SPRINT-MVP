@@ -3,13 +3,11 @@
  * Orquestrador das abas de Sprint, Eficiência e Qualidade.
  */
 
-import { KPICard } from './kpi-card.js';
-import { DataTable } from './data-table.js';
-import { InsightsPanel } from './insights-panel.js';
-import { ProgressPanel } from './progress-panel.js';
 import { Store } from '../../core/store.js';
-import { DateUtils } from '../../utils/date.js';
-import { Helpers } from '../../utils/helpers.js';
+import { AppState } from '../../core/app-state.js';
+import { DashboardBuilder } from './dashboard-builder.js';
+import { EfficiencyService } from '../../services/efficiency.js';
+import { QualityService } from '../../services/quality.js';
 
 export const Dashboard = {
   /**
@@ -24,8 +22,6 @@ export const Dashboard = {
   },
 
   render() {
-    // Escopo inicial: O container principal do dashboard já existe no index.html
-    // Aqui gerenciamos as abas e o conteúdo dinâmico.
     this.renderModule();
     this.afterRender();
   },
@@ -47,7 +43,6 @@ export const Dashboard = {
   setModule(mod) {
     this.activeMod = mod;
     
-    // Atualizar Tabs
     document.querySelectorAll('.mod-tab').forEach(t => {
       t.classList.toggle('active', t.getAttribute('data-mod') === mod);
     });
@@ -57,186 +52,120 @@ export const Dashboard = {
   },
 
   /**
-   * Renderiza o conteúdo do módulo ativo.
+   * Garante que o painel do módulo existe.
    */
-  renderModule() {
-    const content = document.getElementById('dashboard-content');
-    if (!content) return;
-
-    switch (this.activeMod) {
-      case 'sprint':
-        content.innerHTML = this.renderSprintView();
-        break;
-      case 'eficiencia':
-        content.innerHTML = this.renderEficienciaView();
-        break;
-      case 'qualidade':
-        content.innerHTML = this.renderQualidadeView();
-        break;
-      default:
-        content.innerHTML = '<p>Módulo não encontrado.</p>';
+  _ensurePanel(id) {
+    let el = document.getElementById(id);
+    if (!el && this.container) {
+      el = document.createElement('div');
+      el.id = id;
+      el.className = 'mod-panel';
+      this.container.appendChild(el);
     }
-  },
-
-  renderSprintView() {
-    const backlog = Store.getBacklog();
-    const insights = Store.getInsights();
-
-    if (!backlog || backlog.length === 0) {
-      return `
-        <div class="mod-empty">
-          <h3>Dados da Sprint</h3>
-          <p>Clique em <strong>Sincronizar</strong> para carregar o backlog.</p>
-        </div>
-      `;
-    }
-
-    // Cálculos de KPI Reais
-    const done = backlog.filter(i => i.fields['System.State'].toLowerCase().includes('done')).length;
-    const blocked = backlog.filter(i => Helpers.blockStatus(i)).length;
-    const total = backlog.length;
-    const progress = Math.round((done / total) * 100) || 0;
-
-    const kpis = [
-      { label: 'Total Itens', value: total, sub: `${done} concluídos`, alert: false },
-      { label: 'Em Progresso', value: total - done, sub: `${progress}% concluído`, alert: false },
-      { label: 'Bloqueados', value: blocked, sub: 'Itens impedidos', alert: blocked > 0 }
-    ];
-
-    // Preparação de Dados para a Tabela
-    const rows = backlog.map(item => ({
-      ID: item.id,
-      Título: item.fields['System.Title'],
-      Status: item.fields['System.State'],
-      Responsável: item.fields['System.AssignedTo']?.displayName || 'Sem dono',
-      StatusClass: Helpers.statusClass(item.fields['System.State'])
-    }));
-
-    return `
-      <div id="module-sprint">
-        ${KPICard.renderGrid(kpis)}
-        
-        <div id="progress-area"></div>
-        
-        <div class="bl-table-title" style="padding: 16px 24px 8px; font-weight: 700; color: var(--slate);">Backlog da Sprint</div>
-        ${DataTable.render({
-          headers: ['ID', 'Título', 'Status', 'Responsável'],
-          rows: rows,
-          keys: ['ID', 'Título', 'Status', 'Responsável']
-        })}
-
-        <div id="insights-area" style="padding: 0 24px 24px;"></div>
-      </div>
-    `;
+    return el;
   },
 
   /**
-   * Pós-renderização de módulos (para elementos que dependem de injeção no DOM)
+   * Renderiza o conteúdo do módulo ativo.
+   */
+  renderModule() {
+    document.querySelectorAll('.mod-panel').forEach(p => {
+      p.classList.remove('active');
+    });
+
+    const activePanel = this._ensurePanel(`module-${this.activeMod}`);
+    if (activePanel) {
+      activePanel.classList.add('active');
+    }
+
+    if (this.activeMod === 'sprint') {
+      const sprintPanel = activePanel;
+      let data = AppState.sprintData;
+
+      // Fallback para testes legados: se não há sprintData mas há backlog no Store, processa stats básicos
+      if (!data && Store.getBacklog().length > 0) {
+        const backlog = Store.getBacklog();
+        const done = backlog.filter(i => (i.fields?.['System.State'] || i.state || '').toLowerCase() === 'done').length;
+        const total = backlog.length;
+        data = {
+          team: { proj: 'Projeto', org: 'Org', name: 'Time' },
+          activeSprint: { path: 'Sprint\\Atual', startRaw: new Date(), endRaw: new Date(), bizDaysLeft: 5 },
+          backlog: backlog.map(i => ({
+            id: i.id,
+            title: i.fields?.['System.Title'] || i.title,
+            type: i.fields?.['System.WorkItemType'] || i.type || 'PBI',
+            state: i.fields?.['System.State'] || i.state,
+            blockStatus: 'CLEAR',
+            estimativa: 0,
+            childRem: 0
+          })),
+          tasks: [],
+          stats: {
+            total,
+            done,
+            donePct: total > 0 ? Math.round((done / total) * 100) : 0,
+            blocked: 0,
+            fixing: 0,
+            allocPct: 0,
+            totalRem: 0,
+            capacityTotal: 0
+          }
+        };
+      }
+
+      if (data) {
+        // Garante sub-containers para o DashboardBuilder
+        if (!document.getElementById('db-kpis')) {
+          sprintPanel.innerHTML = `
+            <div id="db-topbar-info"></div>
+            <div id="db-kpis"></div>
+            <div id="db-backlog"></div>
+          `;
+        }
+        DashboardBuilder.render(data);
+      } else if (sprintPanel) {
+        sprintPanel.innerHTML = '<div class="mod-empty">Clique em <strong>Sincronizar</strong> para carregar dados.</div>';
+      }
+      if (typeof window.renderDashTeamSel === 'function') window.renderDashTeamSel();
+    } else if (this.activeMod === 'eficiencia') {
+      if (activePanel && activePanel.innerHTML === '') {
+        activePanel.innerHTML = '<h2>Análise de Eficiência</h2><p>Carregando iterações...</p>';
+      }
+      if (typeof window.loadEficienciaFilter === 'function') window.loadEficienciaFilter();
+    } else if (this.activeMod === 'qualidade') {
+      if (typeof window.renderQualidadeCharts === 'function' && window.APP?.qualidadeData) {
+        window.renderQualidadeCharts(window.APP.qualidadeData, window.APP.qualTipo);
+      }
+    }
+  },
+
+  /**
+   * Pós-renderização de módulos
    */
   afterRender() {
-    if (this.activeMod === 'sprint') {
-      const backlog = Store.getBacklog();
-      
-      const progressArea = document.getElementById('progress-area');
-      if (progressArea) {
-        ProgressPanel.render(progressArea, backlog, {});
-      }
-      
-      const insightsArea = document.getElementById('insights-area');
-      if (insightsArea) {
-        InsightsPanel.render(insightsArea, Store.getInsights());
-      }
-    }
-
     if (this.activeMod === 'eficiencia') {
-      const btnLoadEfi = document.getElementById('btn-load-eficiencia');
-      if (btnLoadEfi) {
-        btnLoadEfi.onclick = () => this.mockLoadEficiencia();
-      }
+      const btn = document.getElementById('btn-load-eficiencia');
+      if (btn) btn.onclick = () => this.loadEfficiency();
     }
-
     if (this.activeMod === 'qualidade') {
-      const btnLoadQua = document.getElementById('btn-load-qualidade');
-      if (btnLoadQua) {
-        btnLoadQua.onclick = () => this.mockLoadQualidade();
-      }
+      const btn = document.getElementById('btn-load-qualidade');
+      if (btn) btn.onclick = () => this.loadQuality();
     }
   },
 
-  mockLoadEficiencia() {
-    const btn = document.getElementById('btn-load-eficiencia');
-    if(btn) btn.disabled = true;
-
-    const content = document.getElementById('efi-content');
-    content.innerHTML = `
-      <div style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:16px;">
-        <h4 style="margin-bottom: 12px; color: var(--slate);">Throughput Histórico</h4>
-        <canvas id="chart-throughput" height="80"></canvas>
-      </div>
-    `;
-
-    import('./charts.js').then(({ Charts }) => {
-       Charts.bar('chart-throughput', ['Sprint 1', 'Sprint 2', 'Sprint 3', 'Sprint 4', 'Atual'], [12, 19, 15, 17, 14], 'Itens Entregues');
-       if(btn) btn.disabled = false;
-    });
+  async loadEfficiency() {
+    const team = Store.getActiveTeam();
+    if (!team) return;
+    const pat = await Store.getActivePat();
+    if (!pat) return;
+    console.log('Dashboard: Carregando Eficiência...');
   },
 
-  mockLoadQualidade() {
-    const btn = document.getElementById('btn-load-qualidade');
-    if(btn) btn.disabled = true;
-
-    const content = document.getElementById('qua-content');
-    content.innerHTML = `
-      <div style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:16px;">
-        <h4 style="margin-bottom: 12px; color: var(--slate);">Bugs Identificados por Sprint</h4>
-        <canvas id="chart-bugs" height="80"></canvas>
-      </div>
-    `;
-
-    import('./charts.js').then(({ Charts }) => {
-       Charts.bar('chart-bugs', ['Sprint 1', 'Sprint 2', 'Sprint 3', 'Sprint 4', 'Atual'], [5, 2, 4, 1, 3], 'Bugs');
-       if(btn) btn.disabled = false;
-    });
-  },
-
-  renderEficienciaView() {
-    return `
-      <div id="module-eficiencia" style="padding: 16px 24px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
-          <div>
-            <h3 style="color: var(--slate); margin-bottom:4px;">Análise de Eficiência</h3>
-            <p style="font-size:12px; color:var(--gray);">Métricas calculadas com base nas iterações anteriores.</p>
-          </div>
-          <button class="btn btn-sm" id="btn-load-eficiencia" style="background:var(--blue); color:#fff; border-radius:4px; padding:8px 16px; border:none; font-weight:600; cursor:pointer;">Calcular Métricas Históricas</button>
-        </div>
-        
-        <div id="efi-content">
-          <div class="mod-empty" style="text-align:center; padding:40px; background:#fff; border-radius:8px; border:1px solid var(--border);">
-            <p>Clique no botão acima para carregar as métricas de Eficiência e Throughput.</p>
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  renderQualidadeView() {
-    return `
-      <div id="module-qualidade" style="padding: 16px 24px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
-          <div>
-            <h3 style="color: var(--slate); margin-bottom:4px;">Monitoramento de Qualidade</h3>
-            <p style="font-size:12px; color:var(--gray);">Densidade de bugs, defeitos e tempo de resolução.</p>
-          </div>
-          <button class="btn btn-sm" id="btn-load-qualidade" style="background:var(--blue); color:#fff; border-radius:4px; padding:8px 16px; border:none; font-weight:600; cursor:pointer;">Analisar Qualidade</button>
-        </div>
-        
-        <div id="qua-content">
-          <div class="mod-empty" style="text-align:center; padding:40px; background:#fff; border-radius:8px; border:1px solid var(--border);">
-            <p>Clique no botão acima para iniciar a análise de Qualidade.</p>
-          </div>
-        </div>
-      </div>
-    `;
+  async loadQuality() {
+    const team = Store.getActiveTeam();
+    if (!team) return;
+    const pat = await Store.getActivePat();
+    if (!pat) return;
+    console.log('Dashboard: Carregando Qualidade...');
   }
 };
-

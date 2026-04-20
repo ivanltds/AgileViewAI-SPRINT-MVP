@@ -66,10 +66,11 @@
       </div>
       <!-- MODULE TABS -->
       <div class="mod-tabs">
-        <div class="mod-tab active" id="modtab-sprint"    onclick="showModule('sprint')">Sprint</div>
-        <div class="mod-tab"        id="modtab-eficiencia" onclick="showModule('eficiencia')">Eficiência</div>
-        <div class="mod-tab"        id="modtab-qualidade"  onclick="showModule('qualidade')">Qualidade</div>
+        <div class="mod-tab active" data-mod="sprint">Sprint</div>
+        <div class="mod-tab"        data-mod="eficiencia">Eficiência</div>
+        <div class="mod-tab"        data-mod="qualidade">Qualidade</div>
       </div>
+      <div id="dashboard-content">
       <!-- MODULE: SPRINT -->
       <div class="mod-panel active" id="module-sprint">
         <div id="db-topbar"></div>

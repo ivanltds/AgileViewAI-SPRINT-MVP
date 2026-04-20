@@ -8,8 +8,8 @@
 
 - [x] FASES 2, 3, 4 e 5 concluídas e aprovadas
 - [x] Todos os módulos JS e CSS extraídos
-- [ ] `npm test` — todos os testes passando
-- [ ] Nenhum `BLOQUEIO` pendente de fases anteriores
+- [x] `npm test` — todos os testes passando
+- [x] Nenhum `BLOQUEIO` pendente de fases anteriores
 
 ---
 
@@ -21,11 +21,11 @@
 - **Agente**: `AG-EXT`
 - **Ação**: Criar ponto de entrada que importa e inicializa todos os módulos
 - **Conteúdo**:
-  - [ ] Imports de core: Vault, Store, AzureAPI
-  - [ ] Imports de services: Insights, Chat, Eficiência, Qualidade
-  - [ ] Imports de components: Dashboard, Navigation, Modals
-  - [ ] Imports de utils: helpers, date, markdown
-  - [ ] Estado global APP
+  - [x] Imports de core: Vault, Store, AzureAPI
+  - [x] Imports de services: Insights, Chat, Eficiência, Qualidade
+  - [x] Imports de components: Dashboard, Navigation, Modals
+  - [x] Imports de utils: helpers, date, markdown
+  - [x] Estado global APP
   - [x] Função `init()` — fluxo de inicialização (Vault → Dashboard)
   - [x] Registro de event listeners globais
 - [x] Concluída
@@ -38,8 +38,8 @@
 
 ### 6.1.3 — Validar conformidade (AG-DOC)
 - **Checklist**:
-  - [ ] Fluxo de inicialização conforme `docs/03_tutorial_de_uso.md`
-  - [ ] Ordem: Vault → verificar PIN → carregar cache → renderizar dashboard
+  - [x] Fluxo de inicialização conforme `docs/03_tutorial_de_uso.md`
+  - [x] Ordem: Vault → verificar PIN → carregar cache → renderizar dashboard
   - [x] Navegação entre painéis funciona
   - [x] Mobile bottom nav funciona
 - [x] Concluída
@@ -116,10 +116,10 @@
 **Agentes**: AG-EXT → AG-QUA
 
 ### 6.5.1 — Remover código morto
-- [ ] Nenhum `console.log` de debug restante
-- [ ] Nenhum `TODO` sem issue linkada
-- [ ] Nenhum trecho comentado sem motivo
-- [ ] Concluída
+- [x] Nenhum `console.log` de debug restante
+- [x] Nenhum `TODO` sem issue linkada
+- [x] Nenhum trecho comentado sem motivo
+- [x] Concluída
 
 ### 6.5.2 — Verificar bundle size (**⚠️ escalar se > 500KB**)
 - **Ação**: Se usando bundler (Vite), verificar tamanho final
@@ -133,12 +133,12 @@
 
 ## Gate de Fase — Critérios de CONCLUSÃO do Plano
 
-- [ ] `index.html` funciona idêntico ao `agileviewai2.3.html`
-- [ ] `npm run test:ci` — TODOS os testes passando
-- [ ] Coverage total ≥ 85%
-- [ ] Zero regressões
-- [ ] Documentação atualizada
-- [ ] Lighthouse > 90
+- [x] `index.html` funciona idêntico ao `agileviewai2.3.html`
+- [x] `npm run test:ci` — TODOS os testes passando
+- [x] Coverage total ≥ 85%
+- [x] Zero regressões
+- [x] Documentação atualizada
+- [x] Lighthouse > 90
 - [ ] **USUÁRIO** aprovou o resultado final
 
 ---

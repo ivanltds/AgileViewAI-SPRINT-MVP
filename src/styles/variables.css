@@ -4,46 +4,40 @@
  */
 
 :root {
-  /* Estrutura */
-  --bg:              #F0F4F8;
-  --card-bg:         #ffffff;
-  --card-border:     #D0DAE8;
-  --border:          #D0DAE8;
-  --topbar-bg:       #0D2137;
-  --sidebar-bg:      linear-gradient(180deg, #061526 0%, #0D2137 100%);
+  /* Cores Originais AgileViewAI v2.3 */
+  --blue:            #257DD9;
+  --blue-l:          #EBF4FF;
+  --slate:           #1E2A3A;
+  --gray:            #6B7A8D;
+  --border:          #E4E9F0;
+  --bg:              #FBFCFD;
+  --red:             #D9534F;
+  --amber:           #D9A06F;
+  --green:           #2A9D8F;
+  --red-l:           #FEF0F0;
+  --amber-l:         #FDF3E7;
+  --green-l:         #E8F7F5;
 
-  /* Tipografia */
-  --text-primary:    #0D1F35;
-  --text-secondary:  #4A5568;
-  --gray:            #5A6882;
+  /* Estrutura / Aliases para Componentes */
+  --card-bg:         #ffffff;
+  --card-border:     var(--border);
+  --topbar-bg:       #ffffff;
+  --sidebar-bg:      var(--slate);
+  --text-primary:    #1e293b;
+  --text-secondary:  #64748b;
 
   /* Componentes */
   --input-bg:        #ffffff;
-  --input-border:    #D0DAE8;
+  --input-border:    var(--border);
   --modal-bg:        #ffffff;
-  --modal-overlay:   rgba(6, 21, 38, 0.65);
-  --table-hover:     rgba(26, 110, 200, 0.06);
-  --table-header-bg: #F8FAFC;
-  --btn-bg:          #F0F4F8;
-  --btn-color:       #0D1F35;
-  --toast-bg:        #0D2137;
-
-  /* Cores Base institucionais */
-  --navy:            #061526;
-  --slate:           #0D2137;
-  --blue:            #1A6EC8;
-  --blue-dark:       #1458A8;
-  --blue-l:          #EAF2FB;
+  --modal-overlay:   rgba(15, 23, 42, 0.6);
+  --table-hover:     #f8fafc;
+  --table-header-bg: #ffffff;
+  --btn-bg:          #ffffff;
+  --btn-color:       #374151;
+  --toast-bg:        #1e293b;
   
-  /* Cores Semânticas de Estado (Feedback) */
-  --green:           #0D7A55;
-  --amber:           #B45309;
-  --red:             #C0392B;
-  --green-l:         #E8F7F5;
-  --amber-l:         #FDF3E7;
-  --red-l:           #FEF0F0;
-  
-  /* Espaçamentos - Múltiplos de 4px */
+  /* Espaçamentos - Mantidos para consistência modular */
   --space-xs:        4px;
   --space-sm:        8px;
   --space-md:        12px;
@@ -54,25 +48,21 @@
 }
 
 [data-theme="dark"] {
-  /* Estrutura */
-  --bg:              #091420;
-  --card-bg:         #0F1E30;
-  --card-border:     rgba(255, 255, 255, 0.09);
-  --border:          rgba(255, 255, 255, 0.09);
-
-  /* Tipografia */
-  --text-primary:    #DDE8F5;
-  --text-secondary:  #8AA5C0;
-  --gray:            #8AA5C0;
-
-  /* Componentes */
-  --input-bg:        #0A1628;
-  --input-border:    rgba(255, 255, 255, 0.12);
-  --modal-bg:        #0F1E30;
-  --modal-overlay:   rgba(2, 8, 16, 0.80);
-  --table-hover:     rgba(26, 110, 200, 0.08);
-  --table-header-bg: #0A1628;
-  --btn-bg:          #0F1E30;
-  --btn-color:       #DDE8F5;
-  --toast-bg:        #0A1628;
+  /* Suporte a Dark Mode (Inspirado no Navy/Slate) */
+  --bg:              #0f172a;
+  --card-bg:         #1e293b;
+  --card-border:     rgba(255, 255, 255, 0.1);
+  --border:          rgba(255, 255, 255, 0.1);
+  --text-primary:    #f1f5f9;
+  --text-secondary:  #94a3b8;
+  --gray:            #94a3b8;
+  --input-bg:        #0f172a;
+  --input-border:    rgba(255, 255, 255, 0.2);
+  --modal-bg:        #1e293b;
+  --modal-overlay:   rgba(0, 0, 0, 0.8);
+  --table-hover:     rgba(255, 255, 255, 0.05);
+  --table-header-bg: #1e293b;
+  --btn-bg:          #1e293b;
+  --btn-color:       #f1f5f9;
 }
+

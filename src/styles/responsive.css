@@ -3,45 +3,50 @@
  */
 
 /* MOBILE ONLY BOTTOM NAV (<= 768px) */
-#mobile-bottom-nav {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: var(--topbar-bg);
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  z-index: 500;
-  padding: 0;
-  padding-bottom: env(safe-area-inset-bottom);
-}
-.mbn-items { display: flex; align-items: stretch; }
-.mbn-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px 6px; gap: 3px; cursor: pointer; color: #94a3b8; font-size: 10px; font-weight: 600; text-transform: uppercase; min-height: 56px; border: none; background: none; }
-.mbn-item.active { color: #fff; }
+#mobile-bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--border); z-index: 500; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -4px 12px rgba(0,0,0,0.05); }
+.mbn-items { display: flex; align-items: stretch; height: 56px; }
+.mbn-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; border: none; background: none; transition: color 0.2s; }
+.mbn-item i { font-size: 18px; }
+.mbn-item.active { color: var(--blue); }
 
 /* TABLET (<= 900px) */
 @media(max-width: 900px) {
-  #sidebar { width: 60px; overflow: visible; }
-  .slogo { padding: 14px 10px; justify-content: center; }
-  .slogo > div:last-child { display: none; }
-  .nav-label { display: none; }
-  .kpi-grid { grid-template-columns: repeat(3, 1fr); padding: 14px 16px; }
+  #sidebar { width: 68px; overflow: visible; }
+  .slogo-text, .nav-label, .sprint-status, .sidebar-footer span { display: none; }
+  .slogo { justify-content: center; padding: 15px 0; }
+  .nav-item { justify-content: center; padding: 12px 0; margin: 4px 10px; border-radius: 10px; }
+  .nav-item i { margin: 0; font-size: 20px; }
+  
+  /* Tooltips for retracted sidebar */
+  .nav-item::after { content: attr(data-label); position: absolute; left: 75px; background: #1e293b; color: #fff; padding: 5px 10px; border-radius: 6px; font-size: 12px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 100; }
+  .nav-item:hover::after { opacity: 1; }
+
+  .kpi-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 14px 16px; }
   .db-body { grid-template-columns: 1fr; }
-  .db-right { border-left: none; border-top: 1px solid var(--border); position: static; max-height: none; overflow-y: visible; }
-  .db-topbar { padding: 10px 16px; }
-  .ins-grid { grid-template-columns: 1fr; }
-  .ef-charts-grid { grid-template-columns: 1fr; }
-  .qual-charts-3 { grid-template-columns: 1fr; }
+  .db-right { border-left: none; border-top: 1px solid var(--border); position: static; max-height: none; }
+  
+  .ef-charts-grid, .qual-charts-3 { grid-template-columns: 1fr; }
 }
 
 /* MOBILE (<= 768px) */
 @media(max-width: 768px) {
   #sidebar { display: none; }
   #mobile-bottom-nav { display: block; }
-  #main-content { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
-  .vbox { width: 94vw; padding: 28px 20px; }
-  .kpi-grid { grid-template-columns: repeat(2, 1fr); padding: 12px; }
-  .db-topbar { font-size: 12px; }
+  #main-content { margin-left: 0; padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
+  
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); padding: 12px; gap: 8px; }
+  .kpi-val { font-size: 20px; }
+  
+  .db-topbar { padding: 10px 16px; font-size: 13px; justify-content: space-between; }
+  .db-right { padding: 16px; }
+  
   .modal-overlay { align-items: flex-end; }
-  .modal { width: 100%; max-width: 100%; border-radius: 16px 16px 0 0; max-height: 92vh; }
+  .modal { width: 100%; max-width: 100%; border-radius: 16px 16px 0 0; max-height: 90vh; animation: mSlideUpMob 0.3s ease-out; }
+  @keyframes mSlideUpMob { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  
+  .bl-table { font-size: 12px; }
+  .id-cell, .rem-col { display: none; } /* Hide less critical columns on mobile */
+  
   #toast { bottom: calc(64px + env(safe-area-inset-bottom)); right: 12px; left: 12px; }
-  .toast-item { max-width: 100%; }
 }
+

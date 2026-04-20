@@ -809,23 +809,28 @@ ${Object.keys(s.byActivity).length>0?`<div class="act-panel"><div class="act-tog
 
     // Insights section (async)
     document.getElementById('db-insights').innerHTML = `
-<div class="insights-section">
-  <div class="ins-header">
-    <div class="ins-title">Insights de IA</div>
-    <div style="display:flex;gap:8px">
-      <button class="btn-sm bp" onclick="loadInsights(false)">↻ Mais insights</button>
-      <button class="btn-sm" onclick="fcTogglePanel()">Pergunta</button>
-      <button class="btn-sm br" onclick="clearInsights()">✕ Limpar</button>
-    </div>
-  </div>
-  <div class="ins-grid" id="insights-grid"><div class="spinner-wrap"><div class="spinner"></div>Analisando com IA…</div></div>
-</div>`;
+      <div class="insights-section">
+        <div class="ins-header">
+          <div class="ins-title">Insights da IA</div>
+          <div class="ins-subtitle">Analisando dados do time...</div>
+        </div>
+        <div class="ins-grid" id="insights-grid">
+          <div class="spinner-wrap" style="grid-column: 1/-1; padding: 40px; text-align: center;">
+            <div class="spinner"></div>
+            <div style="margin-top: 12px; color: var(--gray); font-size: 13px;">Analisando com IA…</div>
+          </div>
+        </div>
+      </div>`;
 
     document.getElementById('db-chat').innerHTML = '';
 
-    // Members table
+    // Members table (Premium)
     const allM = new Set([...Object.keys(s.byMember), ...Object.keys(capacity)]);
-    const mRows = [...allM].sort((a,b)=>(s.byMember[b]?.remaining||0)-(s.byMember[a]?.remaining||0)).map(m=>{
+    
+    const mRows = [];
+    const mRowsAcmp = [];
+
+    [...allM].sort((a,b)=>(s.byMember[b]?.remaining||0)-(s.byMember[a]?.remaining||0)).forEach(m=>{
       const bm=s.byMember[m]||{remaining:0,tasksDone:0};
       const cap2=capacity[m]||null;
       const cr=cap2?cap2.capRest:s.bizDays*6;
@@ -833,25 +838,78 @@ ${Object.keys(s.byActivity).length>0?`<div class="act-panel"><div class="act-tog
       const doff=cap2?cap2.daysOffStr||'—':'—';
       const rem=bm.remaining;
       const alloc=cr>0?Math.min(Math.round((rem/cr)*100),999):0;
-      const ac=alloc>100?'#dc2626':alloc>=70?'#16a34a':'#d97706';
-      const bc=alloc>100?'#dc2626':alloc>=70?'#16a34a':'#f59e0b';
+      
+      let barClass = '';
+      if (alloc > 100) barClass = 'over';
+      else if (alloc > 85) barClass = 'warn';
+
       const ini=m.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
-      return `<tr>`+
-        `<td><div class="avatar">${e(ini)}</div></td>`+
-        `<td><div class="mem-name">${e(m)}</div><div class="mem-role">${e(act)}</div></td>`+
-        `<td class="text-center mono">${cr}h${doff&&doff!=='—'?`<div class="daysoff-hint">off: ${e(doff)}</div>`:''}</td>`+
-        `<td class="text-center mono rem-col">${rem}h</td>`+
-        `<td><div style="display:flex;align-items:center;gap:7px"><div class="atrack"><div class="afill" style="width:${Math.min(alloc,100)}%;background:${bc}"></div></div><span class="mono" style="font-size:11px;font-weight:600;color:${ac}">${alloc}%</span></div></td>`+
-        `<td class="text-center mono" style="color:#15803d;font-weight:500">${bm.tasksDone}</td></tr>`;
-    }).join('');
-    document.getElementById('db-members').innerHTML = `
-<div class="members-section">
-  <div class="ins-title" style="margin-bottom:12px">Distribuição por Responsável</div>
-  <table class="mem-table">
-    <thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Membro</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Cap. rest.</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Rem. work</th><th class="sort-th" onclick="sortTbl(this)">% Alocado</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Tasks ✓</th></tr></thead>
-    <tbody>${mRows}</tbody>
-  </table>
-</div>`;
+      const acColor = alloc > 100 ? 'var(--red)' : alloc >= 85 ? 'var(--amber)' : 'var(--blue)';
+      const avatarColors = ['#1d4ed8','#7c3aed','#059669','#d97706','#dc2626','#0891b2'];
+      const bg = avatarColors[m.charCodeAt(0) % avatarColors.length];
+
+      const isAcmp = /scrum master|product owner|tech leader/i.test(act);
+      
+      if (isAcmp) {
+        const acmpHtml = `
+          <div style="display:flex; align-items:center; gap:10px; background:#f8fafc; border:1px solid var(--border); border-radius:30px; padding:6px 16px 6px 6px;">
+            <div class="dist-avt" style="background:${bg}">${e(ini)}</div>
+            <div style="display:flex; flex-direction:column;">
+              <span style="font-weight:600; color:var(--slate); font-size:12px; line-height:1.2;">${e(m)}</span>
+              <span style="font-size:10px; color:var(--gray);">${e(act)}</span>
+            </div>
+          </div>
+        `;
+        mRowsAcmp.push(acmpHtml);
+      } else {
+        const rowHtml = `<tr>`+
+          `<td><div class="dist-avt" style="background:${bg}">${e(ini)}</div></td>`+
+          `<td><div class="dist-name">${e(m)}</div><div style="font-size:11px;color:var(--gray)">${e(act)}</div></td>`+
+          `<td class="text-center mono" style="font-size:12px;color:var(--slate)">${cr}h${doff&&doff!=='—'?`<div style="font-size:9px;color:var(--gray)">off: ${e(doff)}</div>`:''}</td>`+
+          `<td class="text-center mono rem-col" style="font-weight:600">${rem}h</td>`+
+          `<td>`+
+            `<div class="dist-bar-wrap"><div class="dist-bar ${barClass}" style="width:${Math.min(alloc,100)}%"></div></div>`+
+          `</td>`+
+          `<td style="text-align:right">`+
+            `<span class="dist-pct" style="color:${acColor}">${alloc}%</span>`+
+          `</td>`+
+          `<td class="text-center mono" style="color:var(--green);font-weight:700">${bm.tasksDone}</td></tr>`;
+        mRows.push(rowHtml);
+      }
+    });
+
+    let membersHtml = `
+      <div class="members-section" style="padding: 16px 24px;">`;
+
+    if (mRowsAcmp.length > 0) {
+      membersHtml += `
+        <h4 style="margin-bottom: 12px; color: var(--slate); font-size: 14px; font-weight: 600;">Acompanhamento da sprint</h4>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px;">
+          ${mRowsAcmp.join('')}
+        </div>`;
+    }
+
+    membersHtml += `
+        <h3 style="margin-bottom: 12px; color: var(--slate); font-size: 15px; font-weight: 700;">Distribuição por Responsável</h3>
+        <div class="dist-table-wrap">
+          <table class="dist-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Membro</th>
+                <th style="text-align:center">Cap. Rest.</th>
+                <th style="text-align:center">Rem. Work</th>
+                <th>Alocação</th>
+                <th style="text-align:right">% Alocado</th>
+                <th style="text-align:center">Tasks ✓</th>
+              </tr>
+            </thead>
+            <tbody>${mRows.join('')}</tbody>
+          </table>
+        </div>
+      </div>`;
+
+    document.getElementById('db-members').innerHTML = membersHtml;
   },
 
   renderInsightCard(ins) {
