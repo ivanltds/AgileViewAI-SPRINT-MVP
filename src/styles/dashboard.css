@@ -295,3 +295,12 @@
 }
 
 .tl-header-subtle:hover { background: #e2e8f0 !important; color: var(--blue) !important; }
+
+/* Stack Allocation Styles */
+.stack-alloc-section { margin-top: 24px; padding-top: 20px; border-top: 1px dashed var(--border); }
+.stack-alloc-title { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+.stack-row { margin-bottom: 12px; }
+.stack-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 5px; color: var(--slate); font-weight: 500; }
+.stack-bar { height: 6px; background: #f1f5f9; border-radius: 4px; overflow: hidden; position: relative; }
+.stack-fill { height: 100%; border-radius: 4px; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.stack-meta { font-size: 9px; color: var(--gray); margin-top: 3px; }

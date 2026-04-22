@@ -16,8 +16,9 @@ export const DashboardBuilder = {
     
     this.renderTopbar(data, isLoading);
     this.renderKpis(data, isLoading);
-    this.renderBacklog(data, isLoading);
     this.renderProgress(data, isLoading);
+    this.renderTracking(data, isLoading); 
+    this.renderBacklog(data, isLoading);
     this.renderInsights(data, isLoading);
     this.renderMembers(data, isLoading);
     
@@ -304,27 +305,21 @@ export const DashboardBuilder = {
     }
   },
 
-  renderProgress(data, isLoading) {
-    const el = document.getElementById('db-progress');
-    if (!el) return;
-
-    if (isLoading) {
-      el.innerHTML = `
-        <div class="mod-panel-header"><h2 style="margin:0;font-size:18px">🚀 Progresso</h2></div>
-        <div style="padding:40px;text-align:center;color:#64748b;font-size:13px">Calculando velocity...</div>
-      `;
-      return;
-    }
-
-    const { stats: s } = data;
-    const e = this._e.bind(this);
-    
-    const dayOffHtml = (s.dayOffCards || []).slice(0, 3).map(c => `
-      <div class="dayoff-card">
-        <div class="dayoff-date">${c.label}</div>
-        <div class="dayoff-member">${e(c.member)} (${e(c.activity)})</div>
-      </div>
-    `).join('') || '<div class="empty-dayoff">Nenhum day-off programado</div>';
+    const stacks = Object.entries(s.byActivity || {}).filter(([name]) => name !== 'Não definido').map(([name, act]) => {
+      const pct = act.capTotal > 0 ? Math.round((act.remaining / act.capTotal) * 100) : 0;
+      const color = pct > 100 ? '#ef4444' : (pct > 80 ? '#f59e0b' : '#10b981');
+      return `
+        <div class="stack-row">
+          <div class="stack-label">
+            <span>${e(name)}</span>
+            <span>${pct}%</span>
+          </div>
+          <div class="stack-bar">
+            <div class="stack-fill" style="width:${Math.min(pct, 100)}%; background:${color}"></div>
+          </div>
+          <div class="stack-meta">${act.remaining}h / ${act.capTotal}h alocados</div>
+        </div>`;
+    }).join('');
 
     el.innerHTML = `
       <div class="db-card">
@@ -364,8 +359,46 @@ export const DashboardBuilder = {
           <div class="dayoff-cards">
             ${dayOffHtml}
           </div>
+
+          ${stacks ? `
+          <div class="stack-alloc-section">
+            <div class="stack-alloc-title">Alocação por Stack</div>
+            ${stacks}
+          </div>` : ''}
         </div>
       </div>`;
+  },
+
+  renderTracking(data, isLoading) {
+    const el = document.getElementById('db-progress');
+    if (!el || isLoading) return;
+
+    const { stats: s } = data;
+    const e = this._e.bind(this);
+    let track = '';
+
+    Object.entries(data.capacity || {}).forEach(([n, i]) => {
+      const isAcmp = /scrum master|product owner|tech leader|po|tech lead/i.test(i.activity);
+      if (isAcmp) {
+        track += `
+          <div class="atrack">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <strong>${e(n)}</strong>
+              <span class="badge badge-pbi" style="font-size:9px">${e(i.activity)}</span>
+            </div>
+          </div>`;
+      }
+    });
+
+    if (!track) return;
+
+    const trackCard = document.createElement('div');
+    trackCard.className = 'db-card mbr-side';
+    trackCard.innerHTML = `
+      <div class="db-card-hdr">Acompanhamento</div>
+      <div class="tracking-list" style="padding:15px">${track}</div>
+    `;
+    el.appendChild(trackCard);
   },
 
   renderInsights(data, isLoading) {
@@ -403,7 +436,8 @@ export const DashboardBuilder = {
     }
     const { stats, backlog, tasks } = data;
     const e = this._e.bind(this);
-    let rows = '', track = '';
+    let rows = '';
+
     Object.entries(data.capacity || {}).forEach(([n, i]) => {
       const ms = this._getMemberStats(n, data);
       const isAcmp = /scrum master|product owner|tech leader|po|tech lead/i.test(i.activity);
@@ -422,36 +456,23 @@ export const DashboardBuilder = {
             <td style="font-weight:500;text-align:right">${i.capRest}h rest.</td>
           </tr>`;
       }
-      
-      if (isAcmp) track += `
-        <div class="atrack">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <strong>${e(n)}</strong>
-            <span class="badge badge-pbi" style="font-size:9px">${e(i.activity)}</span>
-          </div>
-        </div>`;
     });
+
     el.innerHTML = `
-      <div class="mbr-section">
-        <div class="db-card members-card">
-          <div class="db-card-hdr">Equipe & Alocação</div>
-          <div class="table-container">
-            <table class="mbr-table">
-              <thead>
-                <tr>
-                  <th>Membro</th>
-                  <th>Capacidade</th>
-                  <th style="width:100px">Distribuição</th>
-                  <th>Rem.</th>
-                </tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-          </div>
-        </div>
-        <div class="db-card mbr-side">
-          <div class="db-card-hdr">Acompanhamento</div>
-          <div class="tracking-list" style="padding:15px">${track}</div>
+      <div class="db-card members-card">
+        <div class="db-card-hdr">Equipe & Alocação</div>
+        <div class="table-container">
+          <table class="mbr-table">
+            <thead>
+              <tr>
+                <th>Membro</th>
+                <th>Capacidade</th>
+                <th style="width:120px">Distribuição</th>
+                <th>Rem.</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
         </div>
       </div>`;
   },
