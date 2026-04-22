@@ -21,7 +21,7 @@ export const DataTable = {
     }).join('');
 
     return `
-      <div class="${className}-wrap">
+      <div class="${className}-wrap table-container">
         <table class="${className}">
           <thead><tr>${headHtml}</tr></thead>
           <tbody>${rowsHtml}</tbody>

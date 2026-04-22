@@ -165,10 +165,12 @@ export const DashboardBuilder = {
     el.innerHTML = `
       <div class="db-card">
         <div class="db-card-hdr">Backlog da Sprint (${this._fullItems.length})</div>
-        <table class="bl-table">
-          <thead><tr><th class="sort-th" onclick="DashboardBuilderInstance.sortBacklog(this)">Tipo</th><th class="sort-th" onclick="DashboardBuilderInstance.sortBacklog(this)">ID</th><th class="sort-th" onclick="DashboardBuilderInstance.sortBacklog(this)">Título</th><th class="sort-th" onclick="DashboardBuilderInstance.sortBacklog(this)">Status</th><th>Executores</th><th>Block</th><th class="sort-th" onclick="DashboardBuilderInstance.sortBacklog(this)">Progresso</th></tr></thead>
-          <tbody id="bl-tbody">${rows}${this._lazyData.items.length > 0 ? '<tr id="bl-sentinel"><td colspan="7" style="height:20px;text-align:center;font-size:10px;color:#94a3b8;opacity:0.5">Carregando mais...</td></tr>' : ''}</tbody>
-        </table>
+        <div class="table-container">
+          <table class="bl-table">
+            <thead><tr><th class="sort-th" onclick="DashboardBuilderInstance.sortBacklog(this)">Tipo</th><th class="sort-th" onclick="DashboardBuilderInstance.sortBacklog(this)">ID</th><th class="sort-th" onclick="DashboardBuilderInstance.sortBacklog(this)">Título</th><th class="sort-th" onclick="DashboardBuilderInstance.sortBacklog(this)">Status</th><th>Executores</th><th>Block</th><th class="sort-th" onclick="DashboardBuilderInstance.sortBacklog(this)">Progresso</th></tr></thead>
+            <tbody id="bl-tbody">${rows}${this._lazyData.items.length > 0 ? '<tr id="bl-sentinel"><td colspan="7" style="height:20px;text-align:center;font-size:10px;color:#94a3b8;opacity:0.5">Carregando mais...</td></tr>' : ''}</tbody>
+          </table>
+        </div>
       </div>`;
 
     if (this._lazyData.items.length > 0) {
@@ -431,14 +433,21 @@ export const DashboardBuilder = {
     });
     el.innerHTML = `
       <div class="mbr-section">
-        <div class="db-card mbr-main">
-          <div class="db-card-hdr">Membros</div>
-          <table class="mbr-table">
-            <thead>
-              <tr><th>Membro</th><th>Papel</th><th>Carga de Trabalho</th><th style="text-align:right">Disponível</th></tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
+        <div class="db-card members-card">
+          <div class="db-card-hdr">Equipe & Alocação</div>
+          <div class="table-container">
+            <table class="mbr-table">
+              <thead>
+                <tr>
+                  <th>Membro</th>
+                  <th>Capacidade</th>
+                  <th style="width:100px">Distribuição</th>
+                  <th>Rem.</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
         </div>
         <div class="db-card mbr-side">
           <div class="db-card-hdr">Acompanhamento</div>

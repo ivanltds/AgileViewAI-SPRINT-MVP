@@ -251,5 +251,21 @@
 .kpi-tip-box { display: none; position: fixed; background: #1e293b; color: #f1f5f9; font-size: 11px; font-weight: 400; line-height: 1.55; padding: 9px 11px; border-radius: 7px; white-space: normal; width: 230px; z-index: 9999; box-shadow: 0 6px 18px rgba(0,0,0,0.35); pointer-events: none; text-align: left; }
 .kpi-tip:hover .kpi-tip-box { display: block; }
 
+/* Table Responsiveness */
+.table-container { 
+  width: 100%; 
+  overflow-x: auto; 
+  -webkit-overflow-scrolling: touch; 
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--border);
+}
+
+.table-container table {
+  min-width: 600px; /* Force scroll on small containers */
+  width: 100%;
+  border-collapse: collapse;
+}
 
 .tl-header-subtle:hover { background: #e2e8f0 !important; color: var(--blue) !important; }
