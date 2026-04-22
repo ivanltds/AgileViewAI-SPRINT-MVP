@@ -8,19 +8,69 @@ import { Vault } from './vault.js';
 
 const RealStore = {
   data: {},
+  _mem: {},
   _listeners: {},
 
+  _optimizeSprintData(data) {
+    if (!data) return data;
+    const clean = JSON.parse(JSON.stringify(data)); // Deep clone
+    if (clean.backlog) {
+      clean.backlog = clean.backlog.map(i => {
+        const { _raw, metadata, _links, ...rest } = i;
+        return rest;
+      });
+    }
+    if (clean.tasks) {
+      clean.tasks = clean.tasks.map(t => {
+        const { _raw, metadata, _links, ...rest } = t;
+        return rest;
+      });
+    }
+    return clean;
+  },
+
   _g(k, d = []) {
+    // Preferência para a versão em memória se ela existir (mais recente em caso de erro de cota)
+    if (this._mem[k] !== undefined) return this._mem[k];
+    
     try { 
-      return JSON.parse(localStorage.getItem(k)) ?? d; 
+      const v = localStorage.getItem(k);
+      return (v !== null) ? JSON.parse(v) : d; 
     } catch { 
       return d; 
     }
   },
   _s(k, v) { 
-    localStorage.setItem(k, JSON.stringify(v)); 
-    this._emit('update', { key: k, value: v });
-    this._emit(`update:${k}`, v);
+    let finalValue = v;
+    if (k === 'avai_sprint_cache') {
+      finalValue = this._optimizeSprintData(v);
+    }
+
+    try {
+      localStorage.setItem(k, JSON.stringify(finalValue)); 
+    } catch (e) {
+      console.warn(`[Store] Failed to save "${k}" to localStorage:`, e.name);
+      
+      if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+        // Tentativa de limpeza suave para liberar espaço
+        console.info('[Store] Quota exceeded. Attempting soft cleanup...');
+        localStorage.removeItem('avai_insights');
+        localStorage.removeItem('avai_backlog');
+        
+        try {
+          localStorage.setItem(k, JSON.stringify(finalValue));
+          console.info(`[Store] Retried saving "${k}" after cleanup: SUCCESS`);
+        } catch (e2) {
+          console.error(`[Store] Still failing to save "${k}" to localStorage. Falling back to memory.`);
+          this._mem[k] = finalValue;
+        }
+      } else {
+        this._mem[k] = finalValue;
+      }
+    }
+    
+    this._emit('update', { key: k, value: finalValue });
+    this._emit(`update:${k}`, finalValue);
   },
 
   on(ev, cb) {
@@ -41,8 +91,27 @@ const RealStore = {
   },
   
   init() {},
-  clear() { localStorage.clear(); },
+  clear() { 
+    localStorage.clear(); 
+    this._mem = {};
+  },
+  clearMemory() {
+    this._mem = {};
+  },
   
+  getStorageStatus() {
+    let total = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        total += localStorage.getItem(k).length * 2; // UTF-16
+    }
+    return {
+        usedBytes: total,
+        usedKB: Math.round(total / 1024),
+        memKeys: Object.keys(this._mem),
+        quotaLimit: '5MB (est.)'
+    };
+  },
   getTeams() { 
     const t = this._g('avai_teams'); 
     return Array.isArray(t) ? t : [];

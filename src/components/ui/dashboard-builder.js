@@ -82,6 +82,7 @@ export const DashboardBuilder = {
           <span class="db-sprint-name">${e(sprintLabel)}</span>
         </span>
         ${(sp?.bizDaysLeft || 0) > 0 ? `<span class="days-pill">${sp.bizDaysLeft} dias</span>` : ''}
+        ${data.syncedAt ? `<span style="font-size:11px;color:#94a3b8;margin-left:8px">Sincronizado: ${new Date(data.syncedAt).toLocaleString()}</span>` : ''}
       </div>
     `;
 
