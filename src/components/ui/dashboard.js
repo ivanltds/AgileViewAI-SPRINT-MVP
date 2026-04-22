@@ -54,9 +54,21 @@ export const Dashboard = {
       
       if (isLoading) {
         if (activeTeam) {
-           DashboardBuilder.render({ team: activeTeam, stats: {} });
+          DashboardBuilder.render({ team: activeTeam, stats: {} });
         } else {
-           panel.innerHTML = '<div class="mod-empty"><div class="mod-empty-icon">⚠️</div><h3>Nenhum time ativo</h3><p>Selecione um time no menu superior ou na aba Times.</p></div>';
+          // If no active team, show a refined empty state
+          // We check for db-no-data to avoid overwriting if legacy wants to show it
+          const elNoData = document.getElementById('db-no-data');
+          if (elNoData) {
+            elNoData.style.display = '';
+            // Hide other dynamic parts
+            ['db-kpis', 'db-progress', 'db-members', 'db-backlog', 'db-insights'].forEach(id => {
+              const el = document.getElementById(id);
+              if (el) el.innerHTML = '';
+            });
+          } else {
+            panel.innerHTML = '<div class="mod-empty"><div class="mod-empty-icon">⚠️</div><h3>Nenhum time ativo</h3><p>Selecione um time no menu superior ou na aba Times.</p></div>';
+          }
         }
         return;
       }

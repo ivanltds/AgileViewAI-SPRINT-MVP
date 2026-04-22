@@ -1559,17 +1559,22 @@ function launchApp() {
     APP.sprintData = cache;
     loadInsights(true);
   } else {
-    document.getElementById('db-no-data').style.display = '';
+    const elNoData = document.getElementById('db-no-data');
+    if (elNoData) elNoData.style.display = '';
   }
   if (Store.getActiveTeamId()) runSync();
   setTimeout(renderDashTeamSel, 0);
-  // Update vault button label on overlay
+
+  // Update vault button label on overlay with safety checks
+  const vbtn = document.getElementById('vbtn');
+  const vsub = document.getElementById('vsub');
+
   if (Vault.isSetup()) {
-    document.getElementById('vbtn').textContent = 'Entrar';
-    document.getElementById('vsub').textContent = 'Digite seu PIN para desbloquear';
+    if (vbtn) vbtn.textContent = 'Entrar';
+    if (vsub) vsub.textContent = 'Digite seu PIN para desbloquear';
   } else {
-    document.getElementById('vbtn').textContent = 'Criar vault';
-    document.getElementById('vsub').textContent = 'Crie um PIN para proteger seus tokens';
+    if (vbtn) vbtn.textContent = 'Criar vault';
+    if (vsub) vsub.textContent = 'Crie um PIN para proteger seus tokens';
   }
 }
 
