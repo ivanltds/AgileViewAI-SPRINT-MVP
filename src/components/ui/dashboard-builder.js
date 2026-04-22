@@ -385,8 +385,8 @@ export const DashboardBuilder = {
     const pct = total > 0 ? Math.round((allocated / total) * 100) : 0;
     let color = 'var(--blue)'; // Default
     if (pct > 100) color = '#ef4444'; // Red
-    else if (pct > 80) color = '#f59e0b'; // Amber
-    else color = '#10b981'; // Green
+    else if (pct > 70) color = '#10b981'; // Green
+    else color = '#f59e0b'; // Yellow (1-70)
     return { allocated, total, pct, color };
   },
 
@@ -403,22 +403,24 @@ export const DashboardBuilder = {
     let rows = '', track = '';
     Object.entries(data.capacity || {}).forEach(([n, i]) => {
       const ms = this._getMemberStats(n, data);
-      const isM = ['Scrum Master', 'PO', 'Tech Lead'].includes(i.activity);
+      const isAcmp = /scrum master|product owner|tech leader|po|tech lead/i.test(i.activity);
       
-      rows += `
-        <tr class="mbr-row">
-          <td><div style="font-weight:600">${e(n)}</div></td>
-          <td><span style="color:#64748b;font-size:12px">${e(i.activity)}</span></td>
-          <td>
-            <div class="dist-bar-wrap">
-              <div class="dist-bar-fill" style="width:${Math.min(stats.pct, 100)}%; background:${stats.color}"></div>
-            </div>
-            <div style="font-size:10px;margin-top:4px;color:#94a3b8">${stats.pct}% alocado (${stats.allocated}h / ${stats.total}h)</div>
-          </td>
-          <td style="font-weight:500;text-align:right">${i.capRest}h rest.</td>
-        </tr>`;
+      if (!isAcmp) {
+        rows += `
+          <tr class="mbr-row">
+            <td><div style="font-weight:600">${e(n)}</div></td>
+            <td><span style="color:#64748b;font-size:12px">${e(i.activity)}</span></td>
+            <td>
+              <div class="dist-bar-wrap">
+                <div class="dist-bar-fill" style="width:${Math.min(ms.pct, 100)}%; background:${ms.color}"></div>
+              </div>
+              <div style="font-size:10px;margin-top:4px;color:#94a3b8">${ms.pct}% alocado (${ms.allocated}h / ${ms.total}h)</div>
+            </td>
+            <td style="font-weight:500;text-align:right">${i.capRest}h rest.</td>
+          </tr>`;
+      }
       
-      if (isM) track += `
+      if (isAcmp) track += `
         <div class="atrack">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <strong>${e(n)}</strong>
