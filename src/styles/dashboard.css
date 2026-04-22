@@ -13,7 +13,7 @@
 .days-pill { background: #16a34a; color: #fff; border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 600; }
 .days-pill.ended { background: var(--red); }
 
-.kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; padding: 16px 24px; }
+.kpi-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; padding: 16px 24px; }
 .kpi-card { 
   background: var(--card-bg); 
   border: 1px solid var(--border); 
@@ -159,6 +159,32 @@
 .mbr-table th { text-align: left; padding: 12px 6px; font-size: 11px; color: var(--gray); font-weight: 600; border-bottom: 2px solid var(--border); text-transform: uppercase; }
 .mbr-table td { padding: 16px 6px; border-bottom: 1px solid var(--border); vertical-align: middle; }
 .mbr-row:hover { background: #f8fafc; }
+
+/* Global Dashboard Card Classes */
+.db-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02);
+  margin-bottom: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.db-card-hdr {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--slate);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
 .dist-bar-wrap { 
   width: 100%; 

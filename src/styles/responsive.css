@@ -12,6 +12,8 @@
 /* TABLET (<= 900px) */
 @media(max-width: 900px) {
   #sidebar { width: 68px; overflow: visible; }
+  #main-content { margin-left: 0; } /* On tablet we treat it like mobile or adjust layout */
+  
   .slogo-text, .nav-label, .sprint-status, .sidebar-footer span { display: none; }
   .slogo { justify-content: center; padding: 15px 0; }
   .nav-item { justify-content: center; padding: 12px 0; margin: 4px 10px; border-radius: 10px; }
@@ -21,13 +23,12 @@
   .nav-item::after { content: attr(data-label); position: absolute; left: 75px; background: #1e293b; color: #fff; padding: 5px 10px; border-radius: 6px; font-size: 12px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 100; }
   .nav-item:hover::after { opacity: 1; }
   
-  /* KPI Grid: Quartet + Trio for 7 items */
+  /* KPI Grid: Waterfall logic */
   .kpi-grid { 
     grid-template-columns: repeat(4, 1fr) !important; 
     gap: 12px; 
     padding: 14px 16px; 
   }
-  /* If exactly 7, last 3 items remain in second row */
   
   .db-body { grid-template-columns: 1fr; }
   .db-right { border-left: none; border-top: 1px solid var(--border); position: static; max-height: none; }
@@ -40,15 +41,20 @@
     gap: 20px !important; 
     padding: 16px !important; 
     width: 100% !important; 
+    max-width: 100% !important;
     box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow: hidden !important;
   }
   .db-left, .db-right, .mbr-main, .mbr-side { 
     width: 100% !important; 
     min-width: 0 !important; 
     max-width: 100% !important; 
     flex: 1 1 100% !important;
+    margin: 0 !important;
   }
-  .mbr-side { border-top: 1px solid var(--border); padding-top: 20px; }
+  .mbr-side { border-top: 1px solid var(--border); padding-top: 20px; box-shadow: none !important; }
   
   /* Table Responsiveness overrides */
   .bl-table-wrap, .mbr-table-wrap, .table-container { 
@@ -59,13 +65,27 @@
   }
 }
 
+/* TABLET SMALL (<= 1024px) */
+@media(max-width: 1024px) {
+  .kpi-grid { 
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 12px !important;
+  }
+  .kpi-card {
+    flex: 1 1 calc(33.33% - 12px) !important;
+    min-width: 200px !important;
+  }
+}
+
 /* MOBILE (<= 768px) */
 @media(max-width: 768px) {
   #sidebar { display: none; }
   #mobile-bottom-nav { display: block; }
   #main-content { margin-left: 0; padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
   
-  /* KPI Grid: Pairs + Final spanning full width if odd */
+  /* KPI Grid: Pairs + Final spanning full width */
   .kpi-grid { 
     grid-template-columns: repeat(2, 1fr) !important; 
     padding: 12px; 
