@@ -4246,4 +4246,37 @@ function init() {
   setTimeout(()=>document.getElementById('vpin')?.focus(), 100);
 }
 
-// DO NOT BOOT TWICE
+// ── EXPORT GLOBALS (Vite/ESM Compatibility) ──────────────────────────
+if (typeof window !== 'undefined') {
+  Object.assign(window, {
+    // Core Objects
+    APP, Vault, Store,
+    // Navigation & UI Panels
+    showPanel, showModule, showTrainingTab, toggleDashTeamDd, onDashTeamChange,
+    // Modals
+    openModal, closeModal, openTeamModal, openOrgModal, openLlmModal, openRagModal, 
+    changeVaultMode, changePinModal, 
+    // Actions & Feature Runners
+    saveTeam, saveOrg, saveLlm, saveRag, deleteTeam, deleteOrg, deleteLlm, deleteRag,
+    activateTeam, activateLlm, onOrgSelChange, onRfScopeChange, selRagType, 
+    editTeam,
+    // Sync, Import & Export
+    handleSync, runSync, handleImport, exportConfig, downloadDashboardHtml, 
+    clearVault, clearAll,
+    // Analytics Modules
+    loadEficienciaFilter, runEficiencia, toggleEfSprintDd, _updateEfSprintGraphCount,
+    runQualidade, runQualidadeLLM,
+    // Eficiência Backlog Table & Filters
+    applyEfBacklogFilters, toggleEfDd, toggleEfDdAll, runEficienciaBacklogTable,
+    // Floating Chat (AI Assistant)
+    fcTogglePanel, fcNewConv, fcToggleSidebar, fcKeyDown, fcSend,
+    // Initialization & Toast
+    toast, vaultTab, vaultAction, vaultSessionStart, launchApp, init
+  });
+
+  // Self-init if called as regular script
+  if (!window.AVAI_MANUAL_INIT) {
+    window.addEventListener('DOMContentLoaded', init);
+  }
+}
+
