@@ -14,6 +14,7 @@ export const ChatUI = {
     this.isOpen = false;
     this.messages = [];
     this.renderBase();
+    this.renderSidebar();
     this.setupEvents();
   },
 
@@ -35,11 +36,12 @@ export const ChatUI = {
         <button class="fc-hbtn" id="fc-close">×</button>
       </div>
       <div class="fc-body">
+        <div class="fc-sidebar" id="fc-sidebar"></div>
         <div class="fc-messages" id="fc-messages">
           <div class="fc-welcome">Como posso ajudar seu time hoje?</div>
         </div>
       </div>
-      <div class="fc-input-area">
+      <div class="fc-input-area" style="flex-shrink:0">
         <textarea class="fc-textarea" id="fc-textarea" placeholder="Pergunte sobre a sprint..."></textarea>
         <button class="fc-send-btn" id="fc-send">➤</button>
       </div>
@@ -71,8 +73,38 @@ export const ChatUI = {
     const panel = document.getElementById('fc-panel');
     panel.classList.toggle('open', this.isOpen);
     if (this.isOpen) {
+      this.renderSidebar();
       document.getElementById('fc-textarea').focus();
     }
+  },
+
+  renderSidebar() {
+    const sidebar = document.getElementById('fc-sidebar');
+    if (!sidebar) return;
+    const convs = Store.getChatConvs();
+    if (!convs.length) {
+      sidebar.innerHTML = '<div style="padding:15px;color:var(--gray);font-size:11px">Sem histórico</div>';
+      return;
+    }
+    sidebar.innerHTML = convs.reverse().map(c => `
+      <div class="fc-conv-item" onclick="ChatUI.openConv('${c.id}')">
+        <div style="font-weight:600;margin-bottom:2px">${c.title || 'Nova conversa'}</div>
+        <div style="opacity:0.6;font-size:10px">${new Date(c.createdAt).toLocaleDateString()}</div>
+      </div>
+    `).join('');
+  },
+
+  openConv(id) {
+    const convs = Store.getChatConvs();
+    const conv = convs.find(c => c.id === id);
+    if (!conv) return;
+    
+    this.currentConvId = id;
+    const msgEl = document.getElementById('fc-messages');
+    msgEl.innerHTML = '';
+    conv.messages.forEach(m => this.addMessage(m.role, m.content));
+    
+    if (!this.isOpen) this.toggle();
   },
 
   async sendMessage() {

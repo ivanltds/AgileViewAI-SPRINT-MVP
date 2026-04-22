@@ -7,6 +7,9 @@ import { AppState } from './app-state.js';
 import { Vault } from './vault.js';
 
 const RealStore = {
+  data: {},
+  _listeners: {},
+
   _g(k, d = []) {
     try { 
       return JSON.parse(localStorage.getItem(k)) ?? d; 
@@ -16,18 +19,46 @@ const RealStore = {
   },
   _s(k, v) { 
     localStorage.setItem(k, JSON.stringify(v)); 
+    this._emit('update', { key: k, value: v });
+    this._emit(`update:${k}`, v);
+  },
+
+  on(ev, cb) {
+    if (!this._listeners[ev]) this._listeners[ev] = [];
+    this._listeners[ev].push(cb);
+  },
+
+  off(ev, cb) {
+    if (!this._listeners[ev]) return;
+    this._listeners[ev] = this._listeners[ev].filter(l => l !== cb);
+  },
+
+  _emit(ev, data) {
+    if (!this._listeners[ev]) return;
+    this._listeners[ev].forEach(cb => {
+      try { cb(data); } catch (e) { console.error(`[Store] Error in listener for ${ev}:`, e); }
+    });
   },
   
   init() {},
   clear() { localStorage.clear(); },
   
-  getTeams() { return this._g('avai_teams'); },
+  getTeams() { 
+    const t = this._g('avai_teams'); 
+    return Array.isArray(t) ? t : [];
+  },
   saveTeams(v) { this._s('avai_teams', v); },
   
-  getOrgs() { return this._g('avai_orgs'); },
+  getOrgs() { 
+    const o = this._g('avai_orgs');
+    return Array.isArray(o) ? o : [];
+  },
   saveOrgs(v) { this._s('avai_orgs', v); },
   
-  getLlmList() { return this._g('avai_llm'); },
+  getLlmList() { 
+    const l = this._g('avai_llm');
+    return Array.isArray(l) ? l : [];
+  },
   saveLlmList(v) { this._s('avai_llm', v); },
   
   getRagList() { return this._g('avai_rag'); },
@@ -54,11 +85,26 @@ const RealStore = {
   setInsights(v) { this._s('avai_insights', v); },
   
   getActiveTeamId() { return localStorage.getItem('avai_active_team') || null; },
-  setActiveTeamId(id) { localStorage.setItem('avai_active_team', id); },
+  setActiveTeamId(id) { 
+    const current = localStorage.getItem('avai_active_team');
+    if (current !== id) {
+      localStorage.setItem('avai_active_team', id);
+      // Limpeza atômica de cache para evitar vazamento de dados entre times
+      localStorage.removeItem('avai_sprint_cache');
+      localStorage.removeItem('avai_backlog');
+      localStorage.removeItem('avai_insights');
+      
+      // Notifica os componentes ESM imediatamente
+      this._emit('update:avai_sprint_cache', null);
+      console.log(`[Store] Active team changed to ${id}. Caches cleared.`);
+    }
+  },
   
   getActiveTeam() { 
     const id = this.getActiveTeamId(); 
-    return id ? this.getTeams().find(t => t.id === id) || null : null; 
+    const teams = this.getTeams();
+    if (!id || !Array.isArray(teams)) return null;
+    return teams.find(t => t.id === id) || null; 
   },
   
   async getActivePat() {
@@ -74,11 +120,21 @@ const RealStore = {
       return tokens.teams[t.id] || (t.orgId && tokens.orgs[t.orgId]) || null;
     }
     if (t.patEnc) {
-      const dec = await Vault.decryptToken(t.patEnc);
-      return dec === t.patEnc ? null : dec; // Se retornou o mesmo, não decriptou
+      if (mode === 'session' || t.patEnc.startsWith('mock-')) return t.patEnc;
+      try {
+        const dec = await Vault.decryptToken(t.patEnc);
+        return dec === t.patEnc ? null : dec;
+      } catch (e) {
+        console.warn('[Store] Decryption failed, returning null', e);
+        return null;
+      }
     }
-    if (t.orgId) {
-      const org = this.getOrgs().find(o => o.id === t.orgId);
+    if (t.orgId || t.org) {
+      let org = this.getOrgs().find(o => String(o.id) === String(t.orgId));
+      if (!org && t.org) {
+        org = this.getOrgs().find(o => o.name === t.org);
+        if (org) console.info(`[Store] Fallback found for team "${t.name}" via org name "${t.org}"`);
+      }
       if (org?.patEnc) {
         const dec = await Vault.decryptToken(org.patEnc);
         return dec === org.patEnc ? null : dec;
@@ -115,12 +171,11 @@ const RealStore = {
   saveAgentPrompts(v) { this._s('avai_agent_prompts', v); }
 };
 
-// Exporta um Proxy que prefere o Mock Global se existir (para testes Jest)
-export const Store = new Proxy(RealStore, {
-  get(target, prop) {
-    if (globalThis.Store !== undefined && globalThis.Store !== null && globalThis.Store[prop] !== undefined) {
-      return globalThis.Store[prop];
-    }
-    return target[prop];
-  }
-});
+// Exporta o Store modular como a única fonte de verdade
+export const Store = RealStore;
+
+// Ponte agressiva para substituir o Store legado no window
+if (typeof window !== 'undefined') {
+  window.Store = RealStore;
+  console.log('[Store] Modular store has taken control of window.Store');
+}

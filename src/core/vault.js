@@ -4,7 +4,9 @@
  */
 
 import { AppState } from './app-state.js';
-import { Store } from './store.js';
+
+// Observação: Não importamos Store aqui para evitar dependência circular.
+// Referências ao Store dentro de RealVault foram alteradas para window.Store.
 
 const RealVault = {
   async deriveKey(pin, saltBuf) {
@@ -68,47 +70,54 @@ const RealVault = {
   },
 
   async encryptToken(plain) {
-    const key = AppState.vaultKey;
-    if (!key) return plain;
+    const key = AppState.vaultKey || window.AVAI_VAULT_KEY;
+    if (!key || plain?.startsWith('mock-')) return plain;
     return this.encrypt(key, plain);
   },
 
   async decryptToken(cipher) {
-    const key = AppState.vaultKey;
-    if (!key) return cipher;
+    const key = AppState.vaultKey || window.AVAI_VAULT_KEY;
+    if (!cipher) return null;
+    if (cipher.startsWith('mock-')) return cipher;
+    if (!key) return null;
     try {
       return await this.decrypt(key, cipher);
     } catch {
-      return '';
+      return null;
     }
   },
 
   async reencryptAll(oldKey, newKey) {
-    const teams = Store.getTeams();
+    if (!window.Store) {
+      console.warn('[Vault] Cannot reencryptAll: window.Store not found.');
+      return;
+    }
+    const teams = window.Store.getTeams();
     for (const t of teams) {
       if (t.patEnc) {
         const plain = await this.decrypt(oldKey, t.patEnc);
         t.patEnc = await this.encrypt(newKey, plain);
       }
     }
-    Store.saveTeams(teams);
+    window.Store.saveTeams(teams);
 
-    const llms = Store.getLlmList();
+    const llms = window.Store.getLlmList();
     for (const l of llms) {
       if (l.tokenEnc) {
         const plain = await this.decrypt(oldKey, l.tokenEnc);
         l.tokenEnc = await this.encrypt(newKey, plain);
       }
     }
-    Store.saveLlmList(llms);
+    window.Store.saveLlmList(llms);
   }
 };
 
 // Exporta um Proxy que prefere o Mock Global se existir (para testes Jest)
 export const Vault = new Proxy(RealVault, {
   get(target, prop) {
-    if (globalThis.Vault !== undefined && globalThis.Vault !== null && globalThis.Vault[prop] !== undefined) {
-      return globalThis.Vault[prop];
+    const external = globalThis.Vault;
+    if (external && external !== Vault && external[prop] !== undefined) {
+      return external[prop];
     }
     return target[prop];
   }

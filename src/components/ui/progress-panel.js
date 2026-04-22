@@ -13,10 +13,13 @@ export const ProgressPanel = {
    * @param {Object} capacityInfo - Informações de capacidade da iteração.
    */
   render(container, backlog, capacityInfo) {
+    if (!container) return;
     if (!backlog || backlog.length === 0) {
       container.innerHTML = '';
       return;
     }
+
+    const _cap = capacityInfo || {};
 
     // Calcula os totais baseados nos itens do backlog (Original Estimate vs Completed Work / Remaining)
     let totalEstimate = 0;
@@ -25,8 +28,8 @@ export const ProgressPanel = {
 
     backlog.forEach(item => {
       const f = item.fields || {};
-      const est = f['Microsoft.VSTS.Scheduling.OriginalEstimate'] || 0;
-      const rem = f['Microsoft.VSTS.Scheduling.RemainingWork'] || 0;
+      const est = f['Microsoft.VSTS.Scheduling.OriginalEstimate'] || item.estimativa || 0;
+      const rem = f['Microsoft.VSTS.Scheduling.RemainingWork'] || item.childRem || 0;
       const assigned = f['System.AssignedTo'] ? f['System.AssignedTo'].displayName : 'Não Atribuído';
       
       totalEstimate += est;
@@ -79,11 +82,13 @@ export const ProgressPanel = {
     Object.values(memberStats).forEach(m => {
       if (m.estimate === 0 && m.name === 'Não Atribuído') return;
       
-      const mDone = m.estimate - m.remaining;
-      const mPct = m.estimate > 0 ? Math.round((m.remaining / (capacityInfo[m.name]?.capRest || m.estimate || 1)) * 100) : 0;
+      const capM = _cap[m.name] || {};
+      const capRest = capM.capRest || 0;
+      const mPct = capRest > 0 ? Math.round((m.remaining / capRest) * 100) : (m.estimate > 0 ? Math.round((m.remaining / m.estimate) * 100) : 0);
+      
       const initials = Helpers.initials(m.name);
-      const color = avatarColors[m.name.charCodeAt(0) % avatarColors.length];
-      const act = capacityInfo[m.name]?.activity || '—';
+      const color = avatarColors[Math.abs(m.name.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0)) % avatarColors.length];
+      const act = capM.activity || 'Desenvolvedor';
       
       let barClass = '';
       if (mPct > 100) barClass = 'over';
@@ -100,7 +105,7 @@ export const ProgressPanel = {
             <div style="font-size:11px;color:var(--gray)">${act}</div>
           </td>
           <td class="text-center mono" style="font-size:12px;color:var(--slate)">
-            ${Helpers.formatHours(capacityInfo[m.name]?.capRest || 0)}h
+            ${Helpers.formatHours(capRest)}h
           </td>
           <td class="text-center mono rem-col" style="font-weight:600">
             ${Helpers.formatHours(m.remaining)}h
@@ -139,8 +144,7 @@ export const ProgressPanel = {
           ${rowsAcmp}
         </div>
       `;
-      // Insert acmpSection right before the h3 of "Distribuição por Responsável"
-      html = html.replace('<h3 style="margin-bottom: 12px; color: var(--slate); font-size: 15px; font-weight: 700;">Distribuição por Responsável</h3>', acmpSection + '<h3 style="margin-bottom: 12px; color: var(--slate); font-size: 15px; font-weight: 700;">Distribuição por Responsável</h3>');
+      html = html.replace('Distribuição por Responsável</h3>', 'Distribuição por Responsável</h3>' + acmpSection);
     }
 
     html += rowsTeam;

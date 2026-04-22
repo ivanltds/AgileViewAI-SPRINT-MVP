@@ -4,7 +4,7 @@
 // ═══════════════════════════════════════════════════════════════════
 
 // ── APP STATE ───────────────────────────────────────────────────────
-const APP = {
+var APP = {
   vaultKey: null, vaultMode: null,
   sprintData: null, insightCards: [], syncRunning: false,
   allIterations: [],
@@ -17,7 +17,7 @@ const APP = {
 };
 
 // ── VAULT (AES-256-GCM + PBKDF2) ───────────────────────────────────
-const Vault = {
+var Vault = {
   async deriveKey(pin, saltBuf) {
     const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveKey']);
     return crypto.subtle.deriveKey({ name:'PBKDF2', salt:saltBuf, iterations:600000, hash:'SHA-256' }, km, { name:'AES-GCM', length:256 }, false, ['encrypt','decrypt']);
@@ -52,12 +52,24 @@ const Vault = {
     try { return (await this.decrypt(key, check)) === 'avai_ok' ? key : null; } catch { return null; }
   },
   async encryptToken(plain) {
-    if (!APP.vaultKey) return plain;
-    return this.encrypt(APP.vaultKey, plain);
+    const key = window.AVAI_VAULT_KEY || APP.vaultKey || (window.AppState ? window.AppState.vaultKey : null);
+    if (!key || plain?.startsWith('mock-')) return plain;
+    return this.encrypt(key, plain);
   },
   async decryptToken(cipher) {
-    if (!APP.vaultKey) return cipher;
-    try { return await this.decrypt(APP.vaultKey, cipher); } catch { return ''; }
+    const key = window.AVAI_VAULT_KEY || APP.vaultKey || (window.AppState ? window.AppState.vaultKey : null);
+    if (cipher?.startsWith('mock-')) return cipher;
+    if (!key) {
+      console.warn('[Vault-Legacy] Decryption skipped: No Key available');
+      return null;
+    }
+    try { 
+      const decrypted = await this.decrypt(key, cipher);
+      return decrypted;
+    } catch (e) { 
+      console.error('[Vault-Legacy] Decryption error (Invalid Key?):', e);
+      return null; 
+    }
   },
   // Re-encrypt all stored tokens with a new key
   async reencryptAll(oldKey, newKey) {
@@ -75,12 +87,18 @@ const Vault = {
 };
 
 // ── STORAGE (localStorage) ──────────────────────────────────────────
-const Store = {
+var Store = {
   _g(k, d=[]) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
   _s(k, v)    { localStorage.setItem(k, JSON.stringify(v)); },
-  getTeams()         { return this._g('avai_teams'); },
+  getTeams()         { 
+    const t = this._g('avai_teams');
+    return Array.isArray(t) ? t : [];
+  },
   saveTeams(v)       { this._s('avai_teams', v); },
-  getOrgs()          { return this._g('avai_orgs'); },
+  getOrgs()          { 
+    const o = this._g('avai_orgs');
+    return Array.isArray(o) ? o : [];
+  },
   saveOrgs(v)        { this._s('avai_orgs', v); },
   getLlmList()       { return this._g('avai_llm'); },
   saveLlmList(v)     { this._s('avai_llm', v); },
@@ -96,18 +114,35 @@ const Store = {
   saveSprintCache(v) { this._s('avai_sprint_cache', v); },
   getActiveTeamId()  { return localStorage.getItem('avai_active_team') || null; },
   setActiveTeamId(id){ localStorage.setItem('avai_active_team', id); },
-  getActiveTeam()    { const id = this.getActiveTeamId(); return id ? this.getTeams().find(t => t.id === id) || null : null; },
+  getActiveTeam()    { 
+    const id = this.getActiveTeamId(); 
+    const teams = this.getTeams();
+    if (!id || !Array.isArray(teams)) return null;
+    return teams.find(t => t.id === id) || null; 
+  },
   async getActivePat() {
     const t = this.getActiveTeam(); if (!t) return null;
     if (APP.vaultMode === 'session') {
       return APP.sessionTokens.teams[t.id] || (t.orgId && APP.sessionTokens.orgs[t.orgId]) || null;
     }
-    if (t.patEnc) return Vault.decryptToken(t.patEnc);
-    if (t.orgId) {
-      const org = this.getOrgs().find(o => o.id === t.orgId);
-      if (org?.patEnc) return Vault.decryptToken(org.patEnc);
+    let pat = t.patEnc ? await Vault.decryptToken(t.patEnc) : null;
+    if (!pat && (t.orgId || t.org)) {
+      let org = this.getOrgs().find(o => String(o.id) === String(t.orgId));
+      if (!org && t.org) {
+        org = this.getOrgs().find(o => o.name === t.org);
+        if (org) console.info(`[Store-Legacy] Fallback found for team "${t.name}" via org name "${t.org}"`);
+      }
+      if (org?.patEnc) {
+        console.log('[Store-Legacy] PAT not found in team, using Org level fallback');
+        pat = await Vault.decryptToken(org.patEnc);
+      }
     }
-    return null;
+    
+    if (t.patEnc && !pat) {
+      console.warn('[Store-Legacy] Vault seems locked or decryption failed for this team.');
+    }
+    
+    return pat;
   },
   getActiveLlm()     { return this.getLlmList().find(l => l.active) || null; },
   async getActiveLlmToken() {
@@ -172,18 +207,35 @@ Não altere severity nem icon. Apenas reescreva title e body.`
 // ── AZURE API CLIENT ────────────────────────────────────────────────
 const AzureAPI = {
   async _fetch(url, opts = {}) {
-    const resp = await fetch(url, opts);
-    if (!resp.ok) { const t = await resp.text(); throw new Error(`HTTP ${resp.status}: ${t.substring(0,200)}`); }
+    // Legacy bridge to ESM AzureAPI logic if available, else local robust version
+    if (window.AzureAPI && window.AzureAPI._fetch && window.AzureAPI._fetch !== this._fetch) {
+      return window.AzureAPI._fetch(url, opts);
+    }
+    const headers = { 'Accept': 'application/json', ...(opts.headers || {}) };
+    const resp = await fetch(url, { ...opts, headers });
+    if (!resp.ok) {
+      const t = await resp.text();
+      throw new Error(`HTTP ${resp.status}: ${t.substring(0, 200)}`);
+    }
+    const contentType = resp.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error("Resposta inesperada do Azure (HTML). Verifique se o projeto/org est\u00e3o corretos.");
+    }
     return resp.json();
   },
-  _auth(pat) { return { 'Authorization': 'Basic ' + btoa(':' + pat), 'Content-Type': 'application/json' }; },
+  _auth(pat) {
+    const safePat = typeof pat === 'string' ? pat.trim() : '';
+    const masked  = safePat ? (safePat.substring(0, 4) + '...') : '?';
+    console.log(`[AzureAPI-Legacy] Diagnostic: PAT Type: ${typeof pat}, Length: ${safePat.length}, Masked: ${masked}`);
+    return { 'Authorization': 'Basic ' + btoa(':' + safePat), 'Content-Type': 'application/json' };
+  },
   _encTeam(t) { return t.split(' ').map(encodeURIComponent).join('%20'); },
 
   async getIterations(org, proj, team, pat) {
     const url = `https://dev.azure.com/${encodeURIComponent(org)}/${encodeURIComponent(proj)}/${this._encTeam(team)}/_apis/work/teamsettings/iterations?api-version=7.1`;
     const d = await this._fetch(url, { headers: this._auth(pat) });
     if (!d.value || !d.value.length) throw new Error(`Nenhuma sprint encontrada para o time "${team}".`);
-    return d.value;
+    return d.value || [];
   },
   async getTeamCapacity(org, proj, team, iterationId, pat) {
     const url = `https://dev.azure.com/${encodeURIComponent(org)}/${encodeURIComponent(proj)}/${this._encTeam(team)}/_apis/work/teamsettings/iterations/${encodeURIComponent(iterationId)}/capacities?api-version=7.1`;
@@ -214,9 +266,7 @@ const AzureAPI = {
     return all;
   }
 };
-
-// ── EFICIÊNCIA API ───────────────────────────────────────────────────
-const EficienciaAPI = {
+window.legacy_EficienciaAPI = {
   async getWorkItemIds(org, proj, iterPaths, pat) {
     const url = `https://dev.azure.com/${encodeURIComponent(org)}/${encodeURIComponent(proj)}/_apis/wit/wiql?api-version=7.1`;
     const cond = iterPaths.map(p=>`[System.IterationPath] UNDER '${p.replace(/'/g,"''")}'`).join(' OR ');
@@ -261,6 +311,7 @@ const EficienciaAPI = {
     try { const d = await AzureAPI._fetch(url,{method:'POST',headers:AzureAPI._auth(pat),body:JSON.stringify({query:q})}); return (d.workItems||[]).length; } catch { return 0; }
   }
 };
+const EficienciaAPI = window.legacy_EficienciaAPI;
 
 // ── SPRINT HISTORY API ────────────────────────────────────────────────
 const SprintAPI = {
@@ -352,7 +403,7 @@ const EficienciaProcessor = {
     const _isDoneCol = c => { const cl=(c||'').toLowerCase(); return cl==='done'||cl==='closed'||cl==='resolved'||cl==='concluído'||cl==='completed'||cl==='finalizado'||cl==='fechado'; };
     const colTimes = {};
     for (const item of done) {
-      const revs = await EficienciaAPI.getRevisions(org,proj,item.id,pat);
+      const revs = await window.legacy_EficienciaAPI.getRevisions(org,proj,item.id,pat);
       for (let i=0; i<revs.length-1; i++) {
         const col = revs[i].fields?.['System.BoardColumn'] || revs[i].fields?.['System.State'] || '';
         const t1  = new Date(revs[i].fields?.['System.ChangedDate']||0);
@@ -433,8 +484,15 @@ const DataProcessor = {
     const team = Store.getActiveTeam();
     if (!team) throw new Error('Nenhum time selecionado.');
     const pat = await Store.getActivePat();
-    if (!pat) throw new Error('PAT inválido ou vault bloqueado.');
+    if (!pat) {
+      if (team.patEnc) throw new Error('Vault Bloqueado. Desbloqueie para sincronizar.');
+      else throw new Error('Time sem PAT configurado.');
+    }
     const { org, proj, azTeam } = team;
+    if (!org || !proj || !azTeam) {
+      console.error('[Sync] Team configuration incomplete:', { org, proj, azTeam });
+      throw new Error('Configuração do time incompleta (Org/Projeto/Time ausente).');
+    }
 
     // Sprint ativa
     const iters = await AzureAPI.getIterations(org, proj, azTeam, pat);
@@ -549,6 +607,13 @@ const DataProcessor = {
 
     const stats = this._calcStats(backlog, tasks, capacity, bizDays, todayMs);
     const data  = { team, activeSprint:{ path:iterPath, startRaw:iterStart, endRaw:iterEnd, bizDaysLeft:bizDays }, backlog, tasks, capacity, stats, syncedAt: new Date().toISOString() };
+    
+    // Pre-load block times for Dashboard visibility
+    if (backlog.length) {
+      console.log(`[Sync] Pre-loading block times for ${backlog.length} items...`);
+      _preloadBlockTimes(backlog.map(b => b.id)).catch(e => console.warn('[Sync] Block time preload failed:', e));
+    }
+
     Store.saveSprintCache(data);
     APP.sprintData = data;
     return data;
@@ -643,6 +708,93 @@ const DB = {
     return d.getUTCDate() + ' de ' + M[d.getUTCMonth()];
   },
   _itemUrl(t, id) { return `https://dev.azure.com/${encodeURIComponent(t.org)}/${encodeURIComponent(t.proj)}/_workitems/edit/${id}`; },
+  _fmtBlockTime(ms, startMs) {
+    const h = ms / 3600000;
+    if (h <= 8) return Math.round(h)+'h';
+    if (h < 24 && startMs) {
+      const tod = new Date(); tod.setHours(0,0,0,0);
+      const yes = new Date(tod); yes.setDate(tod.getDate()-1);
+      const sd  = new Date(startMs); sd.setHours(0,0,0,0);
+      if (sd.getTime()===tod.getTime()) return 'hoje';
+      if (sd.getTime()===yes.getTime()) return 'ontem';
+    }
+    return Math.round(ms/86400000)+'d';
+  },
+  _buildColumnTimeline(revs) {
+    if (!revs || !revs.length) return { html: '<div class="tl-loading">Sem histórico disponível.</div>', totalBlockDays: 0 };
+    const steps = [];
+    let prevCol = '', prevDate = null;
+    for (const rev of revs) {
+      const f   = rev.fields || {};
+      const col = f['System.BoardColumn'] || f['System.State'] || '';
+      const at  = f['System.ChangedDate'];
+      const by  = f['System.ChangedBy'];
+      const who = typeof by === 'object' ? (by?.displayName || '') : String(by || '');
+      if (!col) continue;
+      if (col !== prevCol) {
+        if (prevCol && prevDate && at && steps.length) {
+          const endDt = new Date(at);
+          steps[steps.length - 1].days = Math.max(0, Math.round((endDt - new Date(prevDate)) / 86400000));
+          steps[steps.length - 1].endDate = endDt;
+        }
+        steps.push({ col, startDate: at, enteredBy: who, days: null, isCurrent: false, endDate: null, blockMs: 0, blockStartMs: null });
+        prevCol = col; prevDate = at;
+      }
+    }
+    if (steps.length) {
+      const last = steps[steps.length - 1];
+      if (last.days === null) {
+        const now = new Date();
+        last.days = last.startDate ? Math.round((now - new Date(last.startDate)) / 86400000) : null;
+        last.endDate = now;
+        last.isCurrent = true;
+      }
+    }
+    if (!steps.length) return { html: '<div class="tl-loading">Sem mudanças de coluna registradas.</div>', totalBlockDays: 0 };
+
+    const blockIntervals = [];
+    let blockStart = null;
+    for (const rev of revs) {
+      const f = rev.fields || {};
+      const b = f['Custom.Block'];
+      const tags2 = String(f['System.Tags'] || '').toLowerCase();
+      const isBlocked = b === true || b === 'true' || b === 'True' ||
+        tags2.includes('blocked') || tags2.includes('bloqueado') || tags2.includes('block');
+      const at = f['System.ChangedDate'];
+      if (isBlocked && blockStart === null) { blockStart = at; }
+      else if (!isBlocked && blockStart !== null) { blockIntervals.push({ start: new Date(blockStart), end: new Date(at) }); blockStart = null; }
+    }
+    if (blockStart !== null) blockIntervals.push({ start: new Date(blockStart), end: new Date() });
+
+    for (const step of steps) {
+      if (!step.startDate || !step.endDate) continue;
+      const sS = new Date(step.startDate).getTime(), sE = step.endDate.getTime();
+      let bms = 0, bsms = null;
+      for (const iv of blockIntervals) {
+        const os = Math.max(iv.start.getTime(), sS), oe = Math.min(iv.end.getTime(), sE);
+        if (oe > os) { bms += (oe - os); if (bsms === null) bsms = os; }
+      }
+      step.blockMs = bms; step.blockStartMs = bsms;
+    }
+    const totalBlockMs = blockIntervals.reduce((s, iv) => s + (iv.end.getTime() - iv.start.getTime()), 0);
+    const totalBlockStartMs = blockIntervals.length ? blockIntervals[0].start.getTime() : null;
+
+    const fmtD  = d => { if (!d) return ''; const dt = new Date(d); return dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}); };
+    const short = n => { if (!n) return '—'; const p = n.trim().split(' '); return p.length > 1 ? p[0]+' '+p[p.length-1][0]+'.' : n; };
+    const trunc = c => c.length > 22 ? c.slice(0,20)+'…' : c;
+    const html  = steps.map((s, i) => {
+      const alert = s.days !== null && s.days > 15;
+      return `<div class="tl-step${s.isCurrent ? ' tl-current' : ''}">`+
+        `<div class="tl-col-name" title="${s.col}">${trunc(s.col)}</div>`+
+        `<div class="tl-days${alert ? ' tl-alert' : ''}">${s.days !== null ? s.days+'d' : '—'}</div>`+
+        `<div class="tl-who" title="${s.enteredBy}">${short(s.enteredBy)}</div>`+
+        `<div class="tl-date">${fmtD(s.startDate)}</div>`+
+        (s.blockMs > 0 ? `<div class="tl-block">${ICONS.lock} ${this._fmtBlockTime(s.blockMs, s.blockStartMs)}</div>` : '')+
+        `</div>${i < steps.length - 1 ? '<div class="tl-arrow">›</div>' : ''}`;
+    }).join('');
+    
+    return { html, totalBlockMs, totalBlockStartMs };
+  },
 
   render(data) {
     const { team, activeSprint:sp, backlog, tasks, capacity, stats:s } = data;
@@ -1396,10 +1548,7 @@ function vaultSessionStart() {
 }
 
 function launchApp() {
-  document.getElementById('vault-overlay').style.display = 'none';
-  document.getElementById('app').style.display = '';
   updateVaultModeDesc();
-  checkProxy();
   renderTeams();
   renderOrgList();
   renderLlmList();
@@ -1408,7 +1557,6 @@ function launchApp() {
   const cache = Store.getSprintCache();
   if (cache) {
     APP.sprintData = cache;
-    DB.render(cache);
     loadInsights(true);
   } else {
     document.getElementById('db-no-data').style.display = '';
@@ -1512,9 +1660,47 @@ function onDashTeamChange(id) {
   document.getElementById('db-team-menu')?.classList.remove('open');
   renderDashTeamSel();
   renderTeams();
+  
+  // Limpeza profunda de estado para evitar "lost/mixed information"
+  APP.sprintData      = null;
+  APP.allIterations   = [];
+  APP.allWorkItems    = [];
+  APP.capacity        = null;
+  APP.eficienciaData  = null;
+  APP.qualidadeData   = null;
+  APP.insightCards    = [];
+  
+  // Reset de tokens de sessão para forçar re-autenticação limpa via Vault/Store
+  if (APP.sessionTokens) {
+    APP.sessionTokens = { teams: {}, llms: {}, orgs: {} };
+  }
+
+  // Limpeza física imediata do DOM para garantir feedback visual de "estado limpo"
+  const kpiEl = document.getElementById('db-kpis');
+  const backlogEl = document.getElementById('db-backlog');
+  if (kpiEl) kpiEl.innerHTML = '<div class="spinner-wrap"><div class="spinner"></div></div>';
+  if (backlogEl) backlogEl.innerHTML = '<div class="spinner-wrap"><div class="spinner"></div></div>';
+
+  // Limpeza de Eficiência
+  const efC = document.getElementById('ef-content');
+  const efBC = document.getElementById('ef-backlog-content');
+  const efBS = document.getElementById('ef-backlog-section');
+  if (efC) efC.innerHTML = `<div class="mod-empty"><h3>Eficiência</h3><p>Selecione sprints e clique em Calcular.</p></div>`;
+  if (efBC) efBC.innerHTML = '';
+  if (efBS) efBS.style.display = 'none';
+
+  // Limpeza de Qualidade
+  const qualC = document.getElementById('qual-content');
+  const qualLS = document.getElementById('qual-llm-section');
+  if (qualC) qualC.innerHTML = `<div class="mod-empty"><h3>Qualidade</h3><p>Clique em Carregar para buscar os Bugs.</p></div>`;
+  if (qualLS) qualLS.style.display = 'none';
+
+  // Notifica o Dashboard ESM imediatamente para carregar skeletons
+  if (window.Dashboard && typeof window.Dashboard.render === 'function') {
+    window.Dashboard.render();
+  }
+
   toast('Time ativado! Sincronizando…', 'ok');
-  APP.eficienciaData = null;
-  APP.qualidadeData  = null;
   runSync();
 }
 
@@ -1626,7 +1812,7 @@ async function saveTeam() {
     if (idx !== -1) {
       teams[idx].name = name; teams[idx].org = orgName; teams[idx].proj = proj; teams[idx].azTeam = azTeam;
       if (orgSelV) {
-        teams[idx].orgId = orgSelV; teams[idx].patEnc = '';
+        teams[idx].orgId = String(orgSelV); teams[idx].patEnc = '';
       } else if (patRaw) {
         teams[idx].orgId = null;
         if (APP.vaultMode === 'session') APP.sessionTokens.teams[id] = patRaw;
@@ -1745,10 +1931,13 @@ function deleteTeam(id) {
 }
 
 function activateTeam(id) {
-  Store.setActiveTeamId(id);
-  renderTeams();
-  renderDashTeamSel();
-  toast('Time ativado!','ok');
+  if (window.NavigationUI) {
+    window.NavigationUI.showPanel('dashboard');
+  } else if (window.showPanel) {
+    window.showPanel('dashboard');
+  }
+  onDashTeamChange(id);
+  toast('Time ativado e sincronizando!','ok');
 }
 
 // ── LLM ──────────────────────────────────────────────────────────────
@@ -1976,13 +2165,13 @@ async function runEficiencia() {
 
   try {
     const [ids, openBugs, taskIds] = await Promise.all([
-      EficienciaAPI.getWorkItemIds(team.org, team.proj, checked, pat),
-      EficienciaAPI.getOpenBugsCount(team.org, team.proj, pat),
-      EficienciaAPI.getTaskIds(team.org, team.proj, checked, pat)
+      window.legacy_EficienciaAPI.getWorkItemIds(team.org, team.proj, checked, pat),
+      window.legacy_EficienciaAPI.getOpenBugsCount(team.org, team.proj, pat),
+      window.legacy_EficienciaAPI.getTaskIds(team.org, team.proj, checked, pat)
     ]);
     const [items, taskIterPaths] = await Promise.all([
-      EficienciaAPI.getWorkItems(team.org, team.proj, ids, pat),
-      EficienciaAPI.getTasksIterPath(team.org, team.proj, taskIds, pat)
+      window.legacy_EficienciaAPI.getWorkItems(team.org, team.proj, ids, pat),
+      window.legacy_EficienciaAPI.getTasksIterPath(team.org, team.proj, taskIds, pat)
     ]);
     content.innerHTML = '<div class="spinner-wrap" style="padding:32px"><div class="spinner"></div>Analisando revisões (coluna + velocity)…</div>';
     const [result, taskMaxRem] = await Promise.all([
@@ -2421,79 +2610,22 @@ function _renderHistoryTable(backlog, tasks, team) {
     return ['s-todo',se];
   };
 
-  let rows = '';
-  backlog.forEach(item => {
-    const hid = 'h'+String(item.id);
-    const url = `https://dev.azure.com/${encodeURIComponent(team.org)}/${encodeURIComponent(team.proj)}/_workitems/edit/${item.id}`;
-    const tl  = item.type==='Product Backlog Item'?'PBI':item.type==='Defect'?'Defect':item.type;
-    const tc  = (item.type==='Bug'||item.type==='Defect')?'badge-bug':'badge-pbi';
-    let [sc, sl] = item.blockStatus==='BLOCKED' ? ['s-blocked','Bloqueado'] : item.blockStatus==='FIXING' ? ['s-fixing','Em fixing'] : _stBadge(item.state);
+  // Configuração de lazy loading para legacy
+  window._lazyHistory = {
+    backlog: [...backlog],
+    tasks,
+    team,
+    childMap,
+    batchSize: 20
+  };
 
-    const ch     = childMap[String(item.id)] || [];
-    const noTasks = ch.length === 0;
-    let progHtml;
-    if (noTasks) {
-      progHtml = `<span class="no-tasks-warn">N\u00e3o estimado</span>`;
-    } else if (item.estimativa === 0) {
-      progHtml = `<span class="no-est-warn">Itens n\u00e3o estimados</span>`;
-    } else {
-      const pct = Math.round(Math.max(0, Math.min(100, (item.estimativa - item.childRem) / item.estimativa * 100)));
-      const clr = pct >= 80 ? '#16a34a' : pct >= 40 ? '#3b82f6' : '#f59e0b';
-      progHtml = `<div class="bl-prog"><div class="bl-prog-bar"><div class="bl-prog-fill" style="width:${pct}%;background:${clr}"></div></div><div class="bl-prog-lbl">${pct}% \u00b7 ${item.childRem}h rem</div></div>`;
-    }
+  const initialItems = window._lazyHistory.backlog.splice(0, window._lazyHistory.batchSize);
+  let rows = initialItems.map(item => _renderHistoryItemRow(item, team, childMap)).join('');
 
-    const execH = (() => {
-      const ex={};
-      ch.forEach(c=>{if(c.assignedTo?.trim()) ex[c.assignedTo.trim()]=true;});
-      return Object.keys(ex).length ? Object.keys(ex).map(n=>`<span class="mav" title="${e2(n)}">${n.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()}</span>`).join('') : '<span style="color:#94a3b8">\u2014</span>';
-    })();
+  const sentinel = window._lazyHistory.backlog.length > 0 ? `<tr id="lh-sentinel"><td colspan="11" style="height:30px;text-align:center;font-size:11px;color:#94a3b8;opacity:0.6">Carregando mais...</td></tr>` : '';
 
-    const _isDoneEf = s => { const sl2=(s||'').toLowerCase(); return sl2==='done'||sl2==='closed'||sl2==='resolved'||sl2==='concluído'||sl2==='completed'||sl2==='finalizado'||sl2==='fechado'; };
-    let tempoDias = null;
-    if (item.createdDate) {
-      const done2 = _isDoneEf(item.state);
-      const end2  = done2 && item.closedDate ? new Date(item.closedDate) : new Date();
-      tempoDias   = Math.round((end2 - new Date(item.createdDate)) / 86400000);
-    }
-    const tempoImplHtml = tempoDias === null
-      ? '<span style="color:#94a3b8">\u2014</span>'
-      : _isDoneEf(item.state)
-        ? `${tempoDias} dias`
-        : `<span style="color:${tempoDias>30?'#dc2626':tempoDias>14?'#f59e0b':'#374151'}">${tempoDias} dias \u2191</span>`;
-
-    rows += `<tr class="bl-row" onclick="toggleCh('${hid}')" style="cursor:pointer">`+
-      `<td><span class="xicon" id="ico-${hid}">&#9654;</span></td>`+
-      `<td><span class="badge ${tc}">${e2(tl)}</span></td>`+
-      `<td class="id-cell"><a href="${url}" target="_blank" class="az-link">#${item.id}</a></td>`+
-      `<td class="title-cell" style="max-width:280px"><a href="${url}" target="_blank" class="az-link title-link">${e2(item.title)}</a></td>`+
-      `<td><span class="sb ${sc}">${sl}</span></td>`+
-      `<td class="exec-cell">${execH}</td>`+
-      `<td class="text-center mono">${tempoImplHtml}</td>`+
-      `<td class="text-center mono" id="blk-${item.id}">—</td>`+
-      `<td class="text-center" style="padding:4px 8px">${progHtml}</td>`+
-      `<td class="text-center mono rem-col">${item.estimativa>0?item.estimativa+'h':'\u2014'}</td>`+
-      `<td class="text-center mono">${item.childRem>0?item.childRem+'h':'\u2014'}</td></tr>`;
-
-    {
-      const isDoneS = s => { const sl2=(s||'').toLowerCase(); return sl2==='done'||sl2==='closed'||sl2==='resolved'; };
-      const doing=ch.filter(c=>!isDoneS(c.state)), doneC=ch.filter(c=>isDoneS(c.state));
-      const mkCard=(c,done)=>{
-        const cu=`https://dev.azure.com/${encodeURIComponent(team.org)}/${encodeURIComponent(team.proj)}/_workitems/edit/${c.id}`;
-        const tl2=c.type==='Bug'?'Bug':'Task', tc2=c.type==='Bug'?'badge-bug':'badge-task';
-        const [sc2,sl2] = done?['s-done','Conclu\u00eddo']:_stBadge(c.state);
-        return `<div class="task-card ${done?'tc-done':'tc-doing'}"><div class="tc-head"><span class="badge ${tc2} tc-badge">${tl2}</span><a href="${cu}" target="_blank" class="az-link" style="font-size:11px">#${c.id}</a></div>`+
-          `<div class="tc-title"><a href="${cu}" target="_blank" class="az-link">${e2(c.title)}</a></div>`+
-          `<div class="tc-foot"><span class="sb ${sc2}" style="font-size:10px">${sl2}</span>${!done&&c.remaining>0?`<span class="tc-hours">${c.remaining}h rem.</span>`:done&&c.estimated>0?`<span class="tc-hours" style="opacity:.6">${c.estimated}h est.</span>`:''}</div>`+
-          (c.assignedTo?`<div class="tc-assigned">${e2(c.assignedTo)}</div>`:'')+`</div>`;
-      };
-      rows += `<tr class="children-row" id="cr-${hid}" data-item-id="${item.id}" style="display:none"><td colspan="11" class="children-cell">`+
-        `<div class="tl-card"><div class="tl-header" onclick="toggleTimeline(this,${item.id})">📋 Histórico do Board <span class="tl-chevron">▶</span></div><div class="tl-track" style="display:none"></div></div>`+
-        `<div class="children-wrap">`+
-        `<div class="children-col"><div class="col-header col-doing">Em andamento (${doing.length})</div><div class="cards-wrap">${doing.map(c=>mkCard(c,false)).join('')||'<div style="font-size:11px;color:#94a3b8;padding:4px 0;font-style:italic">Nenhuma em andamento</div>'}</div></div>`+
-        `<div class="children-col"><div class="col-header col-done">Conclu\u00eddo (${doneC.length})</div><div class="cards-wrap">${doneC.map(c=>mkCard(c,true)).join('')||'<div style="font-size:11px;color:#94a3b8;padding:4px 0;font-style:italic">Nenhuma conclu\u00edda</div>'}</div></div>`+
-        `</div></td></tr>`;
-    }
-  });
+  // Agendar inicialização do observador após o retorno do HTML
+  setTimeout(() => _setupLegacyLazyObserver('lh-sentinel', 'lh-tbody'), 100);
 
   if (!rows) return '<div class="mod-empty" style="padding:24px"><h3>Nenhum item encontrado</h3></div>';
 
@@ -2505,7 +2637,116 @@ function _renderHistoryTable(backlog, tasks, team) {
     `</div>` : '';
 
   return warningBanner +
-    `<div class="bl-table-wrap"><table class="bl-table"><thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">T\u00edtulo</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executores</th><th class="sort-th text-center" title="Itens fechados: dias entre cria\u00e7\u00e3o e fechamento. Itens abertos: dias desde a cria\u00e7\u00e3o. \u2191 = ainda em aberto." onclick="sortTbl(this)">Tempo Impl.</th><th class="sort-th text-center" title="Dias que o item ficou bloqueado (tag block/bloqueio ou campo Blocked=Yes)" onclick="sortTbl(this)">Bloq.</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Progresso</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Estimativa</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Rem. atual</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    `<div class="bl-table-wrap"><table class="bl-table">` +
+    `<thead><tr><th></th><th class="sort-th" onclick="sortTbl(this)">Tipo</th><th class="sort-th" onclick="sortTbl(this)">ID</th><th class="sort-th" onclick="sortTbl(this)">Título</th><th class="sort-th" onclick="sortTbl(this)">Status</th><th class="sort-th" onclick="sortTbl(this)">Executores</th><th class="sort-th text-center" onclick="sortTbl(this)">Tempo Impl.</th><th class="sort-th text-center" onclick="sortTbl(this)">Bloq.</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Progresso</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Estimativa</th><th class="sort-th" style="text-align:center" onclick="sortTbl(this)">Rem. atual</th></tr></thead>` +
+    `<tbody id="lh-tbody">${rows}${sentinel}</tbody></table></div>`;
+}
+
+function _renderHistoryItemRow(item, team, childMap) {
+  const e2 = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const hid = 'h'+String(item.id);
+  const url = `https://dev.azure.com/${encodeURIComponent(team.org)}/${encodeURIComponent(team.proj)}/_workitems/edit/${item.id}`;
+  const tl  = item.type==='Product Backlog Item'?'PBI':item.type==='Defect'?'Defect':item.type;
+  const tc  = (item.type==='Bug'||item.type==='Defect')?'badge-bug':'badge-pbi';
+  
+  const _stBadge = state => {
+    const sl=(state||'').toLowerCase(), se=e2(state)||'To Do';
+    if(sl==='done'||sl==='closed'||sl==='resolved'||sl==='concluído'||sl==='completed'||sl==='finalizado') return ['s-done',se];
+    if(sl.includes('progress')||sl==='active'||sl.includes('andamento')||sl==='doing'||sl==='in progress') return ['s-doing',se];
+    if(sl.includes('test')||sl==='qa'||sl==='ready'||sl.includes('wait')||sl.includes('aguard')||sl.includes('valid')) return ['s-testing',se];
+    if(sl==='removed'||sl==='cancelled'||sl==='canceled') return ['s-removed',se];
+    if(sl==='design'||sl.includes('analis')) return ['s-design',se];
+    return ['s-todo',se];
+  };
+
+  let [sc, sl] = item.blockStatus==='BLOCKED' ? ['s-blocked','Bloqueado'] : item.blockStatus==='FIXING' ? ['s-fixing','Em fixing'] : _stBadge(item.state);
+
+  const ch     = childMap[String(item.id)] || [];
+  const noTasks = ch.length === 0;
+  let progHtml;
+  if (noTasks) {
+    progHtml = `<span class="no-tasks-warn">Não estimado</span>`;
+  } else if (item.estimativa === 0) {
+    progHtml = `<span class="no-est-warn">Itens não estimados</span>`;
+  } else {
+    const pct = Math.round(Math.max(0, Math.min(100, (item.estimativa - item.childRem) / item.estimativa * 100)));
+    const clr = pct >= 80 ? '#16a34a' : pct >= 40 ? '#3b82f6' : '#f59e0b';
+    progHtml = `<div class="bl-prog"><div class="bl-prog-bar"><div class="bl-prog-fill" style="width:${pct}%;background:${clr}"></div></div><div class="bl-prog-lbl">${pct}% \u00b7 ${item.childRem}h rem</div></div>`;
+  }
+
+  const execH = (() => {
+    const ex={};
+    ch.forEach(c=>{if(c.assignedTo?.trim()) ex[c.assignedTo.trim()]=true;});
+    return Object.keys(ex).length ? Object.keys(ex).map(n=>`<span class="mav" title="${e2(n)}">${n.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()}</span>`).join('') : '<span style="color:#94a3b8">—</span>';
+  })();
+
+  const _isDoneEf = s => { const sl2=(s||'').toLowerCase(); return sl2==='done'||sl2==='closed'||sl2==='resolved'||sl2==='concluído'||sl2==='completed'||sl2==='finalizado'||sl2==='fechado'; };
+  let tempoDias = null;
+  if (item.createdDate) {
+    const end2  = _isDoneEf(item.state) && item.closedDate ? new Date(item.closedDate) : new Date();
+    tempoDias   = Math.round((end2 - new Date(item.createdDate)) / 86400000);
+  }
+  const tempoImplHtml = tempoDias === null ? '<span style="color:#94a3b8">—</span>' : _isDoneEf(item.state) ? `${tempoDias} dias` : `<span style="color:${tempoDias>30?'#dc2626':tempoDias>14?'#f59e0b':'#374151'}">${tempoDias} dias ↑</span>`;
+
+  let rowHtml = `<tr class="bl-row" onclick="toggleCh('${hid}')" style="cursor:pointer">`+
+    `<td><span class="xicon" id="ico-${hid}">&#9654;</span></td>`+
+    `<td><span class="badge ${tc}">${e2(tl)}</span></td>`+
+    `<td class="id-cell"><a href="${url}" target="_blank" class="az-link">#${item.id}</a></td>`+
+    `<td class="title-cell" style="max-width:280px"><a href="${url}" target="_blank" class="az-link title-link">${e2(item.title)}</a></td>`+
+    `<td><span class="sb ${sc}">${sl}</span></td>`+
+    `<td class="exec-cell">${execH}</td>`+
+    `<td class="text-center mono">${tempoImplHtml}</td>`+
+    `<td class="text-center mono" id="blk-${item.id}">—</td>`+
+    `<td class="text-center" style="padding:4px 8px">${progHtml}</td>`+
+    `<td class="text-center mono rem-col">${item.estimativa>0?item.estimativa+'h':'—'}</td>`+
+    `<td class="text-center mono">${item.childRem>0?item.childRem+'h':'—'}</td></tr>`;
+
+  // Subtasks
+  const isDoneS = s => { const sl2=(s||'').toLowerCase(); return sl2==='done'||sl2==='closed'||sl2==='resolved'; };
+  const doing=ch.filter(c=>!isDoneS(c.state)), doneC=ch.filter(c=>isDoneS(c.state));
+  const mkCard=(c,done)=>{
+    const cu=`https://dev.azure.com/${encodeURIComponent(team.org)}/${encodeURIComponent(team.proj)}/_workitems/edit/${c.id}`;
+    const tl2=c.type==='Bug'?'Bug':'Task', tc2=c.type==='Bug'?'badge-bug':'badge-task', [sc2,sl2]=done?['s-done','Concluído']:_stBadge(c.state);
+    return `<div class="task-card ${done?'tc-done':'tc-doing'}"><div class="tc-head"><span class="badge ${tc2} tc-badge">${tl2}</span><a href="${cu}" target="_blank" class="az-link" style="font-size:11px">#${c.id}</a></div><div class="tc-title"><a href="${cu}" target="_blank" class="az-link">${e2(c.title)}</a></div><div class="tc-foot"><span class="sb ${sc2}" style="font-size:10px">${sl2}</span>${!done&&c.remaining>0?`<span class="tc-hours">${c.remaining}h rem.</span>`:done&&c.estimated>0?`<span class="tc-hours" style="opacity:.6">${c.estimated}h est.</span>`:''}</div>${c.assignedTo?`<div class="tc-assigned">${e2(c.assignedTo)}</div>`:''}</div>`;
+  };
+
+  rowHtml += `<tr class="children-row" id="cr-${hid}" data-item-id="${item.id}" style="display:none"><td colspan="11" class="children-cell"><div class="tl-subtle-wrap" style="margin-bottom:14px"><div class="tl-header-subtle" onclick="toggleTimeline(this,${item.id})" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;font-weight:600;color:#64748b;padding:4px 8px;border-radius:4px;background:#f1f5f9;transition:all 0.2s"><span>Histórico do Board</span> <span class="tl-chevron" style="font-size:9px">▶</span></div><div class="tl-track" style="padding:12px;font-size:11px;overflow-x:auto;align-items:center;gap:8px"></div></div><div class="children-wrap"><div class="children-col"><div class="col-header col-doing">Em andamento (${doing.length})</div><div class="cards-wrap">${doing.map(c=>mkCard(c,false)).join('')||'<div style="font-size:11px;color:#94a3b8;padding:4px 0;font-style:italic">Nenhuma em andamento</div>'}</div></div><div class="children-col"><div class="col-header col-done">Concluído (${doneC.length})</div><div class="cards-wrap">${doneC.map(c=>mkCard(c,true)).join('')||'<div style="font-size:11px;color:#94a3b8;padding:4px 0;font-style:italic">Nenhuma concluída</div>'}</div></div></div></td></tr>`;
+
+  return rowHtml;
+}
+
+function _setupLegacyLazyObserver(sentinelId, tbodyId) {
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      _appendLegacyBatch(sentinelId, tbodyId, observer);
+    }
+  }, { threshold: 0.1 });
+  const sentinel = document.getElementById(sentinelId);
+  if (sentinel) observer.observe(sentinel);
+}
+
+function _appendLegacyBatch(sentinelId, tbodyId, observer) {
+  const { backlog, tasks, team, childMap, batchSize } = window._lazyHistory;
+  if (!backlog.length) {
+    observer.disconnect();
+    const s = document.getElementById(sentinelId);
+    if (s) s.remove();
+    return;
+  }
+  const nextBatch = backlog.splice(0, batchSize);
+  const tbody     = document.getElementById(tbodyId);
+  const sentinel  = document.getElementById(sentinelId);
+  if (tbody && sentinel) {
+    const temp = document.createElement('tbody');
+    temp.innerHTML = nextBatch.map(item => _renderHistoryItemRow(item, team, childMap)).join('');
+    while (temp.firstChild) {
+      tbody.insertBefore(temp.firstChild, sentinel);
+    }
+    if (!backlog.length) {
+      observer.disconnect();
+      sentinel.remove();
+    }
+  }
 }
 
 async function runEficienciaBacklogTable(team, pat, checked) {
@@ -2541,6 +2782,9 @@ async function runEficienciaBacklogTable(team, pat, checked) {
         backlog.push({ ...obj, storyPoints: Number(item.fields['Microsoft.VSTS.Scheduling.StoryPoints'])||0 });
       }
     });
+
+    // Limpeza preventiva para evitar poluição visual durante sincronização longa
+    APP.sprintData = null;
 
     if (tasks.length) {
       const maxRem = await _fetchMaxRem(team.org, team.proj, tasks.map(t => t.id), pat);
@@ -2748,7 +2992,7 @@ function _buildQualUserPrompt(allItems, horasGastas, rag) {
 
   const countBy = (arr, field) => {
     const m={};
-    arr.forEach(i=>{ const v=i.fields[field]||'Não definido'; m[v]=(m[v]||0)+1; });
+    arr.forEach(i=>{ const v=i.fields[field]||'Não definido'; m[v]=(m[v]||0)+1;});
     return Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k}: ${v}`).join(', ');
   };
 
@@ -2795,7 +3039,16 @@ async function runQualidadeLLM() {
 }
 
 // ── SYNC & DASHBOARD ACTIONS ──────────────────────────────────────────
+function handleSync() {
+  console.log('[Sync] handleSync triggered from UI');
+  runSync();
+}
+
 async function runSync() {
+  if (localStorage.getItem('avai_test_auto_session') === 'true') {
+    console.log('E2E: Sincronização automática ignorada via flag.');
+    return;
+  }
   if (APP.syncRunning) return;
   APP.syncRunning = true;
   const team = Store.getActiveTeam();
@@ -2806,7 +3059,6 @@ async function runSync() {
   try {
     const data = await DataProcessor.sync();
     APP.insightCards = [];
-    DB.render(data);
     loadInsights(false);
     toast(`Sprint "${data.activeSprint.path.split('\\').pop()}" sincronizada!`,'ok');
   } catch(e) {
@@ -3038,7 +3290,8 @@ function toggleCh(id) {
 }
 
 async function toggleTimeline(btn, itemId) {
-  const card  = btn.closest('.tl-card');
+  const card  = btn.closest('.tl-subtle-wrap') || btn.closest('.tl-card');
+  if (!card) return;
   const track = card.querySelector('.tl-track');
   const chev  = btn.querySelector('.tl-chevron');
   if (!card.dataset.tlLoaded) {
@@ -3081,11 +3334,53 @@ function sortTbl(th) {
     const num = parseFloat(txt);
     return isNaN(num) ? txt.toLowerCase() : num;
   };
+
+  // Suporte a Data-Driven Sorting para Lazy Loading
+  if (window._lazyHistory && (table.classList.contains('bl-table') || table.classList.contains('qual-tbl'))) {
+    const props = ['', 'type', 'id', 'title', 'state', '', 'tempoImpl', '', 'prog', 'estimativa', 'childRem'];
+    const prop = props[col];
+    
+    if (prop) {
+      window._lazyHistory.backlog.sort((a, b) => {
+        let va, vb;
+        if (prop === 'tempoImpl') {
+          const d1 = a.createdDate ? (a.closedDate ? new Date(a.closedDate) : new Date()) - new Date(a.createdDate) : 0;
+          const d2 = b.createdDate ? (b.closedDate ? new Date(b.closedDate) : new Date()) - new Date(b.createdDate) : 0;
+          va = d1; vb = d2;
+        } else if (prop === 'prog') {
+          va = a.estimativa > 0 ? (a.estimativa - a.childRem) / a.estimativa : 0;
+          vb = b.estimativa > 0 ? (b.estimativa - b.childRem) / b.estimativa : 0;
+        } else {
+          va = a[prop];
+          vb = b[prop];
+        }
+
+        if (typeof va === 'string') va = va.toLowerCase();
+        if (typeof vb === 'string') vb = vb.toLowerCase();
+
+        if (va < vb) return isAsc ? -1 : 1;
+        if (va > vb) return isAsc ? 1 : -1;
+        return 0;
+      });
+
+      // Re-renderizar o contêiner atual
+      const contentId = document.getElementById('ef-backlog-content') ? 'ef-backlog-content' : 'qual-content';
+      const el = document.getElementById(contentId);
+      if (el) {
+        // Preservar o backlog completo antes de renderizar
+        const fullBacklog = [...window._lazyHistory.backlog];
+        el.innerHTML = _renderHistoryTable(fullBacklog, window._lazyHistory.tasks, window._lazyHistory.team);
+      }
+      return;
+    }
+  }
+
   const cmp = (a, b) => {
     const va = val(a), vb = val(b);
     if (typeof va === 'number' && typeof vb === 'number') return isAsc ? va - vb : vb - va;
     return isAsc ? String(va).localeCompare(String(vb),'pt',{numeric:true}) : String(vb).localeCompare(String(va),'pt',{numeric:true});
   };
+
   if (table.classList.contains('bl-table') || table.classList.contains('qual-tbl')) {
     const allRows = Array.from(tbody.querySelectorAll('tr'));
     const groups = [];

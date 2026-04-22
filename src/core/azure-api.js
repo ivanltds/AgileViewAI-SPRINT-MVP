@@ -4,17 +4,44 @@
 
 export const AzureAPI = {
   async _fetch(url, opts = {}) {
-    const resp = await fetch(url, opts);
+    const headers = {
+      'Accept': 'application/json',
+      ...(opts.headers || {})
+    };
+    const resp = await fetch(url, { ...opts, headers });
+    
     if (!resp.ok) {
       const t = await resp.text();
-      throw new Error(`HTTP ${resp.status}: ${t.substring(0, 200)}`);
+      const msg = `HTTP ${resp.status}: ${t.substring(0, 200)}`;
+      console.error(`[AzureAPI] Fetch failed for ${url}:`, msg);
+      throw new Error(msg);
     }
-    return resp.json();
+
+    const contentType = resp.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      const text = await resp.text();
+      console.error(`[AzureAPI] Unexpected non-JSON response from ${url}. Content-Type: ${contentType}`, text.substring(0, 500));
+      throw new Error(`Resposta inesperada do servidor (HTML em vez de JSON). Verifique sua conexão ou tokens.`);
+    }
+
+    try {
+      return await resp.json();
+    } catch (e) {
+      console.error(`[AzureAPI] JSON parse error for ${url}:`, e);
+      throw new Error(`Erro ao processar dados do servidor. Resposta malformada.`);
+    }
   },
 
   _auth(pat) {
+    const safePat = typeof pat === 'string' ? pat.trim() : '';
+    console.log(`[AzureAPI] Diagnostic: PAT Type: ${typeof pat}, Length: ${safePat.length}, FirstChar: ${safePat[0]||'?'}`);
+    
+    if (!safePat || safePat === '[object Promise]') {
+      console.warn('[AzureAPI] Warning: Invalid PAT format detected. Ensure vault is unlocked and token is decrypted.');
+    }
+
     return {
-      'Authorization': 'Basic ' + btoa(':' + pat),
+      'Authorization': 'Basic ' + btoa(':' + safePat),
       'Content-Type': 'application/json'
     };
   },

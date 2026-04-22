@@ -3,10 +3,27 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AgileViewAI v2.1</title>
-<link rel='stylesheet' href='src/styles/index.css'>
+<link rel="stylesheet" href="src/styles/index.css">
+<style>
+  /* Utilitários */
+  .hidden { display: none !important; }
+</style>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<body>
+<body class="bg-gray-50 text-gray-900">
+    <!-- Event Guard: Captura eventos disparados antes do boot do orquestrador ESM -->
+    <script>
+      window.AVAI_EVENTS = [];
+      window.addEventListener('error', (e) => {
+        console.error('[GLOBAL-ERROR]', e.message, e.filename, e.lineno);
+      });
+      document.addEventListener('vault-unlocked', (e) => {
+        if (!window.AVAI_READY) {
+          console.log('[EventGuard] Queuing early vault-unlocked event');
+          window.AVAI_EVENTS.push(e);
+        }
+      });
+    </script>
 
 <!-- VAULT -->
 <div id="vault-overlay">
@@ -15,18 +32,18 @@
     <div style="font-size:22px;font-weight:700;margin-bottom:6px">AgileViewAI</div>
     <div style="font-size:13px;color:#64748b;margin-bottom:24px" id="vsub">Proteja seus tokens com um PIN</div>
     <div style="display:flex;gap:8px;margin-bottom:20px;justify-content:center">
-      <button class="vtab active" id="tab-pin" onclick="vaultTab('pin')">Vault (PIN)</button>
-      <button class="vtab" id="tab-session" onclick="vaultTab('session')">Sessão</button>
+      <button class="vtab active" id="tab-pin">Vault (PIN)</button>
+      <button class="vtab" id="tab-session">Sessão</button>
     </div>
     <div id="vault-pin-area">
-      <input type="password" class="vinput" id="vpin" maxlength="8" placeholder="••••" autocomplete="off" onkeydown="if(event.key==='Enter')vaultAction()">
-      <button class="vbtn" onclick="vaultAction()" id="vbtn">Entrar</button>
+      <input type="password" class="vinput" id="vpin" maxlength="8" placeholder="••••" autocomplete="off">
+      <button class="vbtn" id="vbtn">Entrar</button>
       <div class="verr" id="verr"></div>
       <div style="font-size:11px;color:#94a3b8;margin-top:10px">4 a 8 dígitos · tokens cifrados com AES-256-GCM</div>
     </div>
     <div id="vault-session-area" style="display:none">
       <div style="background:#fefce8;border:1px solid #fde047;border-radius:8px;padding:10px;font-size:12px;color:#854d0e;text-align:left;margin-bottom:14px">Modo sessão: tokens ficam apenas na memória e são apagados ao fechar o navegador.</div>
-      <button class="vbtn" onclick="vaultSessionStart()">Continuar sem salvar tokens</button>
+      <button class="vbtn" id="vbtn-session" onclick="window.VaultUI?.startSession()">Continuar sem salvar tokens</button>
     </div>
   </div>
 </div>
@@ -39,11 +56,11 @@
       <div><div style="font-size:15px;font-weight:700;color:#fff">AgileViewAI</div><div style="font-size:10px;color:#94a3b8">v2.1</div></div>
     </div>
     <div style="flex:1;padding:8px 0">
-      <div class="nav-item active" id="nav-dashboard" data-label="Dashboard" onclick="showPanel('dashboard')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">Dashboard</span></div>
-      <div class="nav-item" id="nav-teams" data-label="Times" onclick="showPanel('teams')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">Times</span></div>
-      <div class="nav-item" id="nav-llm" data-label="IA &amp; Tokens" onclick="showPanel('llm')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span><span class="nav-label">IA &amp; Tokens</span></div>
-      <div class="nav-item" id="nav-rag" data-label="Treinamento" onclick="showPanel('rag')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span class="nav-label">Treinamento</span></div>
-      <div class="nav-item" id="nav-settings" data-label="Configurações" onclick="showPanel('settings')"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nav-label">Configurações</span></div>
+      <div class="nav-item active" id="nav-dashboard" data-label="Dashboard"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">Dashboard</span></div>
+      <div class="nav-item" id="nav-teams" data-label="Times"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">Times</span></div>
+      <div class="nav-item" id="nav-llm" data-label="IA &amp; Tokens"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span><span class="nav-label">IA &amp; Tokens</span></div>
+      <div class="nav-item" id="nav-rag" data-label="Treinamento"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span class="nav-label">Treinamento</span></div>
+      <div class="nav-item" id="nav-settings" data-label="Configurações"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nav-label">Configurações</span></div>
     </div>
   </nav>
   <main id="main-content">
@@ -60,7 +77,7 @@
             </button>
             <div class="db-team-menu" id="db-team-menu"></div>
           </div>
-          <button class="btn-sm" onclick="runSync()">↺ Sincronizar</button>
+          <button class="btn-sm" onclick="handleSync()">↺ Sincronizar</button>
           <button class="btn-sm" onclick="downloadDashboardHtml()">↓ HTML</button>
         </div>
       </div>
@@ -76,10 +93,20 @@
         <div id="db-topbar"></div>
         <div id="db-no-data" class="no-data" style="display:none">Nenhum dado sincronizado. Vá em <strong>Times</strong>, selecione um time e clique em <strong>Sincronizar</strong>.</div>
         <div id="db-kpis"></div>
-        <div class="db-body"><div class="db-left" id="db-backlog"></div><div class="db-right" id="db-progress"></div></div>
+        
+        <!-- NEW Row: Progress & Capacity Overview -->
+        <div class="db-overview-row">
+          <div id="db-progress"></div>
+          <div id="db-members"></div>
+        </div>
+
+        <!-- Main Body: Backlog -->
+        <div class="db-body-full">
+           <div id="db-backlog"></div>
+        </div>
+
         <div id="db-insights"></div>
         <div id="db-chat"></div>
-        <div id="db-members"></div>
       </div>
       <!-- MODULE: EFICIÊNCIA -->
       <div class="mod-panel" id="module-eficiencia">
@@ -391,8 +418,7 @@
 </nav>
 
 <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
-<script type='module' src='src/globals.js'></script>
-<script src='src/legacy.js' defer></script>
+<script src='src/legacy.js'></script>
 <script type='module' src='src/app.js'></script>
 </body>
 </html>

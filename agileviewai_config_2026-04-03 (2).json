@@ -1,0 +1,754 @@
+{
+  "version": 3,
+  "exportedAt": "2026-04-03T01:31:35.351Z",
+  "teams": [
+    {
+      "id": "t_1774882738419",
+      "name": "MPRS- AURORA",
+      "org": "XerticaBR",
+      "proj": "MPRS-Transcritor_Pesquisa_Enderecos",
+      "azTeam": "MPRS-Transcritor_Pesquisa_Enderecos Team",
+      "patEnc": "(removido por segurança)",
+      "orgId": "o_1775179210982"
+    },
+    {
+      "id": "t_1774882883524",
+      "name": "SEPLAG - CIDADÃO",
+      "org": "XerticaBR-MTI",
+      "proj": "SEPLAG-Cidadao",
+      "azTeam": "SEPLAG-Cidadao Team",
+      "patEnc": "(removido por segurança)",
+      "orgId": "o_1775179272050"
+    },
+    {
+      "id": "t_1774882955502",
+      "name": "SINFRA - SOFIA",
+      "org": "XerticaBR-MTI",
+      "proj": "SINFRA – Consulta de Informações de Contratos e Obras",
+      "azTeam": "SINFRA – Consulta de Informações de Contratos e Obras Team",
+      "patEnc": "(removido por segurança)",
+      "orgId": "o_1775179272050"
+    },
+    {
+      "id": "t_1774883126227",
+      "name": "SEFAZ - CEP RURAL",
+      "org": "XerticaBR-MTI",
+      "proj": "SEFAZ-CEP Rural",
+      "azTeam": "SEFAZ-CEP Rural Team",
+      "patEnc": "(removido por segurança)",
+      "orgId": "o_1775179272050"
+    }
+  ],
+  "orgs": [
+    {
+      "id": "o_1775179210982",
+      "name": "XerticaBR",
+      "patEnc": "(removido por segurança)"
+    },
+    {
+      "id": "o_1775179272050",
+      "name": "XerticaBR-MTI",
+      "patEnc": "(removido por segurança)"
+    }
+  ],
+  "llm": [
+    {
+      "id": "l_1775011348935",
+      "provider": "openai",
+      "tokenEnc": "(removido por segurança)",
+      "active": true
+    }
+  ],
+  "rag": [],
+  "conversations": [
+    {
+      "id": "conv_1774900528261",
+      "title": "Como está a sprintr?",
+      "createdAt": 1774900528261,
+      "updatedAt": 1774917945778,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Como está a sprintr?",
+          "timestamp": 1774900560896
+        },
+        {
+          "role": "assistant",
+          "content": "A Sprint 2 do time SEPLAG - CIDADÃO está em andamento. Atualmente, não há itens concluídos dos 4 no backlog. A capacidade total da equipe é de 136 horas, mas todas as horas já foram alocadas, resultando em 0 horas restantes para alocação. Faltam 8 dias úteis para o término da sprint.",
+          "timestamp": 1774900560896
+        },
+        {
+          "role": "user",
+          "content": "riscos?",
+          "timestamp": 1774900590164
+        },
+        {
+          "role": "assistant",
+          "content": "Os principais riscos identificados para a Sprint 2 do time SEPLAG - CIDADÃO são:\n\n1. **Capacidade Totalmente Alocada**: Com 0 horas restantes para alocação, não há margem para absorver novos trabalhos ou lidar com imprevistos sem comprometer a entrega.\n\n2. **Nenhum Item Concluído**: Até o momento, nenhum dos 4 itens do backlog foi concluído, o que pode indicar um risco de não cumprimento dos objetivos da sprint se o ritmo não aumentar.\n\n3. **Falta de Dados sobre Dias Passados**: A ausência de informações sobre os dias já passados na sprint dificulta o acompanhamento preciso do progresso e a identificação de possíveis atrasos.\n\nEsses riscos devem ser monitorados de perto para garantir que a equipe consiga cumprir os objetivos da sprint dentro do prazo.",
+          "timestamp": 1774900590164
+        },
+        {
+          "role": "user",
+          "content": "dias restantes",
+          "timestamp": 1774900613356
+        },
+        {
+          "role": "assistant",
+          "content": "Faltam 8 dias úteis para o término da Sprint 2 do time SEPLAG - CIDADÃO.",
+          "timestamp": 1774900613356
+        },
+        {
+          "role": "user",
+          "content": "resuma tudo",
+          "timestamp": 1774900621321
+        },
+        {
+          "role": "assistant",
+          "content": "Na Sprint 2 do time SEPLAG - CIDADÃO, temos 8 dias úteis restantes. A equipe possui 4 itens no backlog, mas ainda não concluiu nenhum. Toda a capacidade de 136 horas já está alocada, deixando 0 horas disponíveis para novas tarefas ou imprevistos. Os principais riscos incluem a falta de itens concluídos e a capacidade totalmente alocada, o que pode impactar a entrega dos objetivos da sprint.",
+          "timestamp": 1774900621321
+        },
+        {
+          "role": "user",
+          "content": "sobre qualidade",
+          "timestamp": 1774900796510
+        },
+        {
+          "role": "assistant",
+          "content": "Atualmente, não foram registrados bugs ou defeitos no projeto SEPLAG-Cidadão, o que indica um bom nível de qualidade até o momento. No entanto, é importante continuar monitorando para garantir que a qualidade se mantenha alta à medida que a sprint avança.",
+          "timestamp": 1774900796510
+        },
+        {
+          "role": "user",
+          "content": "como configurar a ia aqui°",
+          "timestamp": 1774911585261
+        },
+        {
+          "role": "assistant",
+          "content": "Para configurar a IA no contexto de um projeto ágil usando Scrum e Azure DevOps, você pode seguir algumas etapas gerais:\n\n1. **Definir Objetivos**: Determine o que você deseja alcançar com a IA, como melhorar a eficiência do time, prever riscos ou otimizar a alocação de recursos.\n\n2. **Integrar com Azure DevOps**: Utilize as APIs do Azure DevOps para integrar a IA e acessar dados do projeto, como backlog, tarefas, sprints e capacidade da equipe.\n\n3. **Coletar Dados**: Reúna dados históricos e atuais do projeto, incluindo métricas de desempenho, qualidade, capacidade e progresso das sprints.\n\n4. **Treinar a IA**: Use os dados coletados para treinar modelos de IA que possam fornecer insights úteis, como previsão de conclusão de tarefas, identificação de riscos e sugestões de melhoria.\n\n5. **Configurar Alertas e Relatórios**: Configure a IA para gerar alertas e relatórios automáticos com base em condições específicas, como baixa utilização de recursos ou riscos de não cumprimento de prazos.\n\n6. **Avaliar e Ajustar**: Monitore o desempenho da IA e faça ajustes conforme necessário para garantir que ela continue a atender aos objetivos do projeto.\n\nEssas etapas são um ponto de partida e podem ser ajustadas de acordo com as necessidades específicas do seu projeto e equipe.",
+          "timestamp": 1774911585261
+        },
+        {
+          "role": "user",
+          "content": "qual o meu p80 do time?",
+          "timestamp": 1774917455468
+        },
+        {
+          "role": "assistant",
+          "content": "Atualmente, não tenho dados suficientes sobre o histórico de sprints do time MPRS-AURORA para calcular o P80, que é uma medida estatística usada para prever a probabilidade de completar o trabalho dentro de um determinado prazo com 80% de confiança. Para calcular o P80, seria necessário ter informações sobre a velocidade média do time em sprints anteriores e a variabilidade dessa velocidade.\n\nSe você puder fornecer dados históricos de sprints, como a quantidade de trabalho concluído em cada sprint, posso ajudar a calcular o P80. Caso contrário, recomendo começar a coletar esses dados para futuras análises.",
+          "timestamp": 1774917455468
+        },
+        {
+          "role": "user",
+          "content": "tente novamente",
+          "timestamp": 1774917945778
+        },
+        {
+          "role": "assistant",
+          "content": "Peço desculpas pela confusão anterior. Com base nos dados disponíveis, não tenho informações suficientes sobre o histórico de sprints do time MPRS-AURORA para calcular o P80 com precisão. O cálculo do P80 requer dados históricos sobre a quantidade de trabalho concluído em sprints anteriores e a variabilidade dessa velocidade.\n\nSe você tiver acesso a esses dados históricos, poderá calcular o P80 analisando a distribuição das velocidades passadas e determinando o ponto em que 80% das sprints foram concluídas com sucesso. Caso precise de assistência para configurar a coleta desses dados, estou à disposição para ajudar.",
+          "timestamp": 1774917945778
+        }
+      ]
+    },
+    {
+      "id": "conv_1774917962379",
+      "title": "qual o p80 do time?",
+      "createdAt": 1774917962379,
+      "updatedAt": 1774918106641,
+      "messages": [
+        {
+          "role": "user",
+          "content": "qual o p80 do time?",
+          "timestamp": 1774917977137
+        },
+        {
+          "role": "assistant",
+          "content": "Para calcular o P80 do time, precisamos analisar o histórico de entregas e determinar o tempo em que 80% das histórias de usuário foram concluídas. No entanto, com base nos dados disponíveis, não temos informações suficientes sobre o histórico de entregas anteriores para calcular o P80 com precisão.\n\nRecomendo verificar o histórico de sprints anteriores no Azure DevOps para obter os dados necessários e calcular o P80. Isso envolve analisar o tempo de conclusão das histórias de usuário e identificar o ponto em que 80% delas foram entregues.",
+          "timestamp": 1774917977137
+        },
+        {
+          "role": "user",
+          "content": "analise o p80 do time",
+          "timestamp": 1774918076308
+        },
+        {
+          "role": "assistant",
+          "content": "Com base nos dados disponíveis, o P80 do time pode ser analisado tanto para o Lead Time quanto para o Cycle Time:\n\n- **Lead Time P80**: 28.8 dias. Isso significa que 80% dos itens são concluídos em até 28.8 dias desde a criação até o fechamento.\n  \n- **Cycle Time P80**: 21.1 dias. Isso indica que 80% dos itens são concluídos em até 21.1 dias desde a ativação até o fechamento.\n\nEsses valores refletem a eficiência do time em termos de tempo necessário para completar a maioria dos itens. É importante monitorar esses indicadores para identificar oportunidades de melhoria no fluxo de trabalho.",
+          "timestamp": 1774918076308
+        },
+        {
+          "role": "user",
+          "content": "para que posso usar esse dado ?",
+          "timestamp": 1774918106641
+        },
+        {
+          "role": "assistant",
+          "content": "O P80 é uma métrica útil para várias finalidades no gerenciamento de projetos ágeis:\n\n1. **Previsibilidade**: Ajuda a estimar com maior precisão o tempo necessário para completar novas histórias de usuário ou tarefas. Sabendo que 80% dos itens são concluídos dentro desse tempo, você pode planejar sprints e releases com mais confiança.\n\n2. **Identificação de Gargalos**: Se o P80 for significativamente maior do que o esperado, isso pode indicar a presença de gargalos no processo de desenvolvimento. Analisar onde o tempo está sendo gasto pode ajudar a identificar áreas para otimização.\n\n3. **Gestão de Expectativas**: Comunicar prazos realistas para stakeholders e clientes. O P80 oferece uma visão mais conservadora e confiável do tempo de entrega, ajudando a alinhar expectativas.\n\n4. **Melhoria Contínua**: Monitorar o P80 ao longo do tempo pode ajudar a avaliar o impacto de mudanças no processo de desenvolvimento. Se o P80 diminuir, isso pode indicar que as melhorias estão funcionando.\n\n5. **Planejamento de Capacidade**: Auxilia na alocação de recursos e na definição de prioridades, garantindo que o time não esteja sobrecarregado e que os prazos sejam cumpridos de forma eficiente.\n\nUtilizar o P80 como parte de um conjunto de métricas pode fornecer uma visão mais completa do desempenho do time e ajudar na tomada de decisões estratégicas.",
+          "timestamp": 1774918106641
+        }
+      ]
+    },
+    {
+      "id": "conv_1774918419120",
+      "title": "qual o percentis desse time",
+      "createdAt": 1774918419120,
+      "updatedAt": 1775011436847,
+      "messages": [
+        {
+          "role": "user",
+          "content": "qual o percentis desse time",
+          "timestamp": 1774918436652
+        },
+        {
+          "role": "assistant",
+          "content": "O time SEFAZ - CEP RURAL possui os seguintes percentis de Lead Time e Cycle Time, baseados nas últimas 18 sprints analisadas:\n\n- **Lead Time** (tempo desde a criação até o fechamento de um item):\n  - P50 (mediana): 14.3 dias\n  - P80: 70.1 dias\n  - P95: 147.2 dias\n\n- **Cycle Time** (tempo desde a ativação até o fechamento de um item):\n  - P50 (mediana): 10.9 dias\n  - P80: 41.1 dias\n  - P95: 71 dias\n\nEsses percentis indicam a distribuição dos tempos de entrega, com P50 representando o ponto em que 50% dos itens são concluídos em até esse tempo, e assim por diante para P80 e P95.",
+          "timestamp": 1774918436652
+        },
+        {
+          "role": "user",
+          "content": "muitos outliers indicam o que?",
+          "timestamp": 1774918474696
+        },
+        {
+          "role": "assistant",
+          "content": "A presença de muitos outliers nos dados de Lead Time e Cycle Time pode indicar algumas questões no processo de desenvolvimento do time, como:\n\n1. **Variabilidade no Processo**: Pode haver uma grande variação na forma como as tarefas são geridas e concluídas, o que pode ser um sinal de inconsistência nos processos ou na priorização de tarefas.\n\n2. **Bloqueios Frequentes**: Itens que ficam bloqueados por longos períodos podem se tornar outliers, indicando que há obstáculos frequentes que precisam ser resolvidos para melhorar o fluxo de trabalho.\n\n3. **Estimativas Inadequadas**: Se as estimativas de tempo não estão alinhadas com a realidade, isso pode levar a prazos não cumpridos e, consequentemente, a outliers nos tempos de entrega.\n\n4. **Complexidade das Tarefas**: Tarefas mais complexas ou mal definidas podem demorar mais do que o esperado, resultando em tempos de entrega que se destacam dos demais.\n\n5. **Capacidade de Resposta a Mudanças**: Se o time tem dificuldade em se adaptar rapidamente a mudanças ou a novas prioridades, isso pode aumentar o tempo de conclusão de algumas tarefas.\n\nIdentificar e analisar esses outliers pode ajudar o time a entender melhor as causas subjacentes e a implementar melhorias nos processos para aumentar a eficiência e a previsibilidade.",
+          "timestamp": 1774918474696
+        },
+        {
+          "role": "user",
+          "content": "opa",
+          "timestamp": 1775011436847
+        },
+        {
+          "role": "assistant",
+          "content": "Olá! Como posso ajudar você hoje? Se tiver alguma dúvida sobre Scrum, Azure DevOps ou qualquer outro assunto relacionado ao seu time, estou aqui para ajudar!",
+          "timestamp": 1775011436847
+        }
+      ]
+    }
+  ],
+  "insightFeedback": [
+    {
+      "id": "fb_1774901325230",
+      "rating": "bad",
+      "insight": {
+        "severity": "warning",
+        "icon": "🚨",
+        "title": "Sobrecarga de Marcel Gregorutti 🚨",
+        "body": "Marcel Gregorutti está responsável por todos os PBIs em progresso (#9618, #9619, #9620, #9621), enquanto outros membros como Júlia, Aramís, Andressa, Aline, Jannyfer e Luíz não têm tarefas alocadas. Isso pode indicar uma sobrecarga crítica para Marcel, que precisa ser redistribuída."
+      },
+      "teamId": "t_1774882883524",
+      "teamName": "SEPLAG - CIDADÃO",
+      "sprint": "Sprint 2",
+      "timestamp": 1774901325230
+    },
+    {
+      "id": "fb_1774901333825",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Membros sem alocação ⚠️",
+        "body": "Júlia Antunes Tamagno, Aramís Ocrécio da Silva, Andressa Schütz Freitas, Aline Coraiola Martins, Jannyfer Lima e Luíz Fernandes estão com 0% de alocação. Isso pode indicar uma subutilização dos recursos disponíveis, que pode ser otimizada."
+      },
+      "teamId": "t_1774882883524",
+      "teamName": "SEPLAG - CIDADÃO",
+      "sprint": "Sprint 2",
+      "timestamp": 1774901333825
+    },
+    {
+      "id": "fb_1774901352766",
+      "rating": "bad",
+      "insight": {
+        "severity": "ok",
+        "icon": "✅",
+        "title": "Capacidade Total em Folga ✅",
+        "body": "A capacidade total da equipe está em folga, com 0h restantes e 136h de capacidade disponível. Isso indica que não há risco de não entrega no agregado, permitindo ajustes internos."
+      },
+      "teamId": "t_1774882883524",
+      "teamName": "SEPLAG - CIDADÃO",
+      "sprint": "Sprint 2",
+      "timestamp": 1774901352766
+    },
+    {
+      "id": "fb_1774902625500",
+      "rating": "good",
+      "insight": {
+        "severity": "info",
+        "icon": "📊",
+        "title": "📊 Capacidade com folga",
+        "body": "Remaining total (0h) < capacidade (136h) — há 100% de folga no agregado. Risco real = sobrecarga individual, não falta de capacidade."
+      },
+      "teamId": "t_1774882883524",
+      "teamName": "SEPLAG - CIDADÃO",
+      "sprint": "Sprint 2",
+      "timestamp": 1774902625500
+    },
+    {
+      "id": "fb_1774902636130",
+      "rating": "good",
+      "insight": {
+        "severity": "info",
+        "icon": "💡",
+        "title": "Oportunidade de Rebalanceamento 💡",
+        "body": "Com 136h de capacidade total não utilizada, há uma oportunidade de redistribuir tarefas entre os membros para otimizar o uso dos recursos disponíveis."
+      },
+      "teamId": "t_1774882883524",
+      "teamName": "SEPLAG - CIDADÃO",
+      "sprint": "Sprint 2",
+      "timestamp": 1774902636130
+    },
+    {
+      "id": "fb_1774902721160",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Capacidade de Data Scientists 💡",
+        "body": "Anísio Pereira Batista Filho e Diego George da Silva Santos, ambos Data Scientists, estão com alocações saudáveis de 94% e 83%, respectivamente. Isso indica um bom equilíbrio de carga de trabalho, permitindo foco e eficiência nas entregas. Atenção: Wellerson Rokembach Rodrigues Dos Santos (56%) com alocação abaixo de 70% — verificar tasks não estimadas."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774902721160
+    },
+    {
+      "id": "fb_1774904519303",
+      "rating": "good",
+      "insight": {
+        "severity": "critical",
+        "icon": "🚨",
+        "title": "Sobrecarga de Membros 🚨",
+        "body": "Karen Souza (Quality Analyst) está com uma alocação de 117% (21h restantes para 18h de capacidade) e Aimê Gomes da Nobrega (Data Scientist) está com uma alocação de 139% (25h restantes para 18h de capacidade). Isso pode impactar a qualidade do trabalho e o bem-estar dos membros."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774904519303
+    },
+    {
+      "id": "fb_1774904603165",
+      "rating": "bad",
+      "insight": {
+        "severity": "warning",
+        "icon": "🚨",
+        "title": "Sobrecarga crítica detectada 🚨",
+        "body": "Antonio Luis Ubirajara Fernandes Pinto Lamenha Lins está sobrecarregado com múltiplas tarefas em progresso e fixing, totalizando 15h de estimativa restante. Isso excede sua capacidade de 15h, indicando uma sobrecarga crítica que precisa ser gerenciada para evitar atrasos."
+      },
+      "teamId": "t_1774883126227",
+      "teamName": "SEFAZ - CEP RURAL",
+      "sprint": "Sprint - Perfis de acesso e Doc delivery",
+      "timestamp": 1774904603165
+    },
+    {
+      "id": "fb_1774904642788",
+      "rating": "good",
+      "insight": {
+        "severity": "ok",
+        "icon": "✅",
+        "title": "Ritmo de conclusão de tasks adequado ✅",
+        "body": "Com 13 tasks concluídas e 15 abertas, o time está mantendo um ritmo de trabalho equilibrado. A capacidade total ainda está acima do necessário para concluir as tarefas restantes, indicando boa gestão de tempo."
+      },
+      "teamId": "t_1774883126227",
+      "teamName": "SEFAZ - CEP RURAL",
+      "sprint": "Sprint - Perfis de acesso e Doc delivery",
+      "timestamp": 1774904642788
+    },
+    {
+      "id": "fb_1774905267006",
+      "rating": "bad",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Ociosidade de Recursos ⚠️",
+        "body": "Júlia Antunes Tamagno, com capacidade de 40h, está atualmente sem tarefas atribuídas. Isso representa uma oportunidade perdida de utilizar sua capacidade total. Considere atribuir tarefas para otimizar o uso dos recursos disponíveis."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774905267006
+    },
+    {
+      "id": "fb_1774906257361",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "⚠️ Baixa utilização em Quality Analyst",
+        "body": "Alexandre Santos Nunes (0%, rem=0h, cap=20h) abaixo de 70% em Quality Analyst — verificar tasks não estimadas ou oportunidade de adiantar refinamento."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774906257361
+    },
+    {
+      "id": "fb_1774911129830",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "⚠️ Baixa utilização em Devops Engineer",
+        "body": "Thiago Silvestre Saldanha (0%, rem=0h, cap=30h) abaixo de 70% em Devops Engineer — verificar tasks não estimadas ou oportunidade de adiantar refinamento."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774911129830
+    },
+    {
+      "id": "fb_1774911136847",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "⚠️ Baixa utilização em Design",
+        "body": "Aline Coraiola Martins (0%, rem=0h, cap=20h) abaixo de 70% em Design — verificar tasks não estimadas ou oportunidade de adiantar refinamento."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774911136847
+    },
+    {
+      "id": "fb_1774911195962",
+      "rating": "bad",
+      "insight": {
+        "severity": "ok",
+        "icon": "✅",
+        "title": "Ritmo de Trabalho Adequado ✅",
+        "body": "Apesar de algumas ociosidades, o time está bem posicionado para concluir a única PBI em progresso, com uma alocação total de apenas 4%."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774911195962
+    },
+    {
+      "id": "fb_1774911214101",
+      "rating": "good",
+      "insight": {
+        "severity": "info",
+        "icon": "💡",
+        "title": "Oportunidade de Redistribuição 💡",
+        "body": "Com apenas 7h restantes no total e uma capacidade de 170h, há uma oportunidade de redistribuir tarefas entre os membros para otimizar a utilização da equipe."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774911214101
+    },
+    {
+      "id": "fb_1774911225853",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "⚠️ Baixa utilização em Developer Full Stack",
+        "body": "Júlia Antunes Tamagno (0%, rem=0h, cap=40h) abaixo de 70% em Developer Full Stack — verificar tasks não estimadas ou oportunidade de adiantar refinamento."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774911225853
+    },
+    {
+      "id": "fb_1774911230358",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Baixa Utilização em Quality Analyst ⚠️",
+        "body": "Andressa Schütz Freitas está com uma alocação de apenas 7% (rem=2h, cap=30h). É importante verificar se há tarefas não estimadas ou oportunidades de melhoria. | Também: Alexandre Santos Nunes (0%, rem=0h, cap=20h) abaixo de 70% em Quality Analyst — verificar tasks não estimadas ou oportunidade de adiantar refinamento."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774911230358
+    },
+    {
+      "id": "fb_1774918016775",
+      "rating": "bad",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Tech Leader Sem Tarefas ⚠️",
+        "body": "Gustavo Gouvea, Tech Leader, está sem alocação de tarefas (0%). Verifique se há oportunidades para ele contribuir em revisões ou planejamento estratégico."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774918016775
+    },
+    {
+      "id": "fb_1774918778299",
+      "rating": "good",
+      "insight": {
+        "severity": "critical",
+        "icon": "🚨",
+        "title": "Alta carga de trabalho pendente",
+        "body": "Atualmente, há 58 itens abertos, dos quais 47 foram criados no último mês. Isso indica uma alta carga de trabalho pendente que precisa ser gerenciada para evitar atrasos futuros."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774918778299
+    },
+    {
+      "id": "fb_1774918800211",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Tempo de resolução de defeitos elevado",
+        "body": "O tempo médio de resolução para defeitos é de 33 dias, significativamente maior que o tempo de resolução de bugs, que é de 6 dias. Isso sugere a necessidade de otimizar o processo de resolução de defeitos."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774918800211
+    },
+    {
+      "id": "fb_1774918816349",
+      "rating": "good",
+      "insight": {
+        "severity": "info",
+        "icon": "💡",
+        "title": "Distribuição de severidade e prioridade",
+        "body": "A maioria dos itens são de severidade média (244) e prioridade 2 (245), com apenas 2 itens críticos e 1 item de prioridade 1. Isso pode indicar uma priorização adequada, mas também uma oportunidade para revisar a classificação de severidade e prioridade."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774918816349
+    },
+    {
+      "id": "fb_1774918828488",
+      "rating": "good",
+      "insight": {
+        "severity": "ok",
+        "icon": "✅",
+        "title": "Bom tempo de resolução de bugs",
+        "body": "O tempo médio de resolução para bugs é de 6 dias, o que é um indicador positivo de eficiência na resolução de problemas críticos e de alta prioridade."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774918828488
+    },
+    {
+      "id": "fb_1774918840107",
+      "rating": "bad",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Estimativa total sem controle",
+        "body": "A estimativa total de trabalho é de 1811 horas, enquanto o trabalho restante é de apenas 43 horas. Isso sugere que as estimativas iniciais podem não estar alinhadas com a realidade, necessitando de revisão para melhorar a precisão."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774918840107
+    },
+    {
+      "id": "fb_1774918859176",
+      "rating": "good",
+      "insight": {
+        "severity": "critical",
+        "icon": "🚨",
+        "title": "Alta quantidade de itens abertos recentemente",
+        "body": "Nos últimos 30 dias, 47 novos itens foram abertos, representando 81% dos itens atualmente abertos. Isso indica uma tendência de crescimento que pode sobrecarregar a equipe se não for controlada."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774918859176
+    },
+    {
+      "id": "fb_1774918879225",
+      "rating": "bad",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Estimativa Total descontrolada",
+        "body": "A estimativa total de 1811 horas para itens abertos é muito alta em comparação com o Remaining Work atual de 43 horas. Isso sugere que as estimativas iniciais podem não estar sendo ajustadas adequadamente conforme o trabalho avança."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774918879225
+    },
+    {
+      "id": "fb_1774920650251",
+      "rating": "good",
+      "insight": {
+        "severity": "info",
+        "icon": "💡",
+        "title": "Capacidade de Developers Front End 💡",
+        "body": "Lucas Maia e Lucas Seguessi, ambos Developers Front End, estão com alocações saudáveis de 75% e 83%, respectivamente. Isso sugere um bom equilíbrio na distribuição de tarefas nesta área."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1774920650251
+    },
+    {
+      "id": "fb_1774920673517",
+      "rating": "bad",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Sobrecarga Crítica 🚨",
+        "body": "Aramís Ocrécio da Silva (Developer Back End) está com uma alocação de 11% (rem=3h, cap=27h), enquanto Andressa Schütz Freitas (Quality Analyst) está com 7% (rem=2h, cap=27h). Ambos estão abaixo do ideal e precisam de atenção para evitar sobrecarga futura. | Também: Alexandre Santos Nunes (0%, rem=0h, cap=18h) abaixo de 70% em Quality Analyst — verificar tasks não estimadas ou oportunidade de adiantar refinamento."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774920673517
+    },
+    {
+      "id": "fb_1774920681341",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Baixa Utilização em Devops Engineer ⚠️",
+        "body": "Thiago Silvestre Saldanha está com uma alocação de 0% (rem=0h, cap=27h). É importante verificar se há tarefas não atribuídas ou oportunidades de otimização no fluxo de trabalho."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774920681341
+    },
+    {
+      "id": "fb_1774920684631",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Baixa Utilização em Design ⚠️",
+        "body": "Aline Coraiola Martins está com uma alocação de 0% (rem=0h, cap=18h). É importante verificar se há tarefas não estimadas ou oportunidades de contribuição em outras áreas."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774920684631
+    },
+    {
+      "id": "fb_1774920685597",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Baixa Utilização em Developer Full Stack ⚠️",
+        "body": "Júlia Antunes Tamagno está com uma alocação de 0% (rem=0h, cap=36h). Verifique se há tarefas não atribuídas ou oportunidades de melhoria no planejamento das atividades."
+      },
+      "teamId": "t_1774882955502",
+      "teamName": "SINFRA - SOFIA",
+      "sprint": "Sprint 2",
+      "timestamp": 1774920685597
+    },
+    {
+      "id": "fb_1775006976064",
+      "rating": "good",
+      "insight": {
+        "severity": "critical",
+        "icon": "🚧",
+        "title": "Bloqueios ativos",
+        "body": "3 PBI(s) bloqueado(s). Priorize desbloqueio imediato."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1775006976064
+    },
+    {
+      "id": "fb_1775007008808",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Capacidade excedida",
+        "body": "Demanda (69h) supera capacidade (48h) em 44%."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1775007008808
+    },
+    {
+      "id": "fb_1775007011844",
+      "rating": "good",
+      "insight": {
+        "severity": "critical",
+        "icon": "🚨",
+        "title": "Sobrecarga de membros",
+        "body": "4 membro(s) acima de 110%: Karen Souza, Aimê Gomes da Nobrega, Lucas Maia.... Redistribua tarefas."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1775007011844
+    },
+    {
+      "id": "fb_1775010136557",
+      "rating": "bad",
+      "insight": {
+        "severity": "ok",
+        "icon": "✅",
+        "title": "Ritmo de Entrega Geral ✅",
+        "body": "Com 35% dos PBIs concluídos e 34 tarefas ainda abertas, o time está dentro de um ritmo saudável, considerando a folga de 1 dia útil restante."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1775010136557
+    },
+    {
+      "id": "fb_1775010147994",
+      "rating": "good",
+      "insight": {
+        "severity": "warning",
+        "icon": "⚠️",
+        "title": "Ociosidade em Back End e Front End ⚠️",
+        "body": "Wellerson Rokembach Rodrigues Dos Santos, Developer Back End, está com alocação de 33% (2h restantes para 6h de capacidade) e Lucas Seguessi, Developer Front End, com 67% (4h para 6h)."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1775010147994
+    },
+    {
+      "id": "fb_1775011419322",
+      "rating": "good",
+      "insight": {
+        "severity": "ok",
+        "icon": "✅",
+        "title": "Gestão de Tempo Eficiente ✅",
+        "body": "Vinicius Piovesan e Anísio Pereira Batista Filho estão com alocações de 100%, refletindo uma gestão eficaz de tempo e capacidade em suas funções."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1775011419322
+    },
+    {
+      "id": "fb_1775011421373",
+      "rating": "good",
+      "insight": {
+        "severity": "critical",
+        "icon": "🚨",
+        "title": "🚨 Alertas de Sobrecarga",
+        "body": "Risco de Sobrecarga Crítica: Quatro membros estão sobrecarregados: Karen Souza (367%), Aimê Gomes da Nobrega (117%), Lucas Maia (150%) e Diego George da Silva Santos (150%). A demanda de trabalho (69h) excede a capacidade disponível (48h) em 44%. Ação imediata é necessária para mitigar o risco à entrega do projeto. | Urgência no Desbloqueio de PBIs: Três PBIs estão bloqueados, incluindo #7708 e #10858. Desbloqueie-os imediatamente para evitar atrasos críticos na entrega."
+      },
+      "teamId": "t_1774882738419",
+      "teamName": "MPRS- AURORA",
+      "sprint": "Sprint 28",
+      "timestamp": 1775011421373
+    }
+  ],
+  "userProfile": {
+    "level": "didactic",
+    "override": true,
+    "updatedAt": 1775007133237
+  }
+}
