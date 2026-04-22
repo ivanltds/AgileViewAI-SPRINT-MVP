@@ -305,6 +305,28 @@ export const DashboardBuilder = {
     }
   },
 
+  renderProgress(data, isLoading) {
+    const el = document.getElementById('db-progress');
+    if (!el) return;
+
+    if (isLoading) {
+      el.innerHTML = `
+        <div class="mod-panel-header"><h2 style="margin:0;font-size:18px">🚀 Progresso</h2></div>
+        <div style="padding:40px;text-align:center;color:#64748b;font-size:13px">Calculando velocity...</div>
+      `;
+      return;
+    }
+
+    const { stats: s } = data;
+    const e = this._e.bind(this);
+    
+    const dayOffHtml = (s.dayOffCards || []).slice(0, 3).map(c => `
+      <div class="dayoff-card">
+        <div class="dayoff-date">${c.label}</div>
+        <div class="dayoff-member">${e(c.member)} (${e(c.activity)})</div>
+      </div>
+    `).join('') || '<div class="empty-dayoff">Nenhum day-off programado</div>';
+
     const stacks = Object.entries(s.byActivity || {}).filter(([name]) => name !== 'Não definido').map(([name, act]) => {
       const pct = act.capTotal > 0 ? Math.round((act.remaining / act.capTotal) * 100) : 0;
       const color = pct > 100 ? '#ef4444' : (pct > 80 ? '#f59e0b' : '#10b981');
