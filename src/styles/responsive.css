@@ -39,21 +39,21 @@
     display: flex !important; 
     flex-direction: column !important; 
     gap: 20px !important; 
-    padding: 16px !important; 
+    padding: 16px 12px !important; /* Reduced padding for edge-to-edge fealing */
     width: 100% !important; 
     max-width: 100% !important;
     box-sizing: border-box !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    overflow: hidden !important;
+    margin: 0 !important;
+    overflow: visible !important; /* Allow internal content to handle scroll if needed */
   }
-  .db-left, .db-right, .mbr-main, .mbr-side { 
+  .db-left, .db-right, .mbr-main, .mbr-side, #db-progress, #db-members { 
     width: 100% !important; 
     min-width: 0 !important; 
     max-width: 100% !important; 
     flex: 1 1 100% !important;
-    margin: 0 !important;
+    margin: 0 0 20px 0 !important;
   }
+  .db-card, .members-card { width: 100% !important; max-width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }
   .mbr-side { border-top: 1px solid var(--border); padding-top: 20px; box-shadow: none !important; }
   
   /* Table Responsiveness overrides */
