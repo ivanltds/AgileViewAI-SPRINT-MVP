@@ -4271,7 +4271,7 @@ if (typeof window !== 'undefined') {
     // Floating Chat (AI Assistant)
     fcTogglePanel, fcNewConv, fcToggleSidebar, fcKeyDown, fcSend,
     // Initialization & Toast
-    toast, vaultTab, vaultAction, vaultSessionStart, launchApp, init
+    toast, vaultTab, vaultAction, vaultSessionStart, launchApp, init, updateVaultModeDesc
   });
 
   // Self-init if called as regular script
